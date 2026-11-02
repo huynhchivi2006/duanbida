@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -9,30 +11,43 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/lib/api-client";
 import { formatVND, formatDateTimeVN } from "@/lib/utils";
-import { Search, Calendar, Clock, MapPin, Receipt, CheckCircle, AlertTriangle } from "lucide-react";
+import { Search, Calendar, Clock, MapPin, Receipt, CheckCircle, AlertTriangle, QrCode } from "lucide-react";
 
-export default function LookupPage() {
-  const [code, setCode] = useState("");
+function LookupContent() {
+  const searchParams = useSearchParams();
+  const initialCode = searchParams.get("code") || "";
+
+  const [code, setCode] = useState(initialCode);
   const [booking, setBooking] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!code.trim()) return;
+  const executeSearch = async (searchCode: string) => {
+    if (!searchCode.trim()) return;
 
     setIsLoading(true);
     setError(null);
     setBooking(null);
 
     try {
-      const data = await apiClient(`/bookings/${code.trim()}`);
+      const data = await apiClient(`/bookings/${encodeURIComponent(searchCode.trim())}`);
       setBooking(data);
     } catch (err: any) {
       setError("Không tìm thấy thông tin đặt bàn với mã này. Vui lòng kiểm tra lại chính xác mã đặt bàn.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    if (initialCode && initialCode.trim()) {
+      executeSearch(initialCode.trim());
+    }
+  }, [initialCode]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    executeSearch(code);
   };
 
   const statusBadge = (status: string) => {
@@ -53,126 +68,140 @@ export default function LookupPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
-      <Navbar />
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center space-y-3 mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight text-white">
+          Tra Cứu Lịch Đặt & Hóa Đơn Trực Tuyến
+        </h1>
+        <p className="text-sm text-zinc-400">
+          Nhập mã đặt bàn của bạn (VD: BKG-20261102-1234) hoặc quét mã QR để kiểm tra thông tin và theo dõi giờ chơi
+        </p>
+      </div>
 
-      <main className="container mx-auto px-4 py-12 flex-1">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-black text-white">TRA CỨU LỊCH ĐẶT BÀN</h1>
-            <p className="text-zinc-400 text-sm mt-1">
-              Nhập mã đặt bàn của bạn (VD: BKG-20261026-0001) để xem chi tiết trạng thái.
-            </p>
-          </div>
-
-          {/* Form tìm kiếm */}
-          <Card className="border-zinc-800 bg-zinc-900/60 p-6 mb-8">
-            <form onSubmit={handleSearch} className="flex gap-3">
+      <Card className="border-zinc-800 bg-zinc-900/60 shadow-xl mb-8">
+        <CardContent className="p-6">
+          <form onSubmit={handleSearch} className="flex gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
               <Input
-                placeholder="Nhập mã đặt bàn (BKG-...)"
+                placeholder="Nhập mã đặt bàn (VD: BKG-20261102-XXXX)..."
                 value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase())}
-                className="font-mono"
+                onChange={(e) => setCode(e.target.value)}
+                className="pl-10 h-11 bg-zinc-950 font-mono text-sm"
               />
-              <Button type="submit" isLoading={isLoading} className="shrink-0 px-6">
-                <Search className="h-4 w-4 mr-2" />
-                Tra Cứu
-              </Button>
-            </form>
-          </Card>
-
-          {/* Error Message */}
-          {error && (
-            <div className="p-4 rounded-xl border border-rose-800 bg-rose-950/40 text-rose-300 text-xs flex items-center gap-2 mb-6">
-              <AlertTriangle className="h-4 w-4 text-rose-400 shrink-0" />
-              {error}
             </div>
-          )}
+            <Button type="submit" isLoading={isLoading} className="h-11 px-6 font-semibold">
+              Tra Cứu
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-          {/* Booking Result */}
-          {booking && (
-            <Card className="border-zinc-800 bg-zinc-900/80">
-              <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-zinc-800">
-                <div>
-                  <div className="text-xs text-zinc-400">Mã Đặt Bàn</div>
-                  <div className="text-lg font-black text-emerald-400 font-mono">
-                    {booking.bookingCode}
-                  </div>
-                </div>
-                {statusBadge(booking.status)}
-              </CardHeader>
-
-              <CardContent className="pt-6 space-y-4 text-xs">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80">
-                    <span className="text-zinc-400 block mb-1">Bàn Bi-da:</span>
-                    <span className="text-base font-bold text-white block">
-                      {booking.billiardTable?.tableNumber}
-                    </span>
-                    <span className="text-zinc-400">
-                      {booking.billiardTable?.tableType?.name}
-                    </span>
-                  </div>
-
-                  <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80">
-                    <span className="text-zinc-400 block mb-1">Khách Hàng:</span>
-                    <span className="text-sm font-bold text-white block">
-                      {booking.customer?.fullName || "Khách đặt trước"}
-                    </span>
-                    <span className="text-zinc-400">{booking.customer?.phone}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-400 flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-emerald-500" />
-                      Giờ bắt đầu:
-                    </span>
-                    <span className="font-semibold text-zinc-200">
-                      {formatDateTimeVN(booking.startTime)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-400 flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-emerald-500" />
-                      Giờ kết thúc:
-                    </span>
-                    <span className="font-semibold text-zinc-200">
-                      {formatDateTimeVN(booking.endTime)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
-                    <span className="text-zinc-400">Chi phí dự kiến:</span>
-                    <span className="font-bold text-emerald-400 text-sm">
-                      {formatVND(booking.estimatedPrice)}
-                    </span>
-                  </div>
-                </div>
-
-                {booking.invoice && (
-                  <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-800/50 flex items-center justify-between">
-                    <div>
-                      <div className="text-[11px] text-emerald-400 font-semibold">
-                        Hóa đơn thanh toán ({booking.invoice.invoiceCode})
-                      </div>
-                      <div className="text-xs text-zinc-300 mt-0.5">
-                        Tổng tiền: {formatVND(booking.invoice.finalAmount)}
-                      </div>
-                    </div>
-                    <Badge variant={booking.invoice.status === "PAID" ? "success" : "warning"}>
-                      {booking.invoice.status === "PAID" ? "Đã Thanh Toán" : "Chưa Thanh Toán"}
-                    </Badge>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
+      {error && (
+        <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-300 text-sm flex items-center gap-3 mb-8">
+          <AlertTriangle className="h-5 w-5 shrink-0" />
+          <span>{error}</span>
         </div>
-      </main>
+      )}
 
-      <Footer />
+      {booking && (
+        <Card className="border-zinc-800 bg-zinc-900/80 shadow-2xl overflow-hidden animate-fade-in">
+          <CardHeader className="border-b border-zinc-800 bg-zinc-950/50 p-6 flex flex-row items-center justify-between">
+            <div>
+              <div className="text-xs text-zinc-400 font-medium">Mã đặt bàn</div>
+              <div className="font-mono text-xl font-black text-emerald-400 tracking-wider">
+                {booking.bookingCode}
+              </div>
+            </div>
+            <div>{statusBadge(booking.status)}</div>
+          </CardHeader>
+
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1">
+                <div className="text-xs text-zinc-500 font-medium">Bàn bi-da</div>
+                <div className="text-base font-bold text-white">
+                  Bàn {booking.billiardTable?.tableNumber}
+                </div>
+                <div className="text-xs text-emerald-400">
+                  {booking.billiardTable?.tableType?.name}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1">
+                <div className="text-xs text-zinc-500 font-medium">Khách hàng</div>
+                <div className="text-base font-bold text-white">
+                  {booking.customer?.fullName}
+                </div>
+                <div className="text-xs text-zinc-400">
+                  {booking.customer?.phone || booking.customer?.email}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/80 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-emerald-500" />
+                  Giờ hẹn bắt đầu:
+                </span>
+                <span className="font-semibold text-zinc-200">
+                  {formatDateTimeVN(booking.startTime)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400 flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-emerald-500" />
+                  Giờ hẹn kết thúc:
+                </span>
+                <span className="font-semibold text-zinc-200">
+                  {formatDateTimeVN(booking.endTime)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
+                <span className="text-zinc-400">Tạm tính giờ chơi:</span>
+                <span className="font-bold text-emerald-400 text-sm">
+                  {formatVND(booking.estimatedPrice)}
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons: Xem Live Bill & VietQR */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <Link
+                href={`/live-bill?code=${encodeURIComponent(booking.bookingCode)}`}
+                target="_blank"
+                className="flex-1"
+              >
+                <Button className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold gap-2 text-xs h-11 shadow-lg shadow-emerald-950/50">
+                  <Receipt className="h-4 w-4" />
+                  Xem Hóa Đơn Trực Tiếp (Live Bill & VietQR)
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
 
+export default function LookupPage() {
+  return (
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+      <Navbar />
+      <main className="container mx-auto px-4 py-12 flex-1">
+        <Suspense
+          fallback={
+            <div className="max-w-2xl mx-auto text-center py-12 text-zinc-500 text-xs">
+              Đang tải trang tra cứu...
+            </div>
+          }
+        >
+          <LookupContent />
+        </Suspense>
+      </main>
+      <Footer />
+    </div>
+  );
+}

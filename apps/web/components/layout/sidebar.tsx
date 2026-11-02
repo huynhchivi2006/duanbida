@@ -21,6 +21,7 @@ import {
   Ticket,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { NotificationCenter } from "../notifications/notification-center";
 
 interface SidebarProps {
   role: "ADMIN" | "STAFF" | "CUSTOMER";
@@ -172,6 +173,9 @@ export function Sidebar({ role }: SidebarProps) {
 
       {/* Bottom Profile & Logout */}
       <div className={cn("border-t border-zinc-800 space-y-2 transition-all duration-300", isCollapsed ? "p-2" : "p-4")}>
+        {/* Real-time Notification Center */}
+        <NotificationCenter isCollapsed={isCollapsed} />
+
         {/* User Card */}
         {isCollapsed ? (
           <div

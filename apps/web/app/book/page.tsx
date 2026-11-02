@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense, useMemo } from "react";
+import Link from "next/link";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
@@ -21,6 +22,8 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
+  Receipt,
+  QrCode,
 } from "lucide-react";
 
 interface AvailableTable {
@@ -368,24 +371,78 @@ function BookContent() {
       <Modal
         isOpen={Boolean(successBooking)}
         onClose={() => setSuccessBooking(null)}
-        title="Đặt Bàn Thành Công!"
+        title="🎉 Đặt Bàn Thành Công!"
       >
-        <div className="text-center py-4 space-y-3">
-          <CheckCircle className="h-14 w-14 text-emerald-400 mx-auto" />
-          <h4 className="text-base font-bold text-white">Khung giờ của bạn đã được đảm bảo!</h4>
-          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
-            Mã đặt bàn của bạn:
-          </p>
-          <div className="inline-block px-4 py-2 bg-emerald-950/80 border border-emerald-700/60 rounded-xl text-lg font-black text-emerald-400 tracking-wider">
-            {successBooking?.bookingCode}
+        <div className="text-center py-2 space-y-3">
+          <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold text-sm">
+            <CheckCircle className="h-5 w-5" />
+            <span>Khung giờ của bạn đã được đảm bảo 100%!</span>
           </div>
-          <p className="text-[11px] text-zinc-500">
-            Vui lòng lưu lại mã này hoặc xuất trình khi đến quầy check-in.
-          </p>
 
-          <div className="pt-4 flex justify-center gap-2">
+          {/* QR Code Bill Tra Cứu */}
+          {successBooking && (
+            <div className="space-y-2">
+              <div className="p-3 bg-white rounded-2xl inline-block shadow-xl shadow-emerald-950/40 border-2 border-emerald-500/50">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH !== undefined ? process.env.NEXT_PUBLIC_BASE_PATH : "/huynhchivi/doan"}/live-bill?code=${encodeURIComponent(successBooking.bookingCode)}`
+                      : `/live-bill?code=${encodeURIComponent(successBooking.bookingCode)}`
+                  )}`}
+                  alt="Mã QR Tra Cứu Bill"
+                  className="w-44 h-44 object-contain mx-auto"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-[11px] text-zinc-400">
+                  📱 Dùng camera điện thoại quét mã QR để tra cứu & xem hóa đơn trực tiếp:
+                </div>
+                <div className="inline-block px-3 py-1 bg-emerald-950/80 border border-emerald-700/60 rounded-lg text-sm font-black text-emerald-400 tracking-wider">
+                  {successBooking.bookingCode}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Thông tin tóm tắt đơn đặt */}
+          <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-left text-xs space-y-1.5">
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Bàn đã đặt:</span>
+              <strong className="text-white font-semibold">
+                Bàn {selectedTable?.tableNumber} ({selectedTable?.tableType?.name})
+              </strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Khung giờ hẹn:</span>
+              <span className="text-emerald-400 font-medium">
+                {time} - {date} ({durationMinutes} phút)
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Tạm tính giờ chơi:</span>
+              <strong className="text-amber-400 font-bold">
+                {formatVND(successBooking?.estimatedPrice || 0)}
+              </strong>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row justify-center gap-2">
+            <Link
+              href={`/live-bill?code=${encodeURIComponent(successBooking?.bookingCode || "")}`}
+              target="_blank"
+              className="flex-1"
+            >
+              <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold gap-1.5 text-xs h-9">
+                <Receipt className="h-4 w-4" />
+                Mở Xem Bill Trực Tiếp
+              </Button>
+            </Link>
             <Button
+              variant="outline"
               size="sm"
+              className="flex-1 text-xs h-9"
               onClick={() => {
                 setSuccessBooking(null);
                 router.push("/customer/dashboard");

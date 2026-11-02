@@ -12,7 +12,7 @@ import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { formatVND, formatDateTimeVN } from "@/lib/utils";
 import Link from "next/link";
-import { CalendarDays, Clock, Plus, XCircle, AlertCircle, CheckCircle } from "lucide-react";
+import { CalendarDays, Clock, Plus, XCircle, AlertCircle, CheckCircle, QrCode, Receipt } from "lucide-react";
 
 export default function CustomerDashboardPage() {
   const { user } = useAuth();
@@ -20,6 +20,7 @@ export default function CustomerDashboardPage() {
   const [cancelModalBooking, setCancelModalBooking] = useState<any | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [cancelError, setCancelError] = useState<string | null>(null);
+  const [qrModalBooking, setQrModalBooking] = useState<any | null>(null);
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["my-bookings"],
@@ -134,20 +135,32 @@ export default function CustomerDashboardPage() {
                           </div>
                         </div>
 
-                        {canCancel && (
+                        <div className="flex items-center gap-2">
                           <Button
-                            variant="danger"
+                            variant="outline"
                             size="sm"
-                            className="text-xs"
-                            onClick={() => {
-                              setCancelModalBooking(booking);
-                              setCancelError(null);
-                            }}
+                            className="text-xs gap-1 border-emerald-700/60 text-emerald-400 hover:bg-emerald-950/40"
+                            onClick={() => setQrModalBooking(booking)}
                           >
-                            <XCircle className="h-3.5 w-3.5 mr-1" />
-                            Hủy Bàn
+                            <QrCode className="h-3.5 w-3.5" />
+                            QR Bill
                           </Button>
-                        )}
+
+                          {canCancel && (
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              className="text-xs"
+                              onClick={() => {
+                                setCancelModalBooking(booking);
+                                setCancelError(null);
+                              }}
+                            >
+                              <XCircle className="h-3.5 w-3.5 mr-1" />
+                              Hủy Bàn
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Card>
@@ -204,6 +217,65 @@ export default function CustomerDashboardPage() {
               }
             >
               Xác Nhận Hủy
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* QR Code Bill Modal */}
+      <Modal
+        isOpen={Boolean(qrModalBooking)}
+        onClose={() => setQrModalBooking(null)}
+        title={`Mã QR Hóa Đơn & Tra Cứu - ${qrModalBooking?.bookingCode}`}
+      >
+        <div className="text-center py-2 space-y-3">
+          <div className="p-3 bg-white rounded-2xl inline-block shadow-xl shadow-emerald-950/40 border-2 border-emerald-500/50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+                typeof window !== "undefined"
+                  ? `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH !== undefined ? process.env.NEXT_PUBLIC_BASE_PATH : "/huynhchivi/doan"}/live-bill?code=${encodeURIComponent(qrModalBooking?.bookingCode || "")}`
+                  : `/live-bill?code=${encodeURIComponent(qrModalBooking?.bookingCode || "")}`
+              )}`}
+              alt="Mã QR Tra Cứu Bill"
+              className="w-48 h-48 object-contain mx-auto"
+            />
+          </div>
+
+          <p className="text-xs text-zinc-400">
+            Dùng camera điện thoại quét mã QR để theo dõi chi tiết hóa đơn (Live Bill), thời gian chơi và mã VietQR thanh toán.
+          </p>
+
+          <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-left text-xs space-y-1">
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Bàn:</span>
+              <strong className="text-white">Bàn {qrModalBooking?.billiardTable?.tableNumber}</strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-400">Giờ đặt hẹn:</span>
+              <span className="text-emerald-400 font-medium">
+                {qrModalBooking?.startTime ? formatDateTimeVN(qrModalBooking.startTime) : ""}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-2 pt-2">
+            <Link
+              href={`/live-bill?code=${encodeURIComponent(qrModalBooking?.bookingCode || "")}`}
+              target="_blank"
+            >
+              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 gap-1.5 text-xs h-9">
+                <Receipt className="h-4 w-4" />
+                Mở Xem Trực Tiếp
+              </Button>
+            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs h-9"
+              onClick={() => setQrModalBooking(null)}
+            >
+              Đóng
             </Button>
           </div>
         </div>
