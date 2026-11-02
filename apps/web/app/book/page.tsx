@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
@@ -47,8 +47,14 @@ function BookContent() {
   const preselectedTableId = searchParams.get("tableId");
   const { user } = useAuth();
 
-  // Khởi tạo ngày mặc định là hôm nay
-  const todayStr = new Date().toISOString().slice(0, 10);
+  // Khởi tạo ngày mặc định là hôm nay theo giờ địa phương
+  const todayStr = (() => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  })();
   const [date, setDate] = useState<string>(todayStr);
   const [time, setTime] = useState<string>("18:00");
   const [durationMinutes, setDurationMinutes] = useState<number>(120);
@@ -59,8 +65,12 @@ function BookContent() {
   const [successBooking, setSuccessBooking] = useState<any | null>(null);
   const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
 
-  // Tính ISO Start Time
-  const computedStartTime = `${date}T${time}:00Z`;
+  // Tính ISO Start Time theo giờ địa phương Việt Nam (tránh lệch 7 tiếng UTC)
+  const computedStartTime = useMemo(() => {
+    if (!date || !time) return "";
+    const localDate = new Date(`${date}T${time}:00`);
+    return isNaN(localDate.getTime()) ? "" : localDate.toISOString();
+  }, [date, time]);
 
   // Query tìm bàn trống
   const {
