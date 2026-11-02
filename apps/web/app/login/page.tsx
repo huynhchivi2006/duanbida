@@ -106,27 +106,34 @@ export default function LoginPage() {
             <div className="text-[11px] font-semibold text-zinc-400 mb-2.5 text-center">
               Tài khoản Demo (1-Click điền thông tin):
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleQuickLogin("admin@billiards.local", "Admin@123456")}
-                className="p-2 rounded-lg border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 text-amber-300 text-[11px] font-medium transition-colors"
+                className="p-2 rounded-lg border border-amber-800/60 bg-amber-950/30 hover:bg-amber-900/40 text-amber-300 text-[11px] font-medium transition-colors text-center"
               >
-                Quản Trị Viên (Admin)
+                👑 Quản Trị Viên (Admin)
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickLogin("staff1@billiards.local", "Staff@123456")}
-                className="p-2 rounded-lg border border-sky-800/60 bg-sky-950/30 hover:bg-sky-900/40 text-sky-300 text-[11px] font-medium transition-colors"
+                className="p-2 rounded-lg border border-sky-800/60 bg-sky-950/30 hover:bg-sky-900/40 text-sky-300 text-[11px] font-medium transition-colors text-center"
               >
-                Nhân Viên (Staff)
+                💼 Thu Ngân (Staff 01)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLogin("waiter@billiards.local", "Staff@123456")}
+                className="p-2 rounded-lg border border-indigo-800/60 bg-indigo-950/30 hover:bg-indigo-900/40 text-indigo-300 text-[11px] font-medium transition-colors text-center"
+              >
+                🎱 Phục Vụ Bàn (Staff)
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickLogin("khach1@gmail.com", "Khach@123456")}
-                className="p-2 rounded-lg border border-emerald-800/60 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-300 text-[11px] font-medium transition-colors"
+                className="p-2 rounded-lg border border-emerald-800/60 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-300 text-[11px] font-medium transition-colors text-center"
               >
-                Khách Hàng (Customer)
+                👤 Khách Hàng (Customer)
               </button>
             </div>
           </div>

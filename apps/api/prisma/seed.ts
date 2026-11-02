@@ -57,6 +57,19 @@ async function main() {
     },
   });
 
+  const waiterStaff = await prisma.user.upsert({
+    where: { email: 'waiter@billiards.local' },
+    update: {},
+    create: {
+      email: 'waiter@billiards.local',
+      phone: '0909000005',
+      fullName: 'Nhân Viên Phục Bàn',
+      passwordHash: staffPassword,
+      role: Role.STAFF,
+      status: UserStatus.ACTIVE,
+    },
+  });
+
   const customer1 = await prisma.user.upsert({
     where: { email: 'khach1@gmail.com' },
     update: {},
