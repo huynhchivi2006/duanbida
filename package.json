@@ -1,0 +1,27 @@
+{
+  "name": "billiards-management-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:web",
+    "web": "npm run dev:web",
+    "api": "npm run dev:api",
+    "start": "npm run start:web",
+    "build:api": "npm run build --workspace=apps/api",
+    "build:web": "npm run build --workspace=apps/web",
+    "build": "npm run build:api && npm run build:web",
+    "start:api": "npm run start:prod --workspace=apps/api",
+    "start:web": "npm run start --workspace=apps/web",
+    "dev:api": "npm run start:dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "test:api": "npm run test --workspace=apps/api",
+    "prisma:generate": "npm run prisma:generate --workspace=apps/api",
+    "prisma:migrate": "npm run prisma:migrate --workspace=apps/api",
+    "prisma:seed": "npm run prisma:seed --workspace=apps/api"
+  },
+  "devDependencies": {}
+}
+

@@ -1,0 +1,32 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /huynhchivi/doan/
+
+  # 1. Reverse proxy qua mod_proxy neu server Apache ho tro
+  <IfModule mod_proxy.c>
+    RewriteRule ^api-proxy/(.*)$ http://78.154.103.20:14602/api/v1/$1 [P,L]
+  </IfModule>
+
+  # 2. Rewrite endpoint api sang proxy.php de tranh Mixed Content (HTTPS -> HTTP)
+  RewriteRule ^api/(.*)$ proxy.php?path=$1 [QSA,L]
+
+  # 3. Neu la file hoac thu muc thuc te thi phuc vu truc tiep
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 4. Neu thu muc co index.html thi phuc vu file index do
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*)$ $1/index.html [L]
+
+  # 5. Chuyen huong fallback sang 404.html cho Next.js Client Routing
+  RewriteRule ^(.*)$ 404.html [L]
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType text/css .css
+  AddType application/javascript .js
+  AddType image/svg+xml .svg
+  AddType application/json .json
+</IfModule>
+

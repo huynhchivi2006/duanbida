@@ -1,0 +1,470 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum Area {
+  VIP
+  STANDARD
+  OUTDOOR
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  IN_USE
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum SessionStatus {
+  PLAYING
+  PAUSED
+  FINISHED
+}
+
+enum ServiceCategory {
+  DRINK
+  FOOD
+  ACCESSORY
+  OTHER
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+enum InvoiceItemType {
+  TABLE_TIME
+  SERVICE
+  STAFF_SERVICE
+  SURCHARGE
+}
+
+enum StaffRoleType {
+  BALL_RACKER
+  TABLE_ATTENDANT
+}
+
+enum RuleType {
+  WEEKEND
+  SUNDAY_ONLY
+  HOLIDAY
+  SPECIAL_DATE
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  VNPAY_MOMO
+  CARD
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum MembershipTier {
+  STANDARD
+  SILVER
+  GOLD
+  VIP
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED_AMOUNT
+}
+
+enum RoundingMode {
+  BLOCK_5
+  BLOCK_15
+  EXACT
+}
+
+model User {
+  id           String          @id @default(uuid()) @db.Uuid
+  email        String          @unique
+  phone        String?         @unique
+  passwordHash String          @map("password_hash")
+  fullName     String          @map("full_name")
+  role         Role            @default(CUSTOMER)
+  status       UserStatus      @default(ACTIVE)
+  dateOfBirth  DateTime?       @map("date_of_birth")
+  membershipTier MembershipTier @default(STANDARD) @map("membership_tier")
+  points       Int             @default(0)
+  totalSpending Decimal        @default(0) @map("total_spending") @db.Decimal(12, 2)
+  visitCount   Int             @default(0) @map("visit_count")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  bookings          Booking[]
+  processedInvoices Invoice[]              @relation("StaffInvoices")
+  customerInvoices  Invoice[]              @relation("CustomerInvoices")
+  statusHistories   BookingStatusHistory[]
+  staffAssignments  StaffAssignment[]
+  auditLogs         AuditLog[]
+  rewardRedemptions RewardRedemption[]
+
+  @@map("users")
+}
+
+model TableType {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        String   @unique
+  name        String
+  hourlyRate  Decimal  @map("hourly_rate") @db.Decimal(12, 2)
+  description String?
+  imageUrl    String?  @map("image_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tables BilliardTable[]
+
+  @@map("table_types")
+}
+
+model BilliardTable {
+  id          String      @id @default(uuid()) @db.Uuid
+  tableNumber String      @unique @map("table_number")
+  tableTypeId String      @map("table_type_id") @db.Uuid
+  area        Area        @default(STANDARD)
+  hourlyRate  Decimal?    @map("hourly_rate") @db.Decimal(10, 2)
+  status      TableStatus @default(AVAILABLE)
+  note        String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  tableType    TableType     @relation(fields: [tableTypeId], references: [id], onDelete: Restrict)
+  bookings     Booking[]
+  playSessions PlaySession[]
+
+  @@index([tableTypeId])
+  @@index([status])
+  @@map("billiard_tables")
+}
+
+model Booking {
+  id                 String        @id @default(uuid()) @db.Uuid
+  bookingCode        String        @unique @map("booking_code")
+  customerId         String        @map("customer_id") @db.Uuid
+  billiardTableId    String        @map("billiard_table_id") @db.Uuid
+  startTime          DateTime      @map("start_time")
+  endTime            DateTime      @map("end_time")
+  estimatedPrice     Decimal       @map("estimated_price") @db.Decimal(12, 2)
+  actualPrice        Decimal?      @map("actual_price") @db.Decimal(12, 2)
+  status             BookingStatus @default(PENDING)
+  notes              String?
+  cancellationReason String?       @map("cancellation_reason")
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  customer        User                   @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  billiardTable   BilliardTable          @relation(fields: [billiardTableId], references: [id], onDelete: Restrict)
+  statusHistories BookingStatusHistory[]
+  playSession     PlaySession?
+  invoice         Invoice?
+
+  @@index([billiardTableId, startTime, endTime])
+  @@index([customerId, status])
+  @@index([status, startTime])
+  @@map("bookings")
+}
+
+model BookingStatusHistory {
+  id              String         @id @default(uuid()) @db.Uuid
+  bookingId       String         @map("booking_id") @db.Uuid
+  fromStatus      BookingStatus? @map("from_status")
+  toStatus        BookingStatus  @map("to_status")
+  changedByUserId String?        @map("changed_by_user_id") @db.Uuid
+  reason          String?
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  booking       Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  changedByUser User?   @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([bookingId])
+  @@map("booking_status_histories")
+}
+
+model PlaySession {
+  id                 String        @id @default(uuid()) @db.Uuid
+  sessionCode        String        @unique @map("session_code")
+  billiardTableId    String        @map("billiard_table_id") @db.Uuid
+  bookingId          String?       @unique @map("booking_id") @db.Uuid
+  startTime          DateTime      @default(now()) @map("start_time")
+  endTime            DateTime?     @map("end_time")
+  durationMinutes    Int?          @map("duration_minutes")
+  hourlyRateSnapshot Decimal       @map("hourly_rate_snapshot") @db.Decimal(12, 2)
+  status             SessionStatus @default(PLAYING)
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  billiardTable    BilliardTable     @relation(fields: [billiardTableId], references: [id], onDelete: Restrict)
+  booking          Booking?          @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  invoice          Invoice?
+  staffAssignments StaffAssignment[]
+
+  @@index([billiardTableId, status])
+  @@map("play_sessions")
+}
+
+model ServiceItem {
+  id            String          @id @default(uuid()) @db.Uuid
+  code          String          @unique
+  name          String
+  category      ServiceCategory @default(DRINK)
+  unitPrice     Decimal         @map("unit_price") @db.Decimal(12, 2)
+  unit          String
+  stockQuantity Int             @default(100) @map("stock_quantity")
+  isActive      Boolean         @default(true) @map("is_active")
+  imageUrl      String?         @map("image_url")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  invoiceItems InvoiceItem[]
+
+  @@map("service_items")
+}
+
+model Invoice {
+  id             String        @id @default(uuid()) @db.Uuid
+  invoiceCode    String        @unique @map("invoice_code")
+  bookingId      String?       @unique @map("booking_id") @db.Uuid
+  sessionId      String?       @unique @map("session_id") @db.Uuid
+  customerId     String?       @map("customer_id") @db.Uuid
+  staffId        String?       @map("staff_id") @db.Uuid
+  tableAmount    Decimal       @default(0) @map("table_amount") @db.Decimal(12, 2)
+  serviceAmount  Decimal       @default(0) @map("service_amount") @db.Decimal(12, 2)
+  discountAmount Decimal       @default(0) @map("discount_amount") @db.Decimal(12, 2)
+  finalAmount    Decimal       @default(0) @map("final_amount") @db.Decimal(12, 2)
+  voucherId      String?       @map("voucher_id") @db.Uuid
+  voucherCode    String?       @map("voucher_code")
+  voucherDiscount Decimal      @default(0) @map("voucher_discount") @db.Decimal(12, 2)
+  tierDiscount   Decimal       @default(0) @map("tier_discount") @db.Decimal(12, 2)
+  roundingMode   RoundingMode  @default(BLOCK_5) @map("rounding_mode")
+  pointsEarned   Int           @default(0) @map("points_earned")
+  status         InvoiceStatus @default(UNPAID)
+  note           String?
+  paidAt         DateTime?     @map("paid_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  booking      Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  playSession  PlaySession?  @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  customer     User?         @relation("CustomerInvoices", fields: [customerId], references: [id], onDelete: SetNull)
+  staff        User?         @relation("StaffInvoices", fields: [staffId], references: [id], onDelete: SetNull)
+  voucher      Voucher?      @relation(fields: [voucherId], references: [id], onDelete: SetNull)
+  invoiceItems InvoiceItem[]
+  payments     Payment[]
+
+  @@index([status, createdAt])
+  @@index([customerId])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id                 String          @id @default(uuid()) @db.Uuid
+  invoiceId          String          @map("invoice_id") @db.Uuid
+  itemType           InvoiceItemType @map("item_type")
+  serviceId          String?         @map("service_id") @db.Uuid
+  itemName           String          @map("item_name")
+  unitPriceSnapshot  Decimal         @map("unit_price_snapshot") @db.Decimal(12, 2)
+  quantity           Int             @default(1)
+  subtotal           Decimal         @db.Decimal(12, 2)
+  createdAt          DateTime        @default(now()) @map("created_at")
+
+  invoice     Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  serviceItem ServiceItem? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model Payment {
+  id             String        @id @default(uuid()) @db.Uuid
+  paymentCode    String        @unique @map("payment_code")
+  invoiceId      String        @map("invoice_id") @db.Uuid
+  amount         Decimal       @db.Decimal(12, 2)
+  method         PaymentMethod @default(CASH)
+  status         PaymentStatus @default(PENDING)
+  transactionRef String?       @map("transaction_ref")
+  note           String?
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+
+  @@index([invoiceId])
+  @@index([status])
+  @@map("payments")
+}
+
+model BusinessSetting {
+  id           String   @id @default(uuid()) @db.Uuid
+  settingKey   String   @unique @map("setting_key")
+  settingValue String   @map("setting_value")
+  description  String?
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("business_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String?  @map("user_id") @db.Uuid
+  action     String
+  entityName String   @map("entity_name")
+  entityId   String?  @map("entity_id")
+  oldValues  Json?    @map("old_values")
+  newValues  Json?    @map("new_values")
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([action, createdAt])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+model StaffAssignment {
+  id          String        @id @default(uuid()) @db.Uuid
+  sessionId   String        @map("session_id") @db.Uuid
+  staffId     String        @map("staff_id") @db.Uuid
+  roleType    StaffRoleType @default(BALL_RACKER) @map("role_type")
+  startTime   DateTime      @default(now()) @map("start_time")
+  endTime     DateTime?     @map("end_time")
+  fee         Decimal       @default(30000) @map("fee") @db.Decimal(12, 2)
+  notes       String?
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  playSession PlaySession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  staff       User          @relation(fields: [staffId], references: [id], onDelete: Restrict)
+
+  @@index([sessionId])
+  @@index([staffId])
+  @@map("staff_assignments")
+}
+
+model PricingRule {
+  id               String    @id @default(uuid()) @db.Uuid
+  name             String
+  ruleType         RuleType  @default(WEEKEND) @map("rule_type")
+  dayOfWeek        Int?      @map("day_of_week")
+  startDate        DateTime? @map("start_date")
+  endDate          DateTime? @map("end_date")
+  surchargePercent Decimal   @default(20) @map("surcharge_percent") @db.Decimal(5, 2)
+  fixedSurcharge   Decimal   @default(0) @map("fixed_surcharge") @db.Decimal(12, 2)
+  description      String?
+  isActive         Boolean   @default(true) @map("is_active")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@map("pricing_rules")
+}
+
+model MembershipTierBenefit {
+  id                     String         @id @default(uuid()) @db.Uuid
+  tier                   MembershipTier @unique
+  name                   String
+  minSpending            Decimal        @map("min_spending") @db.Decimal(12, 2)
+  discountTablePercent   Decimal        @default(0) @map("discount_table_percent") @db.Decimal(5, 2)
+  discountServicePercent Decimal        @default(0) @map("discount_service_percent") @db.Decimal(5, 2)
+  pointMultiplier        Decimal        @default(1.0) @map("point_multiplier") @db.Decimal(3, 2)
+  description            String?
+  createdAt              DateTime       @default(now()) @map("created_at")
+  updatedAt              DateTime       @updatedAt @map("updated_at")
+
+  @@map("membership_tier_benefits")
+}
+
+model Voucher {
+  id            String       @id @default(uuid()) @db.Uuid
+  code          String       @unique
+  name          String
+  discountType  DiscountType @default(PERCENT) @map("discount_type")
+  discountValue Decimal      @map("discount_value") @db.Decimal(12, 2)
+  minOrderValue Decimal      @default(0) @map("min_order_value") @db.Decimal(12, 2)
+  maxDiscount   Decimal?     @map("max_discount") @db.Decimal(12, 2)
+  startDate     DateTime?    @map("start_date")
+  endDate       DateTime?    @map("end_date")
+  usageLimit    Int?         @map("usage_limit")
+  usedCount     Int          @default(0) @map("used_count")
+  isActive      Boolean      @default(true) @map("is_active")
+  applicableTo  String       @default("ALL") @map("applicable_to")
+  description   String?
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  invoices Invoice[]
+
+  @@map("vouchers")
+}
+
+model RewardGift {
+  id             String   @id @default(uuid()) @db.Uuid
+  name           String
+  pointsRequired Int      @map("points_required")
+  description    String?
+  imageUrl       String?  @map("image_url")
+  stockQuantity  Int      @default(100) @map("stock_quantity")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  redemptions RewardRedemption[]
+
+  @@map("reward_gifts")
+}
+
+model RewardRedemption {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  giftId      String   @map("gift_id") @db.Uuid
+  pointsSpent Int      @map("points_spent")
+  status      String   @default("CLAIMED")
+  note        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gift RewardGift @relation(fields: [giftId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([giftId])
+  @@map("reward_redemptions")
+}
+
+
+
