@@ -8,8 +8,9 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto, CancelBookingDto, FilterBookingDto } from './dto/create-booking.dto';
-import { BookingStatus, TableStatus, SessionStatus, Role, UserStatus } from '@prisma/client';
+import { BookingStatus, TableStatus, SessionStatus, Role, UserStatus, InvoiceStatus, InvoiceItemType, StaffRoleType } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
+import { composeBookingNotes, extractBookingMetadata } from '../../common/utils/booking-metadata.util';
 
 @Injectable()
 export class BookingsService {
@@ -281,7 +282,7 @@ export class BookingsService {
         requestedStaff: requestedStaffInfo,
         staffFee,
       };
-      const composedNotes = `[METADATA:${JSON.stringify(metadataPayload)}] ${dto.notes || ''}`.trim();
+      const composedNotes = composeBookingNotes(metadataPayload, dto.notes);
 
       // 6. Tạo bản ghi Booking
       const newBooking = await tx.booking.create({
@@ -457,6 +458,99 @@ export class BookingsService {
         where: { id: booking.id },
         data: { status: BookingStatus.IN_USE },
       });
+
+      // Tự động chuyển các món ăn/dịch vụ và nhân viên phục vụ đã order sang Hóa đơn của phiên chơi
+      const metadata = extractBookingMetadata(booking.notes);
+      const preOrderedItems = metadata?.preOrderedItems || [];
+      const requestedStaff = metadata?.requestedStaff;
+
+      let initialServiceAmount = 0;
+      if (preOrderedItems.length > 0 || requestedStaff) {
+        const invSuffix = Math.floor(1000 + Math.random() * 9000);
+        const invoiceCode = `INV-${dateStr}-${invSuffix}`;
+
+        // 1. Phân bổ nhân viên phục vụ nếu có
+        if (requestedStaff) {
+          const staffRoleType = requestedStaff.role === 'TABLE_ATTENDANT' 
+            ? StaffRoleType.TABLE_ATTENDANT 
+            : StaffRoleType.BALL_RACKER;
+
+          const assignedStaffId = requestedStaff.staffId || currentUser.id;
+
+          await tx.staffAssignment.create({
+            data: {
+              sessionId: playSession.id,
+              staffId: assignedStaffId,
+              roleType: staffRoleType,
+              fee: requestedStaff.fee,
+              notes: requestedStaff.roleName,
+            },
+          });
+
+          initialServiceAmount += Number(requestedStaff.fee) || 0;
+        }
+
+        // 2. Tính tiền các món ăn/nước uống
+        for (const item of preOrderedItems) {
+          initialServiceAmount += Number(item.subtotal) || 0;
+        }
+
+        // 3. Tạo hóa đơn tạm gắn liền với session
+        const invoice = await tx.invoice.create({
+          data: {
+            invoiceCode,
+            sessionId: playSession.id,
+            bookingId: booking.id,
+            customerId: booking.customerId,
+            staffId: currentUser.id,
+            tableAmount: 0,
+            serviceAmount: initialServiceAmount,
+            discountAmount: 0,
+            finalAmount: initialServiceAmount,
+            status: InvoiceStatus.UNPAID,
+            note: 'Đơn đặt trước (Đồ ăn, thức uống & nhân viên phục vụ)',
+          },
+        });
+
+        // 4. Tạo các dòng InvoiceItem cho từng món
+        for (const item of preOrderedItems) {
+          await tx.invoiceItem.create({
+            data: {
+              invoiceId: invoice.id,
+              itemType: InvoiceItemType.SERVICE,
+              serviceId: item.id,
+              itemName: item.name,
+              unitPriceSnapshot: item.unitPrice,
+              quantity: item.quantity,
+              subtotal: item.subtotal,
+            },
+          });
+
+          // Trừ số lượng tồn kho nếu có
+          try {
+            await tx.serviceItem.update({
+              where: { id: item.id },
+              data: { stockQuantity: { decrement: item.quantity } },
+            });
+          } catch {
+            // ignore
+          }
+        }
+
+        // 5. Nếu có nhân viên phục vụ tính phí, thêm dòng InvoiceItem
+        if (requestedStaff && requestedStaff.fee > 0) {
+          await tx.invoiceItem.create({
+            data: {
+              invoiceId: invoice.id,
+              itemType: InvoiceItemType.STAFF_SERVICE,
+              itemName: `Phí ${requestedStaff.roleName} (${requestedStaff.staffName || 'Theo bàn'})`,
+              unitPriceSnapshot: requestedStaff.fee,
+              quantity: 1,
+              subtotal: requestedStaff.fee,
+            },
+          });
+        }
+      }
 
       await tx.bookingStatusHistory.create({
         data: {

@@ -24,6 +24,7 @@ import {
   RoundingMode,
 } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
+import { extractBookingMetadata } from '../../common/utils/booking-metadata.util';
 
 @Injectable()
 export class InvoicesService {
@@ -572,7 +573,23 @@ export class InvoicesService {
       }
 
       let targetInvoice: any = session.invoice;
-      const currentServiceAmount = targetInvoice ? Number(targetInvoice.serviceAmount) : 0;
+      let currentServiceAmount = targetInvoice ? Number(targetInvoice.serviceAmount) : 0;
+
+      // Kiểm tra nếu session bắt nguồn từ Booking và có món ăn/nhân viên đặt trước
+      const bMeta = extractBookingMetadata(session.booking?.notes);
+      const preOrderedItems = bMeta?.preOrderedItems || [];
+      const requestedStaff = bMeta?.requestedStaff;
+
+      // Nếu targetInvoice chưa có, tính bổ sung tiền dịch vụ từ booking
+      if (!targetInvoice && (preOrderedItems.length > 0 || requestedStaff)) {
+        for (const item of preOrderedItems) {
+          currentServiceAmount += Number(item.subtotal) || 0;
+        }
+        if (requestedStaff && requestedStaff.fee > 0) {
+          currentServiceAmount += Number(requestedStaff.fee) || 0;
+        }
+      }
+
       const preDiscountTotal = totalTableAmount + currentServiceAmount;
 
       // 3. Áp dụng chiết khấu hạng thẻ thành viên (Silver, Gold, VIP)
@@ -658,7 +675,7 @@ export class InvoicesService {
             customerId,
             staffId: currentUser?.id,
             tableAmount: totalTableAmount,
-            serviceAmount: 0,
+            serviceAmount: currentServiceAmount,
             discountAmount: totalDiscount,
             voucherId,
             voucherCode,
@@ -670,6 +687,35 @@ export class InvoicesService {
             note: combinedNote || null,
           },
         });
+
+        // Tạo các dòng InvoiceItem từ preOrderedItems
+        for (const item of preOrderedItems) {
+          await tx.invoiceItem.create({
+            data: {
+              invoiceId: targetInvoice.id,
+              itemType: InvoiceItemType.SERVICE,
+              serviceId: item.id,
+              itemName: item.name,
+              unitPriceSnapshot: item.unitPrice,
+              quantity: item.quantity,
+              subtotal: item.subtotal,
+            },
+          });
+        }
+
+        // Tạo dòng InvoiceItem cho nhân viên phục vụ nếu có phí
+        if (requestedStaff && requestedStaff.fee > 0) {
+          await tx.invoiceItem.create({
+            data: {
+              invoiceId: targetInvoice.id,
+              itemType: InvoiceItemType.STAFF_SERVICE,
+              itemName: `Phí ${requestedStaff.roleName} (${requestedStaff.staffName || 'Theo bàn'})`,
+              unitPriceSnapshot: requestedStaff.fee,
+              quantity: 1,
+              subtotal: requestedStaff.fee,
+            },
+          });
+        }
       } else {
         // Đã có hóa đơn draft từ trước (khách đã order đồ hoặc nhân viên)
         targetInvoice = await tx.invoice.update({
@@ -911,19 +957,8 @@ export class InvoicesService {
                 `ROYAL_${booking.bookingCode}`,
               )}&accountName=ROYAL%20BILLIARDS%20CLUB`;
 
-              // Trích xuất metadata đặt trước (món ăn, nhân viên phục vụ) nếu có
-              let parsedMetadata: any = null;
-              if (booking.notes && booking.notes.startsWith('[METADATA:')) {
-                try {
-                  const endIdx = booking.notes.indexOf(']');
-                  if (endIdx > 10) {
-                    const jsonStr = booking.notes.substring(10, endIdx);
-                    parsedMetadata = JSON.parse(jsonStr);
-                  }
-                } catch {
-                  // ignore
-                }
-              }
+              // Trích xuất metadata đặt trước (món ăn, nhân viên phục vụ)
+              const parsedMetadata = extractBookingMetadata(booking.notes);
 
               const tableEst = parsedMetadata?.tableEstimatedPrice != null ? Number(parsedMetadata.tableEstimatedPrice) : estAmount;
               const svcEst = (Number(parsedMetadata?.preOrderedAmount) || 0) + (Number(parsedMetadata?.staffFee) || 0);
@@ -1018,7 +1053,7 @@ export class InvoicesService {
     }
 
     // Các món đã gọi
-    const orderedItems = targetInvoice?.invoiceItems?.map((it: any) => ({
+    let orderedItems = targetInvoice?.invoiceItems?.map((it: any) => ({
       id: it.id,
       name: it.itemName,
       type: it.itemType,
@@ -1026,6 +1061,21 @@ export class InvoicesService {
       quantity: it.quantity,
       subtotal: Number(it.subtotal),
     })) || [];
+
+    // Dự phòng: Nếu targetInvoice chưa có invoiceItems nhưng targetSession bắt nguồn từ Booking có pre-order:
+    if (orderedItems.length === 0 && targetSession?.booking?.notes) {
+      const bMeta = extractBookingMetadata(targetSession.booking.notes);
+      if (bMeta?.preOrderedItems && bMeta.preOrderedItems.length > 0) {
+        orderedItems = bMeta.preOrderedItems.map((p) => ({
+          id: p.id,
+          name: p.name,
+          type: 'SERVICE',
+          unitPrice: p.unitPrice,
+          quantity: p.quantity,
+          subtotal: p.subtotal,
+        }));
+      }
+    }
 
     const serviceAmount = orderedItems
       .filter((it: any) => it.type === 'SERVICE' || it.type === 'STAFF_SERVICE')
@@ -1035,11 +1085,24 @@ export class InvoicesService {
     const totalEstimate = Math.max(0, liveTableAmount + serviceAmount - discountAmount);
 
     // Nhân viên phục vụ
-    const staffList = targetSession?.staffAssignments?.map((sa: any) => ({
+    let staffList = targetSession?.staffAssignments?.map((sa: any) => ({
       name: sa.staff?.fullName,
       role: sa.roleType === 'BALL_RACKER' ? 'Xếp bi theo bàn' : 'Đứng bàn phục vụ',
       fee: Number(sa.fee),
     })) || [];
+
+    if (staffList.length === 0 && targetSession?.booking?.notes) {
+      const bMeta = extractBookingMetadata(targetSession.booking.notes);
+      if (bMeta?.requestedStaff) {
+        staffList = [
+          {
+            name: bMeta.requestedStaff.staffName || 'Nhân viên câu lạc bộ',
+            role: bMeta.requestedStaff.roleName || 'Phục vụ bàn',
+            fee: bMeta.requestedStaff.fee,
+          },
+        ];
+      }
+    }
 
     const invoiceCodeOrRef = targetInvoice?.invoiceCode || targetSession?.sessionCode || currentTable?.tableNumber;
 

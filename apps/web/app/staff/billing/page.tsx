@@ -327,6 +327,12 @@ export default function StaffBillingPage() {
                         <div className="text-xs text-zinc-400">
                           {t.tableType?.name} • Bắt đầu: {formatDateTimeVN(session.startTime)}
                         </div>
+                        {session.invoice?.invoiceItems?.length > 0 && (
+                          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold">
+                            <UtensilsCrossed className="h-3 w-3" />
+                            <span>{session.invoice.invoiceItems.length} dịch vụ/món ({formatVND(session.invoice.serviceAmount)})</span>
+                          </div>
+                        )}
                         <div className="mt-3 flex items-center justify-between">
                           <Button
                             size="sm"
@@ -563,6 +569,45 @@ export default function StaffBillingPage() {
                       </Button>
                     </div>
                   </div>
+
+                  {/* 5. Danh sách các món / dịch vụ đã có trong bàn này */}
+                  {activeSession.invoice?.invoiceItems?.length > 0 && (
+                    <div className="p-3.5 rounded-xl bg-zinc-950/70 border border-zinc-800 space-y-2">
+                      <div className="text-xs font-bold text-zinc-300 flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-emerald-400">
+                          <Receipt className="h-4 w-4" />
+                          Dịch Vụ & Món Đã Gọi ({activeSession.invoice.invoiceItems.length} món):
+                        </span>
+                        <span className="text-emerald-400 font-extrabold text-xs">
+                          {formatVND(Number(activeSession.invoice.serviceAmount) || 0)}
+                        </span>
+                      </div>
+                      <div className="border border-zinc-800 rounded-lg overflow-hidden text-xs">
+                        <table className="w-full text-left">
+                          <thead className="bg-zinc-900 text-zinc-400 border-b border-zinc-800">
+                            <tr>
+                              <th className="p-2">Tên Món / Dịch Vụ</th>
+                              <th className="p-2 text-center">SL</th>
+                              <th className="p-2 text-right">Đơn Giá</th>
+                              <th className="p-2 text-right">Thành Tiền</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                            {activeSession.invoice.invoiceItems.map((item: any) => (
+                              <tr key={item.id} className="hover:bg-zinc-900/40">
+                                <td className="p-2 font-medium text-white">{item.itemName}</td>
+                                <td className="p-2 text-center">{item.quantity}</td>
+                                <td className="p-2 text-right">{formatVND(Number(item.unitPriceSnapshot))}</td>
+                                <td className="p-2 text-right font-bold text-emerald-400">
+                                  {formatVND(Number(item.subtotal))}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Nút hành động Chốt giờ */}
                   <Button

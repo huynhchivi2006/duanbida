@@ -26,6 +26,20 @@ export class TablesService {
         tableType: true,
         playSessions: {
           where: { status: 'PLAYING' },
+          include: {
+            invoice: {
+              include: {
+                invoiceItems: true,
+              },
+            },
+            staffAssignments: {
+              include: {
+                staff: {
+                  select: { id: true, fullName: true, phone: true },
+                },
+              },
+            },
+          },
           take: 1,
         },
       },

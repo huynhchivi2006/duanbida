@@ -18,7 +18,40 @@ import {
   Clock,
   Search,
   Filter,
+  UtensilsCrossed,
+  UserCheck,
 } from "lucide-react";
+
+function parseBookingNotes(rawNotes?: string) {
+  if (!rawNotes) return { customNote: "", items: [], staff: null };
+  let items: any[] = [];
+  let staff: any = null;
+  let customNote = rawNotes;
+
+  const startTag = "[__BOOKING_METADATA__]";
+  const endTag = "[/__BOOKING_METADATA__]";
+  const sIdx = rawNotes.indexOf(startTag);
+  const eIdx = rawNotes.indexOf(endTag);
+  if (sIdx !== -1 && eIdx !== -1 && eIdx > sIdx) {
+    try {
+      const json = JSON.parse(rawNotes.substring(sIdx + startTag.length, eIdx));
+      items = json.preOrderedItems || [];
+      staff = json.requestedStaff || null;
+      customNote = rawNotes.substring(eIdx + endTag.length).trim();
+    } catch {}
+  } else if (rawNotes.startsWith("[METADATA:")) {
+    try {
+      const lastB = rawNotes.lastIndexOf("]");
+      if (lastB > 10) {
+        const json = JSON.parse(rawNotes.substring(10, lastB));
+        items = json.preOrderedItems || [];
+        staff = json.requestedStaff || null;
+        customNote = rawNotes.substring(lastB + 1).trim();
+      }
+    } catch {}
+  }
+  return { customNote, items, staff };
+}
 
 export default function StaffBookingsPage() {
   const queryClient = useQueryClient();
@@ -199,6 +232,36 @@ export default function StaffBookingsPage() {
                             {formatDateTimeVN(booking.endTime)}
                           </span>
                         </div>
+
+                        {/* Chi tiết món ăn & nhân viên đã order */}
+                        {(() => {
+                          const { customNote, items, staff } = parseBookingNotes(booking.notes);
+                          return (
+                            <div className="space-y-1 pt-1">
+                              {items.length > 0 && (
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <span className="text-[10px] bg-emerald-950/80 border border-emerald-800 text-emerald-300 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
+                                    <UtensilsCrossed className="h-3 w-3" />
+                                    {items.map((it: any) => `${it.quantity}x ${it.name}`).join(", ")}
+                                  </span>
+                                </div>
+                              )}
+                              {staff && (
+                                <div className="flex items-center gap-1 text-[10px] text-sky-400 font-medium">
+                                  <UserCheck className="h-3 w-3" />
+                                  <span>
+                                    {staff.roleName}: <strong>{staff.staffName || "Quán tự sắp xếp"}</strong>
+                                  </span>
+                                </div>
+                              )}
+                              {customNote && (
+                                <div className="text-[10px] text-zinc-400 italic">
+                                  Ghi chú: {customNote}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
 
