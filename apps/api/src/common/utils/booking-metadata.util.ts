@@ -62,3 +62,4 @@ export function extractBookingMetadata(notes?: string | null): BookingMetadataPa
 
   return null;
 }
+

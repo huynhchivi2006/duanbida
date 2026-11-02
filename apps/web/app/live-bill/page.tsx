@@ -274,9 +274,9 @@ function LiveBillContent() {
           </div>
 
           <div className="text-[11px] text-zinc-400 space-y-0.5">
-            <div>Chủ tài khoản: <strong className="text-zinc-200">ROYAL BILLIARDS CLUB</strong></div>
-            <div>Ngân hàng: <strong className="text-zinc-200">MB Bank (Quân Đội) - 0909000001</strong></div>
-            <div>Nội dung CK: <strong className="text-emerald-400">ROYAL_{data.tableNumber}</strong></div>
+            <div>Chủ tài khoản: <strong className="text-zinc-200">HUYNH CHI VI</strong></div>
+            <div>Ngân hàng: <strong className="text-zinc-200">MB Bank (Quân Đội) - 0978580607</strong></div>
+            <div>Nội dung CK: <strong className="text-emerald-400">ROYAL_{data.sessionCode || data.tableNumber}</strong></div>
           </div>
         </Card>
       </div>

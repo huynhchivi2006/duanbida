@@ -953,9 +953,9 @@ export class InvoicesService {
             } else {
               // Khách chưa mở bàn: Trả về thông tin hóa đơn tạm tính theo đơn đặt chỗ
               const estAmount = Number(booking.estimatedPrice);
-              const vietQrUrl = `https://img.vietqr.io/image/970422-0909000001-compact.png?amount=${estAmount}&addInfo=${encodeURIComponent(
+              const vietQrUrl = `https://img.vietqr.io/image/970422-0978580607-compact.png?amount=${estAmount}&addInfo=${encodeURIComponent(
                 `ROYAL_${booking.bookingCode}`,
-              )}&accountName=ROYAL%20BILLIARDS%20CLUB`;
+              )}&accountName=HUYNH%20CHI%20VI`;
 
               // Trích xuất metadata đặt trước (món ăn, nhân viên phục vụ)
               const parsedMetadata = extractBookingMetadata(booking.notes);
@@ -1106,10 +1106,10 @@ export class InvoicesService {
 
     const invoiceCodeOrRef = targetInvoice?.invoiceCode || targetSession?.sessionCode || currentTable?.tableNumber;
 
-    // Tạo link VietQR chuẩn ngân hàng
-    const vietQrUrl = `https://img.vietqr.io/image/970422-0909000001-compact.png?amount=${totalEstimate}&addInfo=${encodeURIComponent(
+    // Tạo link VietQR chuẩn ngân hàng (MB Bank - HUYNH CHI VI - 0978580607)
+    const vietQrUrl = `https://img.vietqr.io/image/970422-0978580607-compact.png?amount=${totalEstimate}&addInfo=${encodeURIComponent(
       `ROYAL_${invoiceCodeOrRef}`,
-    )}&accountName=ROYAL%20BILLIARDS%20CLUB`;
+    )}&accountName=HUYNH%20CHI%20VI`;
 
     return {
       tableNumber: currentTable?.tableNumber || 'Bàn',
