@@ -2,18 +2,18 @@
   "name": "billiards-management-monorepo",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0 <23.0.0"
+  },
   "workspaces": [
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run dev:web",
-    "web": "npm run dev:web",
-    "api": "npm run dev:api",
-    "start": "npm run start:web",
-    "build:api": "npm run build --workspace=apps/api",
+    "build": "cd apps/api && npx prisma generate && npx nest build",
+    "build:api": "cd apps/api && npx prisma generate && npx nest build",
     "build:web": "npm run build --workspace=apps/web",
-    "build": "npm run build:api",
-    "start:api": "npm run start:prod --workspace=apps/api",
+    "start": "node apps/api/dist/main.js",
+    "start:api": "node apps/api/dist/main.js",
     "start:web": "npm run start --workspace=apps/web",
     "dev:api": "npm run start:dev --workspace=apps/api",
     "dev:web": "npm run dev --workspace=apps/web",
@@ -22,6 +22,10 @@
     "prisma:migrate": "npm run prisma:migrate --workspace=apps/api",
     "prisma:seed": "npm run prisma:seed --workspace=apps/api"
   },
+  "dependencies": {
+    "@nestjs/cli": "^10.4.9",
+    "prisma": "^5.22.0",
+    "typescript": "^5.7.2"
+  },
   "devDependencies": {}
 }
-
