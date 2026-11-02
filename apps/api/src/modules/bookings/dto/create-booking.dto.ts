@@ -25,6 +25,32 @@ export class CreateBookingDto {
   @IsString()
   notes?: string;
 
+  @ApiProperty({
+    example: [{ serviceId: 'uuid-mon-an', quantity: 2 }],
+    required: false,
+    description: 'Danh sách đồ uống/món ăn khách chọn trước khi đặt bàn',
+  })
+  @IsOptional()
+  preOrderedServices?: Array<{ serviceId: string; quantity: number }>;
+
+  @ApiProperty({
+    example: 'BALL_RACKER',
+    required: false,
+    description: 'Yêu cầu nhân viên phục vụ: BALL_RACKER (Xếp bi 30k) hoặc TABLE_ATTENDANT (Trợ lý bàn 50k)',
+  })
+  @IsOptional()
+  @IsString()
+  requestedStaffRole?: string;
+
+  @ApiProperty({
+    example: 'uuid-nhan-vien',
+    required: false,
+    description: 'ID nhân viên phục vụ được khách chỉ định cụ thể (tùy chọn)',
+  })
+  @IsOptional()
+  @IsString()
+  requestedStaffId?: string;
+
   @ApiProperty({ example: 'uuid-khach-hang', required: false, description: 'Chỉ dành cho Nhân viên tạo đơn hộ khách tại quầy' })
   @IsOptional()
   @IsUUID()

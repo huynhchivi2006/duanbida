@@ -23,3 +23,4 @@ export class NotificationsController {
     return this.notificationsService.markRead(id, user.id);
   }
 }
+

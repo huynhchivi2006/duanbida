@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto, CancelBookingDto, FilterBookingDto } from './dto/create-booking.dto';
-import { BookingStatus, TableStatus, SessionStatus, Role } from '@prisma/client';
+import { BookingStatus, TableStatus, SessionStatus, Role, UserStatus } from '@prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
@@ -82,6 +82,14 @@ export class BookingsService {
         invoice: true,
       },
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getStaffOptions() {
+    return this.prisma.user.findMany({
+      where: { role: Role.STAFF, status: UserStatus.ACTIVE },
+      select: { id: true, fullName: true, phone: true },
+      orderBy: { fullName: 'asc' },
     });
   }
 
@@ -194,9 +202,67 @@ export class BookingsService {
         );
       }
 
-      // 4. Tính giá dự kiến (ưu tiên giá riêng của bàn, nếu không dùng giá loại bàn)
+      // 4. Tính giá dự kiến
       const hourlyRate = Number(table.hourlyRate != null ? table.hourlyRate : tableType.hourlyRate);
-      const estimatedPrice = Math.round((dto.durationMinutes / 60) * hourlyRate);
+      const tableEstimatedPrice = Math.round((dto.durationMinutes / 60) * hourlyRate);
+
+      // Tính tiền các món đồ uống / thức ăn đã chọn trước
+      let preOrderedAmount = 0;
+      const preOrderedDetails: Array<{ id: string; name: string; quantity: number; unitPrice: number; subtotal: number }> = [];
+
+      if (dto.preOrderedServices && dto.preOrderedServices.length > 0) {
+        const serviceIds = dto.preOrderedServices.map((s) => s.serviceId);
+        const serviceItems = await tx.serviceItem.findMany({
+          where: { id: { in: serviceIds } },
+        });
+
+        for (const item of dto.preOrderedServices) {
+          const svc = serviceItems.find((s) => s.id === item.serviceId);
+          if (svc && item.quantity > 0) {
+            const price = Number(svc.unitPrice);
+            const subtotal = price * item.quantity;
+            preOrderedAmount += subtotal;
+            preOrderedDetails.push({
+              id: svc.id,
+              name: svc.name,
+              quantity: item.quantity,
+              unitPrice: price,
+              subtotal,
+            });
+          }
+        }
+      }
+
+      // Tính phí nhân viên phục vụ nếu có yêu cầu
+      let staffFee = 0;
+      let requestedStaffInfo: { role: string; roleName: string; staffId?: string; staffName?: string; fee: number } | null = null;
+
+      if (dto.requestedStaffRole) {
+        const isAttendant = dto.requestedStaffRole === 'TABLE_ATTENDANT';
+        staffFee = isAttendant ? 50000 : 30000;
+        const roleName = isAttendant ? 'Đứng bàn phục vụ' : 'Xếp bi theo bàn';
+        let staffName = 'Quán tự sắp xếp nhân viên trong ca';
+
+        if (dto.requestedStaffId) {
+          const staffUser = await tx.user.findUnique({
+            where: { id: dto.requestedStaffId },
+            select: { id: true, fullName: true },
+          });
+          if (staffUser) {
+            staffName = staffUser.fullName;
+          }
+        }
+
+        requestedStaffInfo = {
+          role: dto.requestedStaffRole,
+          roleName,
+          staffId: dto.requestedStaffId,
+          staffName,
+          fee: staffFee,
+        };
+      }
+
+      const estimatedPrice = tableEstimatedPrice + preOrderedAmount + staffFee;
 
       // 5. Sinh mã đặt bàn duy nhất: BKG-YYYYMMDD-XXXX
       const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
@@ -205,6 +271,17 @@ export class BookingsService {
 
       // Đặt bàn thành công được chuyển thẳng sang CONFIRMED để giữ chỗ chắc chắn
       const initialStatus = BookingStatus.CONFIRMED;
+
+      // Đóng gói metadata vào notes
+      const metadataPayload = {
+        customNote: dto.notes || '',
+        tableEstimatedPrice,
+        preOrderedItems: preOrderedDetails,
+        preOrderedAmount,
+        requestedStaff: requestedStaffInfo,
+        staffFee,
+      };
+      const composedNotes = `[METADATA:${JSON.stringify(metadataPayload)}] ${dto.notes || ''}`.trim();
 
       // 6. Tạo bản ghi Booking
       const newBooking = await tx.booking.create({
@@ -216,7 +293,7 @@ export class BookingsService {
           endTime: requestedEnd,
           estimatedPrice,
           status: initialStatus,
-          notes: dto.notes,
+          notes: composedNotes,
         },
         include: {
           billiardTable: { include: { tableType: true } },
@@ -245,10 +322,19 @@ export class BookingsService {
           month: '2-digit',
         }).format(requestedStart);
 
+        let itemsSummary = '';
+        if (preOrderedDetails.length > 0) {
+          itemsSummary = ` | Món: ${preOrderedDetails.map((p) => `${p.quantity}x ${p.name}`).join(', ')}`;
+        }
+        let staffSummary = '';
+        if (requestedStaffInfo) {
+          staffSummary = ` | NV: ${requestedStaffInfo.roleName} (${requestedStaffInfo.staffName})`;
+        }
+
         this.notificationsService.create({
           role: Role.STAFF,
-          title: '🔔 Khách Đặt Bàn Mới!',
-          message: `Khách ${newBooking.customer?.fullName || 'Khách hàng'} vừa đặt Bàn ${newBooking.billiardTable.tableNumber} (${timeFormatted}). Mã: ${bookingCode}`,
+          title: '🔔 Khách Đặt Bàn Mới' + (preOrderedDetails.length > 0 || requestedStaffInfo ? ' (Có gọi món/NV)' : ''),
+          message: `Khách ${newBooking.customer?.fullName || 'Khách'} vừa đặt Bàn ${newBooking.billiardTable.tableNumber} (${timeFormatted})${itemsSummary}${staffSummary}. Mã: ${bookingCode}`,
           type: 'NEW_BOOKING',
           metadata: {
             bookingId: newBooking.id,
@@ -256,8 +342,26 @@ export class BookingsService {
             tableNumber: newBooking.billiardTable.tableNumber,
             customerName: newBooking.customer?.fullName,
             startTime: requestedStart.toISOString(),
+            preOrderedDetails,
+            requestedStaffInfo,
           },
         });
+
+        // Nếu khách chọn đích danh một nhân viên, thông báo riêng cho nhân viên đó
+        if (requestedStaffInfo?.staffId) {
+          this.notificationsService.create({
+            userId: requestedStaffInfo.staffId,
+            role: Role.STAFF,
+            title: '🎱 Khách hàng chọn bạn phục vụ bàn!',
+            message: `Khách ${newBooking.customer?.fullName || 'Khách'} đã chọn bạn phục vụ tại Bàn ${newBooking.billiardTable.tableNumber} (${timeFormatted}). Vai trò: ${requestedStaffInfo.roleName}.`,
+            type: 'STAFF_ASSIGNED',
+            metadata: {
+              tableNumber: newBooking.billiardTable.tableNumber,
+              bookingCode: newBooking.bookingCode,
+              roleType: requestedStaffInfo.role,
+            },
+          });
+        }
       } catch (err) {
         this.logger.warn(`Không thể gửi notification đặt bàn: ${err}`);
       }

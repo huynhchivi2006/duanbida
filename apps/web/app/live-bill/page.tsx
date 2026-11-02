@@ -22,11 +22,12 @@ import {
 
 function LiveBillContent() {
   const searchParams = useSearchParams();
+  const codeParam = searchParams.get("code") || searchParams.get("booking") || "";
   const tableParam = searchParams.get("table") || "";
   const sessionParam = searchParams.get("session") || "";
   const invoiceParam = searchParams.get("invoice") || "";
 
-  const queryCode = tableParam || sessionParam || invoiceParam || "B01";
+  const queryCode = codeParam || tableParam || sessionParam || invoiceParam || "B01";
 
   const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["live-bill", queryCode],
@@ -77,8 +78,24 @@ function LiveBillContent() {
           <AlertCircle className="h-12 w-12 text-rose-500 mx-auto" />
           <h2 className="text-lg font-bold text-white">Không Tìm Thấy Bàn Hoặc Hóa Đơn</h2>
           <p className="text-xs text-zinc-400">
-            Vui lòng kiểm tra lại mã QR hoặc báo nhân viên phục vụ tại quầy để được hỗ trợ.
+            Hệ thống không tìm thấy hóa đơn hay phiên chơi tương ứng với mã{" "}
+            <span className="font-mono text-emerald-400 font-semibold">{queryCode}</span>.
           </p>
+          <div className="pt-2 flex flex-col gap-2">
+            <button
+              onClick={() => refetch()}
+              className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Thử tải lại dữ liệu
+            </button>
+            <a
+              href="/"
+              className="w-full py-2 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium text-xs transition-colors"
+            >
+              Về Trang Chủ
+            </a>
+          </div>
         </Card>
       </div>
     );
@@ -121,8 +138,16 @@ function LiveBillContent() {
                 <span className="text-xs text-zinc-400 uppercase tracking-wider block">Bàn Bi-Da</span>
                 <span className="text-2xl font-black text-white">{data.tableNumber}</span>
               </div>
-              <Badge variant={isPlaying ? "danger" : "success"} className="text-xs">
-                {isPlaying ? "ĐANG CHƠI TÍNH GIỜ" : data.status === "PAID" ? "ĐÃ THANH TOÁN" : "CHỜ THANH TOÁN"}
+              <Badge variant={isPlaying ? "danger" : data.status === "PAID" ? "success" : "info"} className="text-xs">
+                {isPlaying
+                  ? "ĐANG CHƠI TÍNH GIỜ"
+                  : data.status === "PAID"
+                  ? "ĐÃ THANH TOÁN"
+                  : data.status === "CONFIRMED"
+                  ? "ĐÃ GIỮ CHỖ (CHỜ CHECK-IN)"
+                  : data.status === "CHECKED_IN"
+                  ? "ĐÃ CHECK-IN (SẮP BẮT ĐẦU)"
+                  : "HÓA ĐƠN ĐẶT TRƯỚC"}
               </Badge>
             </div>
 
@@ -164,10 +189,10 @@ function LiveBillContent() {
             <div className="pt-2 flex justify-between items-center">
               <div>
                 <div className="font-semibold text-white">
-                  Tiền giờ bàn {data.tableNumber} ({data.elapsedMinutes} phút)
+                  Tiền giờ bàn {data.tableNumber} {data.elapsedMinutes > 0 ? `(${data.elapsedMinutes} phút)` : "(Tạm tính đặt trước)"}
                 </div>
                 <div className="text-[11px] text-zinc-400">
-                  Làm tròn block 5 phút (Tối thiểu 30p)
+                  {data.elapsedMinutes > 0 ? "Làm tròn block 5 phút (Tối thiểu 30p)" : "Dự kiến theo thời lượng đặt bàn"}
                 </div>
               </div>
               <div className="font-bold text-white text-sm">
@@ -190,7 +215,7 @@ function LiveBillContent() {
             {data.staffAssignments?.map((staff: any, idx: number) => (
               <div key={idx} className="pt-2 flex justify-between items-center text-sky-300">
                 <div className="flex items-center gap-1.5">
-                  <UserCheck className="h-3.5 w-3.5 text-sky-400" />
+                  <UserCheck className="h-3.5 w-3.5 text-sky-400 shrink-0" />
                   <div>
                     <div className="font-semibold">{staff.role}: {staff.name}</div>
                     <div className="text-[11px] text-zinc-400">Nhân viên phục vụ tận bàn</div>
@@ -204,13 +229,13 @@ function LiveBillContent() {
 
             {/* Đồ ăn / Nước uống đã gọi */}
             {data.orderedItems
-              ?.filter((it: any) => it.type === "SERVICE")
-              .map((it: any) => (
-                <div key={it.id} className="pt-2 flex justify-between items-center">
+              ?.filter((it: any) => it.type === "SERVICE" || !it.type)
+              .map((it: any, idx: number) => (
+                <div key={it.id || idx} className="pt-2 flex justify-between items-center">
                   <div>
-                    <div className="font-semibold text-zinc-100">{it.name}</div>
+                    <div className="font-semibold text-zinc-100">{it.name || it.serviceName}</div>
                     <div className="text-[11px] text-zinc-400">
-                      SL: {it.quantity} × {formatVND(it.unitPrice)}
+                      SL: {it.quantity} {it.unitPrice ? `× ${formatVND(it.unitPrice)}` : ""}
                     </div>
                   </div>
                   <div className="font-bold text-zinc-200">{formatVND(it.subtotal)}</div>

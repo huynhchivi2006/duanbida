@@ -911,18 +911,54 @@ export class InvoicesService {
                 `ROYAL_${booking.bookingCode}`,
               )}&accountName=ROYAL%20BILLIARDS%20CLUB`;
 
+              // Trích xuất metadata đặt trước (món ăn, nhân viên phục vụ) nếu có
+              let parsedMetadata: any = null;
+              if (booking.notes && booking.notes.startsWith('[METADATA:')) {
+                try {
+                  const endIdx = booking.notes.indexOf(']');
+                  if (endIdx > 10) {
+                    const jsonStr = booking.notes.substring(10, endIdx);
+                    parsedMetadata = JSON.parse(jsonStr);
+                  }
+                } catch {
+                  // ignore
+                }
+              }
+
+              const tableEst = parsedMetadata?.tableEstimatedPrice != null ? Number(parsedMetadata.tableEstimatedPrice) : estAmount;
+              const svcEst = (Number(parsedMetadata?.preOrderedAmount) || 0) + (Number(parsedMetadata?.staffFee) || 0);
+
+              const orderedItems = (parsedMetadata?.preOrderedItems || []).map((p: any) => ({
+                id: p.id,
+                type: 'SERVICE',
+                name: p.name,
+                quantity: p.quantity,
+                unitPrice: p.unitPrice,
+                subtotal: p.subtotal,
+              }));
+
+              const staffAssignments: Array<{ name: string; role: string; fee?: number }> = [];
+              if (parsedMetadata?.requestedStaff) {
+                staffAssignments.push({
+                  name: parsedMetadata.requestedStaff.staffName || 'Nhân viên câu lạc bộ',
+                  role: parsedMetadata.requestedStaff.roleName || parsedMetadata.requestedStaff.role,
+                  fee: Number(parsedMetadata.requestedStaff.fee) || 0,
+                });
+              }
+
               return {
                 tableNumber: booking.billiardTable.tableNumber,
-                tableTypeName: booking.billiardTable.tableType.name,
+                tableType: booking.billiardTable.tableType.name,
+                area: booking.billiardTable.area || 'STANDARD',
                 hourlyRate: Number(booking.billiardTable.hourlyRate != null ? booking.billiardTable.hourlyRate : booking.billiardTable.tableType.hourlyRate),
                 status: booking.status,
                 startTime: booking.startTime,
                 elapsedMinutes: 0,
-                baseTableAmount: estAmount,
+                baseTableAmount: tableEst,
                 surchargeAmount: 0,
-                surchargeNote: 'Hóa đơn tạm tính theo đơn đặt trước',
-                tableAmount: estAmount,
-                serviceAmount: 0,
+                surchargeNote: 'Hóa đơn tạm tính theo đơn đặt trước' + (parsedMetadata?.requestedStaff ? ` (${parsedMetadata.requestedStaff.roleName})` : ''),
+                tableAmount: tableEst,
+                serviceAmount: svcEst,
                 discountAmount: 0,
                 voucherCode: null,
                 voucherDiscount: 0,
@@ -930,8 +966,8 @@ export class InvoicesService {
                 roundingMode: 'BLOCK_5',
                 pointsEarned: 0,
                 totalAmount: estAmount,
-                orderedItems: [],
-                staffAssignments: [],
+                orderedItems,
+                staffAssignments,
                 invoiceCode: null,
                 sessionCode: booking.bookingCode,
                 vietQrUrl,

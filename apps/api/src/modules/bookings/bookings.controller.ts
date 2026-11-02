@@ -19,12 +19,12 @@ import { Role } from '@prisma/client';
 
 @ApiTags('Bookings - Quản lý Đặt bàn')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.STAFF)
   @ApiOperation({ summary: 'Danh sách đặt bàn (Admin & Staff có lọc và tìm kiếm)' })
   findAll(@Query() filter: FilterBookingDto, @CurrentUser() user: any) {
@@ -32,25 +32,35 @@ export class BookingsController {
   }
 
   @Get('my')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.CUSTOMER, Role.STAFF, Role.ADMIN)
   @ApiOperation({ summary: 'Xem lịch sử đặt bàn của cá nhân khách hàng đang đăng nhập' })
   findMyBookings(@CurrentUser('id') userId: string) {
     return this.bookingsService.findMyBookings(userId);
   }
 
+  @Get('staff-options')
+  @ApiOperation({ summary: 'Lấy danh sách nhân viên phục vụ để khách chọn khi đặt bàn' })
+  getStaffOptions() {
+    return this.bookingsService.getStaffOptions();
+  }
+
   @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Chi tiết đặt bàn theo ID hoặc Booking Code' })
   findOne(@Param('id') id: string, @CurrentUser() user: any) {
     return this.bookingsService.findOne(id, user);
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Tạo đặt bàn mới (áp dụng transaction an toàn & chống trùng lịch)' })
   create(@Body() dto: CreateBookingDto, @CurrentUser() user: any) {
     return this.bookingsService.create(dto, user);
   }
 
   @Put(':id/confirm')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.STAFF)
   @ApiOperation({ summary: 'Nhân viên/Admin duyệt đơn đặt bàn' })
   confirm(@Param('id') id: string, @CurrentUser() user: any) {
@@ -58,6 +68,7 @@ export class BookingsController {
   }
 
   @Put(':id/check-in')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.STAFF)
   @ApiOperation({ summary: 'Xác nhận khách đã đến bàn (Check-in)' })
   checkIn(@Param('id') id: string, @CurrentUser() user: any) {
@@ -65,6 +76,7 @@ export class BookingsController {
   }
 
   @Put(':id/start-session')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.STAFF)
   @ApiOperation({ summary: 'Bắt đầu lượt chơi (mở bàn, bắt đầu tính giờ)' })
   startSession(@Param('id') id: string, @CurrentUser() user: any) {
@@ -72,6 +84,7 @@ export class BookingsController {
   }
 
   @Put(':id/cancel')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Hủy đặt bàn (Khách hàng hủy trước 60p, Nhân viên hủy có lý do)' })
   cancel(@Param('id') id: string, @Body() dto: CancelBookingDto, @CurrentUser() user: any) {
     return this.bookingsService.cancel(id, dto, user);
