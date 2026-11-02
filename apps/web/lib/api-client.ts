@@ -1,5 +1,5 @@
 const DEFAULT_API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://78.154.103.20:14602/api/v1";
+  process.env.NEXT_PUBLIC_API_URL || "https://duanbida-1.onrender.com/api/v1";
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;

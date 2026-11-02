@@ -4,7 +4,7 @@
 
   # 1. Reverse proxy qua mod_proxy neu server Apache ho tro
   <IfModule mod_proxy.c>
-    RewriteRule ^api-proxy/(.*)$ http://78.154.103.20:14602/api/v1/$1 [P,L]
+    RewriteRule ^api-proxy/(.*)$ https://duanbida-1.onrender.com/api/v1/$1 [P,L]
   </IfModule>
 
   # 2. Rewrite endpoint api sang proxy.php de tranh Mixed Content (HTTPS -> HTTP)

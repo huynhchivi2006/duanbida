@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$backendBase = 'http://78.154.103.20:14602/api/v1';
+$backendBase = 'https://duanbida-1.onrender.com/api/v1';
 $path = isset($_GET['path']) ? $_GET['path'] : '';
 
 // Remove 'path' from query params
