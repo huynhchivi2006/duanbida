@@ -9,12 +9,16 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto, CancelBookingDto, FilterBookingDto } from './dto/create-booking.dto';
 import { BookingStatus, TableStatus, SessionStatus, Role } from '@prisma/client';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class BookingsService {
   private readonly logger = new Logger(BookingsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async findAll(filter: FilterBookingDto, userRole?: Role, userId?: string) {
     const where: any = {};
@@ -230,6 +234,33 @@ export class BookingsService {
           reason: 'Tạo đặt bàn mới thành công',
         },
       });
+
+      // 8. Bắn thông báo thời gian thực cho nhân viên & quản lý quán
+      try {
+        const timeFormatted = new Intl.DateTimeFormat('vi-VN', {
+          timeZone: 'Asia/Ho_Chi_Minh',
+          hour: '2-digit',
+          minute: '2-digit',
+          day: '2-digit',
+          month: '2-digit',
+        }).format(requestedStart);
+
+        this.notificationsService.create({
+          role: Role.STAFF,
+          title: '🔔 Khách Đặt Bàn Mới!',
+          message: `Khách ${newBooking.customer?.fullName || 'Khách hàng'} vừa đặt Bàn ${newBooking.billiardTable.tableNumber} (${timeFormatted}). Mã: ${bookingCode}`,
+          type: 'NEW_BOOKING',
+          metadata: {
+            bookingId: newBooking.id,
+            bookingCode: newBooking.bookingCode,
+            tableNumber: newBooking.billiardTable.tableNumber,
+            customerName: newBooking.customer?.fullName,
+            startTime: requestedStart.toISOString(),
+          },
+        });
+      } catch (err) {
+        this.logger.warn(`Không thể gửi notification đặt bàn: ${err}`);
+      }
 
       return newBooking;
     });

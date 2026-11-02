@@ -15,6 +15,7 @@ import { HealthModule } from './modules/health/health.module';
 import { PricingRulesModule } from './modules/pricing-rules/pricing-rules.module';
 import { MembershipModule } from './modules/membership/membership.module';
 import { VouchersModule } from './modules/vouchers/vouchers.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { VouchersModule } from './modules/vouchers/vouchers.module';
       },
     ]),
     PrismaModule,
+    NotificationsModule,
     AuthModule,
     UsersModule,
     TableTypesModule,

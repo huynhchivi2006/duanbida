@@ -23,6 +23,7 @@ import {
   PaymentStatus,
   RoundingMode,
 } from '@prisma/client';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class InvoicesService {
@@ -31,6 +32,7 @@ export class InvoicesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly pricingRulesService: PricingRulesService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async findAll(status?: InvoiceStatus, date?: string) {
@@ -394,6 +396,25 @@ export class InvoicesService {
             subtotal: fee,
           },
         });
+      }
+
+      // Bắn thông báo thời gian thực đến nhân viên được phân công
+      try {
+        const roleName = dto.roleType === 'BALL_RACKER' ? 'Xếp bi theo bàn' : 'Đứng bàn phục vụ';
+        this.notificationsService.create({
+          userId: dto.staffId,
+          role: 'STAFF',
+          title: '🎱 Bạn vừa được phân công phục vụ bàn!',
+          message: `Bạn được phân công phục vụ Bàn ${session.billiardTable?.tableNumber || 'bi-da'} (Vai trò: ${roleName}). Hãy chuẩn bị phục vụ khách chu đáo.`,
+          type: 'STAFF_ASSIGNED',
+          metadata: {
+            tableNumber: session.billiardTable?.tableNumber,
+            sessionId: session.id,
+            roleType: dto.roleType,
+          },
+        });
+      } catch (err) {
+        this.logger.warn(`Không thể gửi notification phân công nhân viên: ${err}`);
       }
 
       return assignment;
@@ -844,6 +865,80 @@ export class InvoicesService {
 
         if (targetInvoice) {
           targetSession = targetInvoice.playSession;
+        } else {
+          // 3. Thử tìm theo mã đặt bàn BookingCode (ví dụ BKG-20261102-1234)
+          const booking = await this.prisma.booking.findFirst({
+            where: {
+              OR: [
+                { bookingCode: codeOrId },
+                { id: codeOrId.length === 36 ? codeOrId : undefined },
+              ],
+            },
+            include: {
+              billiardTable: { include: { tableType: true } },
+              playSession: {
+                include: {
+                  invoice: { include: { invoiceItems: true } },
+                  staffAssignments: { include: { staff: { select: { fullName: true } } } },
+                  billiardTable: { include: { tableType: true } },
+                },
+              },
+              invoice: {
+                include: {
+                  invoiceItems: true,
+                  playSession: {
+                    include: {
+                      billiardTable: { include: { tableType: true } },
+                      staffAssignments: { include: { staff: { select: { fullName: true } } } },
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          if (booking) {
+            if (booking.playSession) {
+              targetSession = booking.playSession;
+              targetInvoice = targetSession.invoice;
+            } else if (booking.invoice) {
+              targetInvoice = booking.invoice;
+              targetSession = booking.invoice.playSession;
+            } else {
+              // Khách chưa mở bàn: Trả về thông tin hóa đơn tạm tính theo đơn đặt chỗ
+              const estAmount = Number(booking.estimatedPrice);
+              const vietQrUrl = `https://img.vietqr.io/image/970422-0909000001-compact.png?amount=${estAmount}&addInfo=${encodeURIComponent(
+                `ROYAL_${booking.bookingCode}`,
+              )}&accountName=ROYAL%20BILLIARDS%20CLUB`;
+
+              return {
+                tableNumber: booking.billiardTable.tableNumber,
+                tableTypeName: booking.billiardTable.tableType.name,
+                hourlyRate: Number(booking.billiardTable.hourlyRate != null ? booking.billiardTable.hourlyRate : booking.billiardTable.tableType.hourlyRate),
+                status: booking.status,
+                startTime: booking.startTime,
+                elapsedMinutes: 0,
+                baseTableAmount: estAmount,
+                surchargeAmount: 0,
+                surchargeNote: 'Hóa đơn tạm tính theo đơn đặt trước',
+                tableAmount: estAmount,
+                serviceAmount: 0,
+                discountAmount: 0,
+                voucherCode: null,
+                voucherDiscount: 0,
+                tierDiscount: 0,
+                roundingMode: 'BLOCK_5',
+                pointsEarned: 0,
+                totalAmount: estAmount,
+                orderedItems: [],
+                staffAssignments: [],
+                invoiceCode: null,
+                sessionCode: booking.bookingCode,
+                vietQrUrl,
+                updatedAt: new Date().toISOString(),
+              };
+            }
+          }
         }
       }
     }
