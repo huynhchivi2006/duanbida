@@ -21,6 +21,7 @@ import {
   TrendingUp,
   BarChart2,
   CalendarRange,
+  ArrowRightLeft,
 } from "lucide-react";
 
 export default function AdminReportsPage() {
@@ -91,12 +92,12 @@ export default function AdminReportsPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="ADMIN" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-black text-white">BÁO CÁO DOANH THU & GIAO DỊCH</h1>
+              <h1 className="text-xl sm:text-2xl font-black text-white">BÁO CÁO DOANH THU & GIAO DỊCH</h1>
               <p className="text-zinc-400 text-xs mt-1">
                 Thống kê doanh thu đa kỳ: Ngày, Tuần, Tháng, Quý, Năm với phân tích tiền giờ, dịch vụ và đối soát.
               </p>
@@ -105,59 +106,60 @@ export default function AdminReportsPage() {
             <Button
               size="sm"
               onClick={handleExportCsv}
-              className="gap-2 bg-emerald-600 hover:bg-emerald-500 font-semibold"
+              className="gap-2 bg-emerald-600 hover:bg-emerald-500 font-semibold text-xs h-9 w-full sm:w-auto"
             >
               <Download className="h-4 w-4" />
               Xuất File Excel (CSV)
             </Button>
           </div>
 
-          {/* Period Selector & Filter Bar */}
-          <Card className="border-zinc-800 bg-zinc-900/60 p-4 space-y-4">
-            {/* Tabs chọn kỳ */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-950 border border-zinc-800 text-xs">
-                <span className="text-zinc-500 font-semibold px-2">Xem theo:</span>
-                {[
-                  { id: "day", label: "Theo Ngày" },
-                  { id: "week", label: "Theo Tuần" },
-                  { id: "month", label: "Theo Tháng" },
-                  { id: "quarter", label: "Theo Quý" },
-                  { id: "year", label: "Theo Năm" },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handlePeriodChange(item.id as any)}
-                    className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
-                      period === item.id
-                        ? "bg-emerald-600 text-white shadow-sm shadow-emerald-950"
-                        : "text-zinc-400 hover:text-white hover:bg-zinc-900"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
+          {/* Period Selector & Filter Bar - Tối ưu di động không tràn màn hình */}
+          <Card className="border-zinc-800 bg-zinc-900/70 p-3 sm:p-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              {/* Pills chọn kỳ - vuốt ngang mượt mà trên di động */}
+              <div className="w-full lg:w-auto overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-zinc-950 border border-zinc-800/90 text-xs w-max">
+                  <span className="text-zinc-500 font-semibold px-2 shrink-0">Xem:</span>
+                  {[
+                    { id: "day", label: "Theo Ngày" },
+                    { id: "week", label: "Theo Tuần" },
+                    { id: "month", label: "Theo Tháng" },
+                    { id: "quarter", label: "Theo Quý" },
+                    { id: "year", label: "Theo Năm" },
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handlePeriodChange(item.id as any)}
+                      className={`px-3 py-1.5 rounded-lg font-bold text-xs whitespace-nowrap transition-all shrink-0 ${
+                        period === item.id
+                          ? "bg-emerald-600 text-white shadow-sm shadow-emerald-950"
+                          : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Date Inputs */}
-              <div className="flex flex-wrap items-center gap-3 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-400 font-semibold">Từ:</span>
-                  <Input
+              {/* Ô chọn khoảng ngày - hiển thị gọn gàng 2 cột trên điện thoại */}
+              <div className="grid grid-cols-2 gap-2 text-xs w-full lg:w-auto">
+                <div className="flex items-center gap-1.5 bg-zinc-950 border border-zinc-800 rounded-lg px-2.5 py-1.5">
+                  <span className="text-zinc-400 font-semibold text-[11px] shrink-0">Từ:</span>
+                  <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-36 h-8 text-xs"
+                    className="w-full bg-transparent text-zinc-100 text-xs focus:outline-none"
                   />
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-400 font-semibold">Đến:</span>
-                  <Input
+                <div className="flex items-center gap-1.5 bg-zinc-950 border border-zinc-800 rounded-lg px-2.5 py-1.5">
+                  <span className="text-zinc-400 font-semibold text-[11px] shrink-0">Đến:</span>
+                  <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-36 h-8 text-xs"
+                    className="w-full bg-transparent text-zinc-100 text-xs focus:outline-none"
                   />
                 </div>
               </div>
@@ -165,8 +167,8 @@ export default function AdminReportsPage() {
           </Card>
 
           {/* Summary KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="border-zinc-800 bg-zinc-900/60 p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <Card className="border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
               <span className="text-xs text-zinc-400 font-semibold">Tổng Doanh Thu</span>
               <div className="text-2xl font-black text-emerald-400 mt-2">
                 {isLoading ? "..." : formatVND(summary?.totalRevenue || 0)}
@@ -176,7 +178,7 @@ export default function AdminReportsPage() {
               </div>
             </Card>
 
-            <Card className="border-zinc-800 bg-zinc-900/60 p-5">
+            <Card className="border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
               <span className="text-xs text-zinc-400 font-semibold">Tiền Giờ Thuê Bàn</span>
               <div className="text-2xl font-black text-white mt-2">
                 {isLoading ? "..." : formatVND(summary?.totalTableAmount || 0)}
@@ -190,7 +192,7 @@ export default function AdminReportsPage() {
               </div>
             </Card>
 
-            <Card className="border-zinc-800 bg-zinc-900/60 p-5">
+            <Card className="border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
               <span className="text-xs text-zinc-400 font-semibold">Doanh Thu Dịch Vụ & Món</span>
               <div className="text-2xl font-black text-sky-400 mt-2">
                 {isLoading ? "..." : formatVND(summary?.totalServiceAmount || 0)}
@@ -200,7 +202,7 @@ export default function AdminReportsPage() {
               </div>
             </Card>
 
-            <Card className="border-zinc-800 bg-zinc-900/60 p-5">
+            <Card className="border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
               <span className="text-xs text-zinc-400 font-semibold">Tổng Tiền Giảm Giá</span>
               <div className="text-2xl font-black text-rose-400 mt-2">
                 {isLoading ? "..." : formatVND(summary?.totalDiscountAmount || 0)}
@@ -221,10 +223,10 @@ export default function AdminReportsPage() {
             isLoading={isLoading}
           />
 
-          {/* Section: Bảng Tổng Hợp Gom Nhóm Theo Kỳ */}
-          <Card className="border-zinc-800 bg-zinc-900/60 p-6 space-y-4">
+          {/* Section: Bảng Tổng Hợp Gom Nhóm Theo Kỳ - Vuốt ngang mượt mà trên Mobile */}
+          <Card className="border-zinc-800 bg-zinc-900/60 p-4 sm:p-6 space-y-4">
             <CardHeader className="p-0">
-              <CardTitle className="text-base text-zinc-100 flex items-center justify-between">
+              <CardTitle className="text-base text-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <span className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-emerald-400" />
                   Bảng Tổng Hợp Doanh Thu {period === "day" ? "Theo Từng Ngày" : period === "week" ? "Theo Từng Tuần" : period === "month" ? "Theo Từng Tháng" : period === "quarter" ? "Theo Từng Quý" : "Theo Từng Năm"}
@@ -246,61 +248,71 @@ export default function AdminReportsPage() {
                   Không có giao dịch nào phát sinh trong kỳ này.
                 </div>
               ) : (
-                <div className="border border-zinc-800 rounded-xl overflow-hidden text-xs">
-                  <table className="w-full text-left">
-                    <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                      <tr>
-                        <th className="p-3">Kỳ Thống Kê</th>
-                        <th className="p-3 text-center">Số Hóa Đơn</th>
-                        <th className="p-3 text-right">Tiền Bàn (VNĐ)</th>
-                        <th className="p-3 text-right">Tiền Dịch Vụ (VNĐ)</th>
-                        <th className="p-3 text-right">Giảm Giá (VNĐ)</th>
-                        <th className="p-3 text-right">Tổng Doanh Thu</th>
-                        <th className="p-3 text-center w-36">Tỷ Trọng Biểu Đồ</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-800 text-zinc-300">
-                      {periodStats.map((item: any) => {
-                        const percentOfMax = Math.round((item.revenue / maxRevenueInPeriod) * 100);
-                        return (
-                          <tr key={item.periodKey} className="hover:bg-zinc-900/50">
-                            <td className="p-3 font-bold text-white flex items-center gap-1.5">
-                              <CalendarRange className="h-3.5 w-3.5 text-emerald-400" />
-                              {item.periodLabel}
-                            </td>
-                            <td className="p-3 text-center">
-                              <Badge variant="outline">{item.invoiceCount}</Badge>
-                            </td>
-                            <td className="p-3 text-right">{formatVND(item.tableAmount)}</td>
-                            <td className="p-3 text-right text-sky-400">
-                              {formatVND(item.serviceAmount)}
-                            </td>
-                            <td className="p-3 text-right text-rose-400">
-                              {formatVND(item.discountAmount)}
-                            </td>
-                            <td className="p-3 text-right font-black text-emerald-400 text-sm">
-                              {formatVND(item.revenue)}
-                            </td>
-                            <td className="p-3">
-                              <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
-                                <div
-                                  className="bg-emerald-500 h-2 rounded-full transition-all"
-                                  style={{ width: `${percentOfMax}%` }}
-                                />
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                <div className="border border-zinc-800 rounded-xl bg-zinc-950/40 overflow-hidden">
+                  {/* Thanh gợi ý vuốt ngang trên điện thoại */}
+                  <div className="sm:hidden px-3 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-[10px] text-zinc-400 flex items-center justify-between">
+                    <span>👉 Vuốt ngang để xem đủ các cột</span>
+                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                      Kéo qua lại <ArrowRightLeft className="h-3 w-3 inline" />
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left min-w-[680px] text-xs">
+                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                          <th className="p-3 whitespace-nowrap">Kỳ Thống Kê</th>
+                          <th className="p-3 text-center whitespace-nowrap">Số Hóa Đơn</th>
+                          <th className="p-3 text-right whitespace-nowrap">Tiền Bàn (VNĐ)</th>
+                          <th className="p-3 text-right whitespace-nowrap">Tiền Dịch Vụ (VNĐ)</th>
+                          <th className="p-3 text-right whitespace-nowrap">Giảm Giá (VNĐ)</th>
+                          <th className="p-3 text-right whitespace-nowrap">Tổng Doanh Thu</th>
+                          <th className="p-3 text-center w-36 whitespace-nowrap">Tỷ Trọng Biểu Đồ</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800 text-zinc-300">
+                        {periodStats.map((item: any) => {
+                          const percentOfMax = Math.round((item.revenue / maxRevenueInPeriod) * 100);
+                          return (
+                            <tr key={item.periodKey} className="hover:bg-zinc-900/50">
+                              <td className="p-3 font-bold text-white flex items-center gap-1.5 whitespace-nowrap">
+                                <CalendarRange className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                                {item.periodLabel}
+                              </td>
+                              <td className="p-3 text-center whitespace-nowrap">
+                                <Badge variant="outline">{item.invoiceCount}</Badge>
+                              </td>
+                              <td className="p-3 text-right whitespace-nowrap">{formatVND(item.tableAmount)}</td>
+                              <td className="p-3 text-right text-sky-400 whitespace-nowrap">
+                                {formatVND(item.serviceAmount)}
+                              </td>
+                              <td className="p-3 text-right text-rose-400 whitespace-nowrap">
+                                {formatVND(item.discountAmount)}
+                              </td>
+                              <td className="p-3 text-right font-black text-emerald-400 text-sm whitespace-nowrap">
+                                {formatVND(item.revenue)}
+                              </td>
+                              <td className="p-3">
+                                <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden min-w-[80px]">
+                                  <div
+                                    className="bg-emerald-500 h-2 rounded-full transition-all"
+                                    style={{ width: `${percentOfMax}%` }}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Invoices Detailed Breakdown */}
-          <Card className="border-zinc-800 bg-zinc-900/60 p-6 space-y-4">
+          {/* Invoices Detailed Breakdown - Vuốt ngang mượt mà trên Mobile */}
+          <Card className="border-zinc-800 bg-zinc-900/60 p-4 sm:p-6 space-y-4">
             <CardHeader className="p-0">
               <CardTitle className="text-base text-zinc-100 flex items-center gap-2">
                 <Receipt className="h-4 w-4 text-emerald-400" />
@@ -319,54 +331,64 @@ export default function AdminReportsPage() {
                   Không tìm thấy giao dịch nào trong khoảng thời gian đã chọn.
                 </div>
               ) : (
-                <div className="border border-zinc-800 rounded-xl overflow-hidden text-xs">
-                  <table className="w-full text-left">
-                    <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                      <tr>
-                        <th className="p-3">Mã Hóa Đơn</th>
-                        <th className="p-3">Khách Hàng</th>
-                        <th className="p-3">Bàn</th>
-                        <th className="p-3 text-right">Tiền Giờ</th>
-                        <th className="p-3 text-right">Tiền Dịch Vụ</th>
-                        <th className="p-3 text-right">Tổng Thanh Toán</th>
-                        <th className="p-3">Thời Gian TT</th>
-                        <th className="p-3 text-center">Phương Thức</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-800 text-zinc-300">
-                      {invoices.map((inv: any) => (
-                        <tr key={inv.id} className="hover:bg-zinc-900/50">
-                          <td className="p-3 font-mono font-bold text-white">
-                            {inv.invoiceCode}
-                          </td>
-                          <td className="p-3">
-                            <div className="font-semibold text-zinc-200">{inv.customerName}</div>
-                            {inv.customerPhone && (
-                              <div className="text-[11px] text-zinc-500">{inv.customerPhone}</div>
-                            )}
-                          </td>
-                          <td className="p-3 font-semibold text-zinc-200">
-                            Bàn {inv.tableNumber}
-                          </td>
-                          <td className="p-3 text-right">{formatVND(inv.tableAmount)}</td>
-                          <td className="p-3 text-right text-sky-400">
-                            {formatVND(inv.serviceAmount)}
-                          </td>
-                          <td className="p-3 text-right font-black text-emerald-400 text-sm">
-                            {formatVND(inv.finalAmount)}
-                          </td>
-                          <td className="p-3 text-zinc-400">
-                            {inv.paidAt ? formatDateTimeVN(inv.paidAt) : "-"}
-                          </td>
-                          <td className="p-3 text-center">
-                            <Badge variant={inv.paymentMethod === "CASH" ? "success" : "info"}>
-                              {inv.paymentMethod === "CASH" ? "Tiền mặt" : "Chuyển khoản"}
-                            </Badge>
-                          </td>
+                <div className="border border-zinc-800 rounded-xl bg-zinc-950/40 overflow-hidden">
+                  {/* Thanh gợi ý vuốt ngang trên điện thoại */}
+                  <div className="sm:hidden px-3 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-[10px] text-zinc-400 flex items-center justify-between">
+                    <span>👉 Vuốt ngang để xem đủ các cột</span>
+                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                      Kéo qua lại <ArrowRightLeft className="h-3 w-3 inline" />
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left min-w-[740px] text-xs">
+                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                          <th className="p-3 whitespace-nowrap">Mã Hóa Đơn</th>
+                          <th className="p-3 whitespace-nowrap">Khách Hàng</th>
+                          <th className="p-3 whitespace-nowrap">Bàn</th>
+                          <th className="p-3 text-right whitespace-nowrap">Tiền Giờ</th>
+                          <th className="p-3 text-right whitespace-nowrap">Tiền Dịch Vụ</th>
+                          <th className="p-3 text-right whitespace-nowrap">Tổng Thanh Toán</th>
+                          <th className="p-3 whitespace-nowrap">Thời Gian TT</th>
+                          <th className="p-3 text-center whitespace-nowrap">Phương Thức</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800 text-zinc-300">
+                        {invoices.map((inv: any) => (
+                          <tr key={inv.id} className="hover:bg-zinc-900/50">
+                            <td className="p-3 font-mono font-bold text-white whitespace-nowrap">
+                              {inv.invoiceCode}
+                            </td>
+                            <td className="p-3 whitespace-nowrap">
+                              <div className="font-semibold text-zinc-200">{inv.customerName}</div>
+                              {inv.customerPhone && (
+                                <div className="text-[11px] text-zinc-500">{inv.customerPhone}</div>
+                              )}
+                            </td>
+                            <td className="p-3 font-semibold text-zinc-200 whitespace-nowrap">
+                              Bàn {inv.tableNumber}
+                            </td>
+                            <td className="p-3 text-right whitespace-nowrap">{formatVND(inv.tableAmount)}</td>
+                            <td className="p-3 text-right text-sky-400 whitespace-nowrap">
+                              {formatVND(inv.serviceAmount)}
+                            </td>
+                            <td className="p-3 text-right font-black text-emerald-400 text-sm whitespace-nowrap">
+                              {formatVND(inv.finalAmount)}
+                            </td>
+                            <td className="p-3 text-zinc-400 whitespace-nowrap">
+                              {inv.paidAt ? formatDateTimeVN(inv.paidAt) : "-"}
+                            </td>
+                            <td className="p-3 text-center whitespace-nowrap">
+                              <Badge variant={inv.paymentMethod === "CASH" ? "success" : "info"}>
+                                {inv.paymentMethod === "CASH" ? "Tiền mặt" : "Chuyển khoản"}
+                              </Badge>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
             </CardContent>

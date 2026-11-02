@@ -127,12 +127,12 @@ export default function AdminPricingRulesPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="ADMIN" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-black text-white">BẢNG GIÁ & PHỤ THU NGÀY LỄ / CHỦ NHẬT</h1>
+              <h1 className="text-xl sm:text-2xl font-black text-white">BẢNG GIÁ & PHỤ THU NGÀY LỄ / CHỦ NHẬT</h1>
               <p className="text-zinc-400 text-xs mt-1">
                 Thiết lập mức tăng giá tự động cho các ngày cao điểm: Chủ Nhật hàng tuần, Tết Nguyên Đán, Lễ 30/4 - 1/5.
               </p>
@@ -165,19 +165,20 @@ export default function AdminPricingRulesPage() {
             </Card>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
-              <table className="w-full text-left">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                  <tr>
-                    <th className="p-3">Tên Quy Tắc</th>
-                    <th className="p-3">Loại Áp Dụng</th>
-                    <th className="p-3">Mức Phụ Thu</th>
-                    <th className="p-3">Thời Gian / Chu Kỳ</th>
-                    <th className="p-3">Trạng Thái</th>
-                    <th className="p-3 text-right">Hành Động</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800 text-zinc-300">
-                  {rules.map((rule: any) => (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left min-w-[700px]">
+                  <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                    <tr>
+                      <th className="p-3 whitespace-nowrap">Tên Quy Tắc</th>
+                      <th className="p-3 whitespace-nowrap">Loại Áp Dụng</th>
+                      <th className="p-3 whitespace-nowrap">Mức Phụ Thu</th>
+                      <th className="p-3 whitespace-nowrap">Thời Gian / Chu Kỳ</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
+                      <th className="p-3 text-right whitespace-nowrap">Hành Động</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800 text-zinc-300">
+                    {rules.map((rule: any) => (
                     <tr key={rule.id} className="hover:bg-zinc-900/40">
                       <td className="p-3 font-semibold text-white">
                         {rule.name}
@@ -260,6 +261,7 @@ export default function AdminPricingRulesPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </div>

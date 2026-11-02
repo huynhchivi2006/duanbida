@@ -90,12 +90,12 @@ export default function AdminServicesPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="ADMIN" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-black text-white">MENU DỊCH VỤ & ĐỒ UỐNG</h1>
+              <h1 className="text-xl sm:text-2xl font-black text-white">MENU DỊCH VỤ & ĐỒ UỐNG</h1>
               <p className="text-zinc-400 text-xs mt-1">
                 Quản lý danh mục nước giải khát, đồ ăn nhẹ và sửa đơn giá bán trực tiếp.
               </p>
@@ -127,46 +127,47 @@ export default function AdminServicesPage() {
             </div>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
-              <table className="w-full text-left">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                  <tr>
-                    <th className="p-3">Mã</th>
-                    <th className="p-3">Tên Món / Dịch Vụ</th>
-                    <th className="p-3">Phân Loại</th>
-                    <th className="p-3">Đơn Giá Hiện Tại</th>
-                    <th className="p-3">Đơn Vị</th>
-                    <th className="p-3">Trạng Thái</th>
-                    <th className="p-3 text-right">Hành Động</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800 text-zinc-300">
-                  {services.map((s: any) => (
-                    <tr key={s.id} className="hover:bg-zinc-900/50">
-                      <td className="p-3 font-mono font-bold text-emerald-400">{s.code}</td>
-                      <td className="p-3 font-semibold text-white">{s.name}</td>
-                      <td className="p-3">
-                        <Badge
-                          variant={
-                            s.category === "DRINK"
-                              ? "info"
-                              : s.category === "FOOD"
-                              ? "warning"
-                              : "default"
-                          }
-                        >
-                          {s.category}
-                        </Badge>
-                      </td>
-                      <td className="p-3 font-bold text-emerald-400 text-sm">
-                        {formatVND(s.unitPrice)}
-                      </td>
-                      <td className="p-3 text-zinc-400">{s.unit}</td>
-                      <td className="p-3">
-                        <Badge variant={s.isActive ? "success" : "danger"}>
-                          {s.isActive ? "Đang bán" : "Ngừng bán"}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-right space-x-2">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left min-w-[700px]">
+                  <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                    <tr>
+                      <th className="p-3 whitespace-nowrap">Mã</th>
+                      <th className="p-3 whitespace-nowrap">Tên Món / Dịch Vụ</th>
+                      <th className="p-3 whitespace-nowrap">Phân Loại</th>
+                      <th className="p-3 whitespace-nowrap">Đơn Giá Hiện Tại</th>
+                      <th className="p-3 whitespace-nowrap">Đơn Vị</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
+                      <th className="p-3 text-right whitespace-nowrap">Hành Động</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800 text-zinc-300">
+                    {services.map((s: any) => (
+                      <tr key={s.id} className="hover:bg-zinc-900/50">
+                        <td className="p-3 font-mono font-bold text-emerald-400 whitespace-nowrap">{s.code}</td>
+                        <td className="p-3 font-semibold text-white whitespace-nowrap">{s.name}</td>
+                        <td className="p-3 whitespace-nowrap">
+                          <Badge
+                            variant={
+                              s.category === "DRINK"
+                                ? "info"
+                                : s.category === "FOOD"
+                                ? "warning"
+                                : "default"
+                            }
+                          >
+                            {s.category}
+                          </Badge>
+                        </td>
+                        <td className="p-3 font-bold text-emerald-400 text-sm whitespace-nowrap">
+                          {formatVND(s.unitPrice)}
+                        </td>
+                        <td className="p-3 text-zinc-400 whitespace-nowrap">{s.unit}</td>
+                        <td className="p-3 whitespace-nowrap">
+                          <Badge variant={s.isActive ? "success" : "danger"}>
+                            {s.isActive ? "Đang bán" : "Ngừng bán"}
+                          </Badge>
+                        </td>
+                        <td className="p-3 text-right space-x-2 whitespace-nowrap">
                         <Button
                           variant="outline"
                           size="sm"
@@ -193,6 +194,7 @@ export default function AdminServicesPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </div>

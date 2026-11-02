@@ -86,13 +86,13 @@ export default function AdminVouchersPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="ADMIN" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-black text-white flex items-center gap-2">
-                <Ticket className="h-6 w-6 text-emerald-400" />
+              <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                <Ticket className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-400" />
                 QUẢN LÝ VOUCHER & MÃ GIẢM GIÁ
               </h1>
               <p className="text-zinc-400 text-xs mt-1">
@@ -133,49 +133,50 @@ export default function AdminVouchersPage() {
             </Card>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
-              <table className="w-full text-left">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                  <tr>
-                    <th className="p-3">Mã Voucher</th>
-                    <th className="p-3">Tên Chương Trình</th>
-                    <th className="p-3">Mức Giảm</th>
-                    <th className="p-3">Đơn Tối Thiểu</th>
-                    <th className="p-3">Áp Dụng</th>
-                    <th className="p-3">Đã Dùng / Giới Hạn</th>
-                    <th className="p-3">Trạng Thái</th>
-                    <th className="p-3 text-right">Thao Tác</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800">
-                  {vouchers.map((vc: any) => (
-                    <tr key={vc.id} className="hover:bg-zinc-800/30">
-                      <td className="p-3 font-mono font-black text-emerald-400">{vc.code}</td>
-                      <td className="p-3 font-semibold text-white">{vc.name}</td>
-                      <td className="p-3 font-bold text-amber-300">
-                        {vc.discountType === "PERCENT"
-                          ? `-${vc.discountValue}% (Tối đa ${formatVND(Number(vc.maxDiscount || 0))})`
-                          : `-${formatVND(Number(vc.discountValue))}`}
-                      </td>
-                      <td className="p-3 text-zinc-300">{formatVND(Number(vc.minOrderValue || 0))}</td>
-                      <td className="p-3">
-                        <Badge variant="outline">
-                          {vc.applicableTo === "TABLE_ONLY"
-                            ? "Chỉ Tiền Giờ"
-                            : vc.applicableTo === "SERVICE_ONLY"
-                            ? "Chỉ F&B"
-                            : "Toàn Bộ Đơn"}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-zinc-300">
-                        <span className="font-bold text-white">{vc.usedCount}</span> /{" "}
-                        {vc.usageLimit ? vc.usageLimit : "∞"}
-                      </td>
-                      <td className="p-3">
-                        <Badge variant={vc.isActive ? "success" : "default"}>
-                          {vc.isActive ? "Hoạt động" : "Tạm dừng"}
-                        </Badge>
-                      </td>
-                      <td className="p-3 text-right space-x-2">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left min-w-[750px]">
+                  <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                    <tr>
+                      <th className="p-3 whitespace-nowrap">Mã Voucher</th>
+                      <th className="p-3 whitespace-nowrap">Tên Chương Trình</th>
+                      <th className="p-3 whitespace-nowrap">Mức Giảm</th>
+                      <th className="p-3 whitespace-nowrap">Đơn Tối Thiểu</th>
+                      <th className="p-3 whitespace-nowrap">Áp Dụng</th>
+                      <th className="p-3 whitespace-nowrap">Đã Dùng / Giới Hạn</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
+                      <th className="p-3 text-right whitespace-nowrap">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800">
+                    {vouchers.map((vc: any) => (
+                      <tr key={vc.id} className="hover:bg-zinc-800/30">
+                        <td className="p-3 font-mono font-black text-emerald-400 whitespace-nowrap">{vc.code}</td>
+                        <td className="p-3 font-semibold text-white whitespace-nowrap">{vc.name}</td>
+                        <td className="p-3 font-bold text-amber-300 whitespace-nowrap">
+                          {vc.discountType === "PERCENT"
+                            ? `-${vc.discountValue}% (Tối đa ${formatVND(Number(vc.maxDiscount || 0))})`
+                            : `-${formatVND(Number(vc.discountValue))}`}
+                        </td>
+                        <td className="p-3 text-zinc-300 whitespace-nowrap">{formatVND(Number(vc.minOrderValue || 0))}</td>
+                        <td className="p-3 whitespace-nowrap">
+                          <Badge variant="outline">
+                            {vc.applicableTo === "TABLE_ONLY"
+                              ? "Chỉ Tiền Giờ"
+                              : vc.applicableTo === "SERVICE_ONLY"
+                              ? "Chỉ F&B"
+                              : "Toàn Bộ Đơn"}
+                          </Badge>
+                        </td>
+                        <td className="p-3 text-zinc-300 whitespace-nowrap">
+                          <span className="font-bold text-white">{vc.usedCount}</span> /{" "}
+                          {vc.usageLimit ? vc.usageLimit : "∞"}
+                        </td>
+                        <td className="p-3 whitespace-nowrap">
+                          <Badge variant={vc.isActive ? "success" : "default"}>
+                            {vc.isActive ? "Hoạt động" : "Tạm dừng"}
+                          </Badge>
+                        </td>
+                        <td className="p-3 text-right space-x-2 whitespace-nowrap">
                         <Button
                           size="sm"
                           variant="outline"
@@ -203,6 +204,7 @@ export default function AdminVouchersPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
 

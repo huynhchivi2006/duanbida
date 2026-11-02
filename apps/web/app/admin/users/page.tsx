@@ -82,13 +82,13 @@ export default function AdminUsersPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="ADMIN" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-black text-white flex items-center gap-2">
-                <Users className="h-6 w-6 text-emerald-400" />
+              <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-400" />
                 KHÁCH HÀNG & PHÂN QUYỀN (RBAC)
               </h1>
               <p className="text-zinc-400 text-xs mt-1">
@@ -159,21 +159,22 @@ export default function AdminUsersPage() {
             </div>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
-              <table className="w-full text-left">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                  <tr>
-                    <th className="p-3">Họ và Tên</th>
-                    <th className="p-3">Số Điện Thoại</th>
-                    <th className="p-3">Ngày Sinh</th>
-                    <th className="p-3">Hạng Thẻ</th>
-                    <th className="p-3">Điểm Tích Lũy</th>
-                    <th className="p-3">Tổng Chi Tiêu</th>
-                    <th className="p-3">Tần Suất Chơi</th>
-                    <th className="p-3">Vai Trò</th>
-                    <th className="p-3">Trạng Thái</th>
-                    <th className="p-3 text-right">Khóa / Mở</th>
-                  </tr>
-                </thead>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left min-w-[850px]">
+                  <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                    <tr>
+                      <th className="p-3 whitespace-nowrap">Họ và Tên</th>
+                      <th className="p-3 whitespace-nowrap">Số Điện Thoại</th>
+                      <th className="p-3 whitespace-nowrap">Ngày Sinh</th>
+                      <th className="p-3 whitespace-nowrap">Hạng Thẻ</th>
+                      <th className="p-3 whitespace-nowrap">Điểm Tích Lũy</th>
+                      <th className="p-3 whitespace-nowrap">Tổng Chi Tiêu</th>
+                      <th className="p-3 whitespace-nowrap">Tần Suất Chơi</th>
+                      <th className="p-3 whitespace-nowrap">Vai Trò</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
+                      <th className="p-3 text-right whitespace-nowrap">Khóa / Mở</th>
+                    </tr>
+                  </thead>
                 <tbody className="divide-y divide-zinc-800 text-zinc-300">
                   {users.map((u: any) => (
                     <tr key={u.id} className="hover:bg-zinc-900/50">
@@ -245,6 +246,7 @@ export default function AdminUsersPage() {
                 </tbody>
               </table>
             </div>
+          </div>
           )}
         </div>
       </main>

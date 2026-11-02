@@ -276,11 +276,11 @@ export default function StaffBillingPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="STAFF" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-black text-white">THU NGÂN & THANH TOÁN (POS)</h1>
+          <div className="mb-4 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl font-black text-white">THU NGÂN & THANH TOÁN (POS)</h1>
             <p className="text-zinc-400 text-xs mt-1">
               Tính tiền giờ theo block (5p, 15p, phút thực tế), chuyển bàn, gộp bàn, áp dụng chiết khấu hạng thành viên & mã voucher.
             </p>

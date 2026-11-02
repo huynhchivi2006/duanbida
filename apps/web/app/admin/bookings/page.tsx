@@ -48,10 +48,10 @@ export default function AdminBookingsPage() {
     <div className="min-h-screen flex bg-zinc-950 text-zinc-100">
       <Sidebar role="ADMIN" />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-w-0">
+        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           <div>
-            <h1 className="text-2xl font-black text-white">QUẢN LÝ TẤT CẢ ĐẶT BÀN</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-white">QUẢN LÝ TẤT CẢ ĐẶT BÀN</h1>
             <p className="text-zinc-400 text-xs mt-1">
               Xem toàn bộ lịch sử và tình trạng đặt bàn từ tất cả người dùng và nhân viên.
             </p>
@@ -90,41 +90,43 @@ export default function AdminBookingsPage() {
             </div>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
-              <table className="w-full text-left">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
-                  <tr>
-                    <th className="p-3">Mã Đặt</th>
-                    <th className="p-3">Bàn</th>
-                    <th className="p-3">Khách Hàng</th>
-                    <th className="p-3">Thời Gian Bắt Đầu</th>
-                    <th className="p-3">Chi Phí Dự Kiến</th>
-                    <th className="p-3">Trạng Thái</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800 text-zinc-300">
-                  {bookings.map((b: any) => (
-                    <tr key={b.id} className="hover:bg-zinc-900/50">
-                      <td className="p-3 font-mono font-bold text-emerald-400">
-                        {b.bookingCode}
-                      </td>
-                      <td className="p-3 font-bold text-white">
-                        Bàn {b.billiardTable?.tableNumber}
-                      </td>
-                      <td className="p-3">
-                        <div className="font-semibold text-zinc-200">
-                          {b.customer?.fullName || "Khách đặt trước"}
-                        </div>
-                        <div className="text-[11px] text-zinc-500">{b.customer?.phone}</div>
-                      </td>
-                      <td className="p-3">{formatDateTimeVN(b.startTime)}</td>
-                      <td className="p-3 font-bold text-emerald-400">
-                        {formatVND(b.estimatedPrice)}
-                      </td>
-                      <td className="p-3">{statusBadge(b.status)}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left min-w-[650px]">
+                  <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                    <tr>
+                      <th className="p-3 whitespace-nowrap">Mã Đặt</th>
+                      <th className="p-3 whitespace-nowrap">Bàn</th>
+                      <th className="p-3 whitespace-nowrap">Khách Hàng</th>
+                      <th className="p-3 whitespace-nowrap">Thời Gian Bắt Đầu</th>
+                      <th className="p-3 whitespace-nowrap">Chi Phí Dự Kiến</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800 text-zinc-300">
+                    {bookings.map((b: any) => (
+                      <tr key={b.id} className="hover:bg-zinc-900/50">
+                        <td className="p-3 font-mono font-bold text-emerald-400 whitespace-nowrap">
+                          {b.bookingCode}
+                        </td>
+                        <td className="p-3 font-bold text-white whitespace-nowrap">
+                          Bàn {b.billiardTable?.tableNumber}
+                        </td>
+                        <td className="p-3 whitespace-nowrap">
+                          <div className="font-semibold text-zinc-200">
+                            {b.customer?.fullName || "Khách đặt trước"}
+                          </div>
+                          <div className="text-[11px] text-zinc-500">{b.customer?.phone}</div>
+                        </td>
+                        <td className="p-3 whitespace-nowrap">{formatDateTimeVN(b.startTime)}</td>
+                        <td className="p-3 font-bold text-emerald-400 whitespace-nowrap">
+                          {formatVND(b.estimatedPrice)}
+                        </td>
+                        <td className="p-3 whitespace-nowrap">{statusBadge(b.status)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
