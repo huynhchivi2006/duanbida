@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ export default function AdminTablesPage() {
   const [editingType, setEditingType] = useState<any | null>(null);
   const [editingTable, setEditingTable] = useState<any | null>(null);
 
-  // Form thêm bàn
+  // Form thĂªm bĂ n
   const [tableNumber, setTableNumber] = useState("");
   const [tableTypeId, setTableTypeId] = useState("");
   const [area, setArea] = useState<"STANDARD" | "VIP" | "OUTDOOR">("STANDARD");
@@ -26,14 +26,14 @@ export default function AdminTablesPage() {
   const [note, setNote] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Form sửa từng bàn
+  // Form sá»­a tá»«ng bĂ n
   const [editTableNumber, setEditTableNumber] = useState("");
   const [editTableTypeId, setEditTableTypeId] = useState("");
   const [editArea, setEditArea] = useState<"STANDARD" | "VIP" | "OUTDOOR">("STANDARD");
   const [editCustomHourlyRate, setEditCustomHourlyRate] = useState<string>("");
   const [editNote, setEditNote] = useState("");
 
-  // Form sửa giá loại bàn
+  // Form sá»­a giĂ¡ loáº¡i bĂ n
   const [typeName, setTypeName] = useState("");
   const [hourlyRate, setHourlyRate] = useState<number>(80000);
   const [typeDescription, setTypeDescription] = useState("");
@@ -48,7 +48,7 @@ export default function AdminTablesPage() {
     queryFn: () => apiClient("/table-types"),
   });
 
-  // Thêm bàn mới
+  // ThĂªm bĂ n má»›i
   const addTableMutation = useMutation({
     mutationFn: async () => {
       return apiClient("/tables", {
@@ -70,10 +70,10 @@ export default function AdminTablesPage() {
       setNote("");
       setErrorMsg(null);
     },
-    onError: (err: any) => setErrorMsg(err.message || "Không thể tạo bàn mới"),
+    onError: (err: any) => setErrorMsg(err.message || "KhĂ´ng thá»ƒ táº¡o bĂ n má»›i"),
   });
 
-  // Sửa thông tin & đơn giá riêng của từng bàn
+  // Sá»­a thĂ´ng tin & Ä‘Æ¡n giĂ¡ riĂªng cá»§a tá»«ng bĂ n
   const updateTableMutation = useMutation({
     mutationFn: async () => {
       const payload: any = {
@@ -93,7 +93,7 @@ export default function AdminTablesPage() {
           body: JSON.stringify(payload),
         });
       } catch (err: any) {
-        // Tự động tương thích nếu server backend chưa kịp restart nhận trường hourlyRate
+        // Tá»± Ä‘á»™ng tÆ°Æ¡ng thĂ­ch náº¿u server backend chÆ°a ká»‹p restart nháº­n trÆ°á»ng hourlyRate
         if (err?.message?.includes("hourlyRate") && payload.hourlyRate) {
           try {
             await apiClient(`/table-types/${editTableTypeId}`, {
@@ -120,12 +120,12 @@ export default function AdminTablesPage() {
       queryClient.invalidateQueries({ queryKey: ["table-types"] });
       setEditingTable(null);
       setErrorMsg(null);
-      alert("✅ Đã cập nhật đơn giá và thông tin bàn thành công!");
+      alert("âœ… ÄĂ£ cáº­p nháº­t Ä‘Æ¡n giĂ¡ vĂ  thĂ´ng tin bĂ n thĂ nh cĂ´ng!");
     },
-    onError: (err: any) => setErrorMsg(err.message || "Lỗi khi cập nhật bàn"),
+    onError: (err: any) => setErrorMsg(err.message || "Lá»—i khi cáº­p nháº­t bĂ n"),
   });
 
-  // Cập nhật giá giờ của loại bàn
+  // Cáº­p nháº­t giĂ¡ giá» cá»§a loáº¡i bĂ n
   const updateTypeMutation = useMutation({
     mutationFn: async () => {
       return apiClient(`/table-types/${editingType.id}`, {
@@ -143,7 +143,7 @@ export default function AdminTablesPage() {
       setEditingType(null);
       setErrorMsg(null);
     },
-    onError: (err: any) => setErrorMsg(err.message || "Lỗi khi cập nhật giá loại bàn"),
+    onError: (err: any) => setErrorMsg(err.message || "Lá»—i khi cáº­p nháº­t giĂ¡ loáº¡i bĂ n"),
   });
 
   const updateStatusMutation = useMutation({
@@ -159,7 +159,7 @@ export default function AdminTablesPage() {
   const deleteTableMutation = useMutation({
     mutationFn: async (id: string) => apiClient(`/tables/${id}`, { method: "DELETE" }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-tables"] }),
-    onError: (err: any) => alert(err.message || "Lỗi khi xóa bàn"),
+    onError: (err: any) => alert(err.message || "Lá»—i khi xĂ³a bĂ n"),
   });
 
   const openEditTypeModal = (type: any) => {
@@ -189,14 +189,14 @@ export default function AdminTablesPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-black text-white">QUẢN LÝ BÀN & ĐƠN GIÁ GIỜ</h1>
+              <h1 className="text-2xl font-black text-white">QUáº¢N LĂ BĂ€N & ÄÆ N GIĂ GIá»œ</h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Điều chỉnh giá giờ riêng cho từng bàn (Bàn VIP, Bàn chuẩn), sửa giá theo loại bàn và quản lý trạng thái.
+                Äiá»u chá»‰nh giĂ¡ giá» riĂªng cho tá»«ng bĂ n (BĂ n VIP, BĂ n chuáº©n), sá»­a giĂ¡ theo loáº¡i bĂ n vĂ  quáº£n lĂ½ tráº¡ng thĂ¡i.
               </p>
             </div>
 
             <Button
-              className="gap-2 bg-emerald-600 font-semibold"
+              className="gap-2 bg-red-600 font-semibold"
               onClick={() => {
                 if (tableTypes.length > 0 && !tableTypeId) {
                   setTableTypeId(tableTypes[0].id);
@@ -205,18 +205,18 @@ export default function AdminTablesPage() {
               }}
             >
               <Plus className="h-4 w-4" />
-              Thêm Bàn Bi-Da
+              ThĂªm BĂ n Bi-Da
             </Button>
           </div>
 
-          {/* Section 1: Đơn Giá Theo Loại Bàn (Base Pricing) */}
+          {/* Section 1: ÄÆ¡n GiĂ¡ Theo Loáº¡i BĂ n (Base Pricing) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-emerald-400" />
-                Bảng Giá Mặc Định Theo Loại Bàn
+                <DollarSign className="h-4 w-4 text-red-400" />
+                Báº£ng GiĂ¡ Máº·c Äá»‹nh Theo Loáº¡i BĂ n
               </h2>
-              <span className="text-xs text-zinc-500">Bấm &quot;Sửa Giá&quot; để đổi giá chung của dòng bàn</span>
+              <span className="text-xs text-zinc-500">Báº¥m &quot;Sá»­a GiĂ¡&quot; Ä‘á»ƒ Ä‘á»•i giĂ¡ chung cá»§a dĂ²ng bĂ n</span>
             </div>
 
             {isLoadingTypes ? (
@@ -236,12 +236,12 @@ export default function AdminTablesPage() {
                           {type.code}
                         </Badge>
                       </div>
-                      <div className="mt-2 text-xl font-black text-emerald-400">
+                      <div className="mt-2 text-xl font-black text-red-400">
                         {formatVND(type.hourlyRate)}
-                        <span className="text-xs font-normal text-zinc-500"> / giờ</span>
+                        <span className="text-xs font-normal text-zinc-500"> / giá»</span>
                       </div>
                       <p className="mt-1 text-[11px] text-zinc-400 line-clamp-2">
-                        {type.description || "Chưa có mô tả"}
+                        {type.description || "ChÆ°a cĂ³ mĂ´ táº£"}
                       </p>
                     </div>
 
@@ -253,7 +253,7 @@ export default function AdminTablesPage() {
                         onClick={() => openEditTypeModal(type)}
                       >
                         <Edit className="h-3 w-3" />
-                        Sửa Giá Loại Bàn
+                        Sá»­a GiĂ¡ Loáº¡i BĂ n
                       </Button>
                     </div>
                   </Card>
@@ -262,14 +262,14 @@ export default function AdminTablesPage() {
             )}
           </div>
 
-          {/* Section 2: Danh Sách Từng Bàn & Giá Riêng */}
+          {/* Section 2: Danh SĂ¡ch Tá»«ng BĂ n & GiĂ¡ RiĂªng */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
-                <TableProperties className="h-4 w-4 text-emerald-400" />
-                Danh Sách Bàn Vật Lý &amp; Giá Thuê Từng Bàn ({tables.length} bàn)
+                <TableProperties className="h-4 w-4 text-red-400" />
+                Danh SĂ¡ch BĂ n Váº­t LĂ½ &amp; GiĂ¡ ThuĂª Tá»«ng BĂ n ({tables.length} bĂ n)
               </h2>
-              <span className="text-xs text-zinc-400">Bàn VIP có thể đặt giá riêng cao hơn bàn thường</span>
+              <span className="text-xs text-zinc-400">BĂ n VIP cĂ³ thá»ƒ Ä‘áº·t giĂ¡ riĂªng cao hÆ¡n bĂ n thÆ°á»ng</span>
             </div>
 
             {isLoadingTables ? (
@@ -283,12 +283,12 @@ export default function AdminTablesPage() {
                 <table className="w-full text-left">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3.5">Mã Bàn</th>
-                      <th className="p-3.5">Loại Bàn</th>
-                      <th className="p-3.5">Khu Vực</th>
-                      <th className="p-3.5">Đơn Giá / Giờ</th>
-                      <th className="p-3.5">Trạng Thái</th>
-                      <th className="p-3.5 text-right">Hành Động</th>
+                      <th className="p-3.5">MĂ£ BĂ n</th>
+                      <th className="p-3.5">Loáº¡i BĂ n</th>
+                      <th className="p-3.5">Khu Vá»±c</th>
+                      <th className="p-3.5">ÄÆ¡n GiĂ¡ / Giá»</th>
+                      <th className="p-3.5">Tráº¡ng ThĂ¡i</th>
+                      <th className="p-3.5 text-right">HĂ nh Äá»™ng</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800 text-zinc-300">
@@ -321,16 +321,16 @@ export default function AdminTablesPage() {
                           </td>
                           <td className="p-3.5">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-emerald-400 text-sm">
+                              <span className="font-bold text-red-400 text-sm">
                                 {formatVND(effectiveRate)}/h
                               </span>
                               {isCustom ? (
                                 <Badge className="bg-amber-600 text-white text-[10px] font-semibold py-0 px-1.5">
-                                  Giá riêng
+                                  GiĂ¡ riĂªng
                                 </Badge>
                               ) : (
                                 <span className="text-[10px] text-zinc-500 font-medium">
-                                  (Giá loại bàn)
+                                  (GiĂ¡ loáº¡i bĂ n)
                                 </span>
                               )}
                             </div>
@@ -345,30 +345,30 @@ export default function AdminTablesPage() {
                                   status: e.target.value,
                                 })
                               }
-                              className="bg-zinc-900 border border-zinc-700 text-zinc-200 rounded-md px-2 py-1 text-xs focus:ring-emerald-500"
+                              className="bg-zinc-900 border border-zinc-700 text-zinc-200 rounded-md px-2 py-1 text-xs focus:ring-red-500"
                             >
-                              <option value="AVAILABLE">AVAILABLE (Trống)</option>
-                              <option value="OCCUPIED">OCCUPIED (Đang chơi)</option>
-                              <option value="RESERVED">RESERVED (Đã đặt)</option>
-                              <option value="MAINTENANCE">MAINTENANCE (Bảo trì)</option>
+                              <option value="AVAILABLE">AVAILABLE (Trá»‘ng)</option>
+                              <option value="OCCUPIED">OCCUPIED (Äang chÆ¡i)</option>
+                              <option value="RESERVED">RESERVED (ÄĂ£ Ä‘áº·t)</option>
+                              <option value="MAINTENANCE">MAINTENANCE (Báº£o trĂ¬)</option>
                             </select>
                           </td>
                           <td className="p-3.5 text-right space-x-2">
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-7 text-xs px-2.5 gap-1 border-zinc-700 hover:bg-zinc-800 text-emerald-400 font-semibold"
+                              className="h-7 text-xs px-2.5 gap-1 border-zinc-700 hover:bg-zinc-800 text-red-400 font-semibold"
                               onClick={() => openEditTableModal(t)}
                             >
                               <Edit className="h-3.5 w-3.5" />
-                              Sửa Giá Bàn
+                              Sá»­a GiĂ¡ BĂ n
                             </Button>
                             <Button
                               variant="danger"
                               size="sm"
                               className="h-7 text-xs px-2"
                               onClick={() => {
-                                if (confirm(`Bạn chắc chắn muốn xóa bàn ${t.tableNumber}?`)) {
+                                if (confirm(`Báº¡n cháº¯c cháº¯n muá»‘n xĂ³a bĂ n ${t.tableNumber}?`)) {
                                   deleteTableMutation.mutate(t.id);
                                 }
                               }}
@@ -387,12 +387,12 @@ export default function AdminTablesPage() {
         </div>
       </main>
 
-      {/* Modal 1: Sửa Giá Giờ Riêng Từng Bàn (Bàn VIP / Bàn Thường) */}
+      {/* Modal 1: Sá»­a GiĂ¡ Giá» RiĂªng Tá»«ng BĂ n (BĂ n VIP / BĂ n ThÆ°á»ng) */}
       <Modal
         isOpen={Boolean(editingTable)}
         onClose={() => setEditingTable(null)}
-        title={`Sửa Giá & Thông Tin Bàn ${editingTable?.tableNumber}`}
-        description="Bạn có thể đặt giá thuê riêng cho bàn này (VD: Bàn VIP) hoặc để trống để dùng giá mặc định của loại bàn."
+        title={`Sá»­a GiĂ¡ & ThĂ´ng Tin BĂ n ${editingTable?.tableNumber}`}
+        description="Báº¡n cĂ³ thá»ƒ Ä‘áº·t giĂ¡ thuĂª riĂªng cho bĂ n nĂ y (VD: BĂ n VIP) hoáº·c Ä‘á»ƒ trá»‘ng Ä‘á»ƒ dĂ¹ng giĂ¡ máº·c Ä‘á»‹nh cá»§a loáº¡i bĂ n."
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -402,7 +402,7 @@ export default function AdminTablesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Mã số bàn:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">MĂ£ sá»‘ bĂ n:</label>
             <Input
               value={editTableNumber}
               onChange={(e) => setEditTableNumber(e.target.value.toUpperCase())}
@@ -410,7 +410,7 @@ export default function AdminTablesPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Loại bàn:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Loáº¡i bĂ n:</label>
             <select
               value={editTableTypeId}
               onChange={(e) => setEditTableTypeId(e.target.value)}
@@ -418,29 +418,29 @@ export default function AdminTablesPage() {
             >
               {tableTypes.map((t: any) => (
                 <option key={t.id} value={t.id}>
-                  {t.name} (Giá gốc loại bàn: {formatVND(t.hourlyRate)}/h)
+                  {t.name} (GiĂ¡ gá»‘c loáº¡i bĂ n: {formatVND(t.hourlyRate)}/h)
                 </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Khu vực phân bố:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Khu vá»±c phĂ¢n bá»‘:</label>
             <select
               value={editArea}
               onChange={(e) => setEditArea(e.target.value as any)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="STANDARD">Khu Tiêu Chuẩn (STANDARD)</option>
-              <option value="VIP">Phòng VIP (VIP)</option>
-              <option value="OUTDOOR">Khu Ngoài Trời (OUTDOOR)</option>
+              <option value="STANDARD">Khu TiĂªu Chuáº©n (STANDARD)</option>
+              <option value="VIP">PhĂ²ng VIP (VIP)</option>
+              <option value="OUTDOOR">Khu NgoĂ i Trá»i (OUTDOOR)</option>
             </select>
           </div>
 
-          {/* Đơn giá riêng của bàn */}
-          <div className="p-3 rounded-xl bg-zinc-950 border border-emerald-900/60 space-y-1.5">
-            <label className="block text-emerald-400 font-bold">
-              Đơn Giá Thuê Riêng Của Bàn Này (VNĐ / giờ):
+          {/* ÄÆ¡n giĂ¡ riĂªng cá»§a bĂ n */}
+          <div className="p-3 rounded-xl bg-zinc-950 border border-red-900/60 space-y-1.5">
+            <label className="block text-red-400 font-bold">
+              ÄÆ¡n GiĂ¡ ThuĂª RiĂªng Cá»§a BĂ n NĂ y (VNÄ / giá»):
             </label>
             <Input
               type="number"
@@ -448,46 +448,46 @@ export default function AdminTablesPage() {
               step={5000}
               value={editCustomHourlyRate}
               onChange={(e) => setEditCustomHourlyRate(e.target.value)}
-              placeholder="Để trống nếu dùng giá mặc định loại bàn"
-              className="text-emerald-400 font-bold text-base"
+              placeholder="Äá»ƒ trá»‘ng náº¿u dĂ¹ng giĂ¡ máº·c Ä‘á»‹nh loáº¡i bĂ n"
+              className="text-red-400 font-bold text-base"
             />
             <p className="text-[11px] text-zinc-400">
-              💡 <em>Ví dụ bàn VIP bạn có thể đặt <strong>120.000 đ/h</strong> hoặc <strong>150.000 đ/h</strong>. Nếu để trống, hệ thống tự động tính theo giá loại bàn.</em>
+              đŸ’¡ <em>VĂ­ dá»¥ bĂ n VIP báº¡n cĂ³ thá»ƒ Ä‘áº·t <strong>120.000 Ä‘/h</strong> hoáº·c <strong>150.000 Ä‘/h</strong>. Náº¿u Ä‘á»ƒ trá»‘ng, há»‡ thá»‘ng tá»± Ä‘á»™ng tĂ­nh theo giĂ¡ loáº¡i bĂ n.</em>
             </p>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Ghi chú đặc điểm:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Ghi chĂº Ä‘áº·c Ä‘iá»ƒm:</label>
             <Input
               value={editNote}
               onChange={(e) => setEditNote(e.target.value)}
-              placeholder="VD: Phòng VIP sô pha riêng, view thoáng..."
+              placeholder="VD: PhĂ²ng VIP sĂ´ pha riĂªng, view thoĂ¡ng..."
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setEditingTable(null)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-600 font-semibold"
+              className="bg-red-600 font-semibold"
               isLoading={updateTableMutation.isPending}
               disabled={!editTableNumber}
               onClick={() => updateTableMutation.mutate()}
             >
-              Lưu Đơn Giá Bàn
+              LÆ°u ÄÆ¡n GiĂ¡ BĂ n
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Modal 2: Sửa Giá Mặc Định Loại Bàn */}
+      {/* Modal 2: Sá»­a GiĂ¡ Máº·c Äá»‹nh Loáº¡i BĂ n */}
       <Modal
         isOpen={Boolean(editingType)}
         onClose={() => setEditingType(null)}
-        title={`Sửa Giá Giờ Loại Bàn: ${editingType?.name}`}
-        description={`Mã loại bàn: ${editingType?.code}`}
+        title={`Sá»­a GiĂ¡ Giá» Loáº¡i BĂ n: ${editingType?.name}`}
+        description={`MĂ£ loáº¡i bĂ n: ${editingType?.code}`}
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -497,7 +497,7 @@ export default function AdminTablesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Tên loại bàn:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">TĂªn loáº¡i bĂ n:</label>
             <Input
               value={typeName}
               onChange={(e) => setTypeName(e.target.value)}
@@ -505,19 +505,19 @@ export default function AdminTablesPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Đơn giá giờ mới (VNĐ/giờ):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">ÄÆ¡n giĂ¡ giá» má»›i (VNÄ/giá»):</label>
             <Input
               type="number"
               min={10000}
               step={5000}
               value={hourlyRate}
               onChange={(e) => setHourlyRate(Number(e.target.value))}
-              className="text-emerald-400 font-bold text-base"
+              className="text-red-400 font-bold text-base"
             />
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Mô tả đặc điểm:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">MĂ´ táº£ Ä‘áº·c Ä‘iá»ƒm:</label>
             <Input
               value={typeDescription}
               onChange={(e) => setTypeDescription(e.target.value)}
@@ -526,27 +526,27 @@ export default function AdminTablesPage() {
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setEditingType(null)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-600 font-semibold"
+              className="bg-red-600 font-semibold"
               isLoading={updateTypeMutation.isPending}
               disabled={!typeName}
               onClick={() => updateTypeMutation.mutate()}
             >
-              Cập Nhật Giá Bàn
+              Cáº­p Nháº­t GiĂ¡ BĂ n
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Modal 3: Thêm Bàn Mới */}
+      {/* Modal 3: ThĂªm BĂ n Má»›i */}
       <Modal
         isOpen={isAddTableModalOpen}
         onClose={() => setIsAddTableModalOpen(false)}
-        title="Thêm Bàn Bi-Da Mới"
-        description="Tạo bàn mới và có thể đặt giá riêng cho bàn VIP hoặc bàn đặc biệt"
+        title="ThĂªm BĂ n Bi-Da Má»›i"
+        description="Táº¡o bĂ n má»›i vĂ  cĂ³ thá»ƒ Ä‘áº·t giĂ¡ riĂªng cho bĂ n VIP hoáº·c bĂ n Ä‘áº·c biá»‡t"
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -556,7 +556,7 @@ export default function AdminTablesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Số / Mã bàn (VD: B11, VIP03):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ / MĂ£ bĂ n (VD: B11, VIP03):</label>
             <Input
               value={tableNumber}
               onChange={(e) => setTableNumber(e.target.value.toUpperCase())}
@@ -565,7 +565,7 @@ export default function AdminTablesPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Loại bàn bi-da:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Loáº¡i bĂ n bi-da:</label>
             <select
               value={tableTypeId}
               onChange={(e) => setTableTypeId(e.target.value)}
@@ -573,28 +573,28 @@ export default function AdminTablesPage() {
             >
               {tableTypes.map((t: any) => (
                 <option key={t.id} value={t.id}>
-                  {t.name} (Giá gốc loại bàn: {formatVND(t.hourlyRate)}/h)
+                  {t.name} (GiĂ¡ gá»‘c loáº¡i bĂ n: {formatVND(t.hourlyRate)}/h)
                 </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Khu vực phân bố:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Khu vá»±c phĂ¢n bá»‘:</label>
             <select
               value={area}
               onChange={(e) => setArea(e.target.value as any)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="STANDARD">Khu Tiêu Chuẩn (STANDARD)</option>
-              <option value="VIP">Phòng VIP (VIP)</option>
-              <option value="OUTDOOR">Khu Ngoài Trời (OUTDOOR)</option>
+              <option value="STANDARD">Khu TiĂªu Chuáº©n (STANDARD)</option>
+              <option value="VIP">PhĂ²ng VIP (VIP)</option>
+              <option value="OUTDOOR">Khu NgoĂ i Trá»i (OUTDOOR)</option>
             </select>
           </div>
 
           <div>
             <label className="block text-zinc-300 font-semibold mb-1">
-              Đơn giá giờ riêng của bàn này (VNĐ/giờ - Tùy chọn):
+              ÄÆ¡n giĂ¡ giá» riĂªng cá»§a bĂ n nĂ y (VNÄ/giá» - TĂ¹y chá»n):
             </label>
             <Input
               type="number"
@@ -602,31 +602,31 @@ export default function AdminTablesPage() {
               step={5000}
               value={customHourlyRate}
               onChange={(e) => setCustomHourlyRate(e.target.value)}
-              placeholder="VD: 120000 (để trống nếu dùng giá mặc định)"
+              placeholder="VD: 120000 (Ä‘á»ƒ trá»‘ng náº¿u dĂ¹ng giĂ¡ máº·c Ä‘á»‹nh)"
             />
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Ghi chú thêm:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Ghi chĂº thĂªm:</label>
             <Input
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="VD: Phòng VIP riêng tư, sofa cao cấp..."
+              placeholder="VD: PhĂ²ng VIP riĂªng tÆ°, sofa cao cáº¥p..."
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setIsAddTableModalOpen(false)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-600 font-semibold"
+              className="bg-red-600 font-semibold"
               isLoading={addTableMutation.isPending}
               disabled={!tableNumber || !tableTypeId}
               onClick={() => addTableMutation.mutate()}
             >
-              Tạo Bàn Mới
+              Táº¡o BĂ n Má»›i
             </Button>
           </div>
         </div>

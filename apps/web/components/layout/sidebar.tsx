@@ -87,7 +87,7 @@ export function Sidebar({ role }: SidebarProps) {
       <button
         onClick={toggleCollapse}
         title={isCollapsed ? "Mở rộng thanh menu (Phóng ra)" : "Thu gọn thanh menu (Thu vào)"}
-        className="absolute -right-3.5 top-6 z-30 flex h-7 w-7 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-zinc-800 shadow-md shadow-black/40 transition-all duration-200"
+        className="absolute -right-3.5 top-6 z-30 flex h-7 w-7 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-red-400 hover:border-red-500/50 hover:bg-zinc-800 shadow-md shadow-black/40 transition-all duration-200"
       >
         {isCollapsed ? (
           <ChevronRight className="h-4 w-4" />
@@ -108,7 +108,7 @@ export function Sidebar({ role }: SidebarProps) {
             <div
               onClick={isCollapsed ? toggleCollapse : undefined}
               className={cn(
-                "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold shadow-md shadow-emerald-950/60 transition-transform",
+                "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-600 text-white font-bold shadow-md shadow-red-950/60 transition-transform",
                 isCollapsed && "cursor-pointer hover:scale-105"
               )}
             >
@@ -120,7 +120,7 @@ export function Sidebar({ role }: SidebarProps) {
                 <div className="font-extrabold text-sm tracking-tight text-zinc-100">
                   ROYAL BILLIARDS
                 </div>
-                <div className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
+                <div className="text-[10px] text-red-400 font-semibold tracking-wider uppercase">
                   Cổng Quản Trị {role}
                 </div>
               </div>
@@ -154,7 +154,7 @@ export function Sidebar({ role }: SidebarProps) {
                     ? "justify-center p-2.5 h-11 w-full"
                     : "gap-3 px-3.5 py-2.5",
                   isActive
-                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-950 font-semibold"
+                    ? "bg-red-600 text-white shadow-sm shadow-red-950 font-semibold"
                     : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900",
                 )}
               >
@@ -180,9 +180,9 @@ export function Sidebar({ role }: SidebarProps) {
         {isCollapsed ? (
           <div
             title={`${user?.fullName || "Người dùng"} (${user?.email || ""})`}
-            className="flex items-center justify-center h-10 w-full rounded-lg bg-zinc-900/60 border border-zinc-800/80 text-emerald-400"
+            className="flex items-center justify-center h-10 w-full rounded-lg bg-zinc-900/60 border border-zinc-800/80 text-red-400"
           >
-            <div className="h-7 w-7 rounded-full bg-emerald-900/60 flex items-center justify-center font-bold text-xs text-emerald-300 border border-emerald-500/30">
+            <div className="h-7 w-7 rounded-full bg-red-900/60 flex items-center justify-center font-bold text-xs text-red-300 border border-red-500/30">
               {(user?.fullName || "U").charAt(0).toUpperCase()}
             </div>
           </div>

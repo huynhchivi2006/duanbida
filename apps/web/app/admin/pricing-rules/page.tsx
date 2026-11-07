@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -49,7 +49,7 @@ export default function AdminPricingRulesPage() {
 
       if (ruleType === "HOLIDAY" || ruleType === "SPECIAL_DATE") {
         if (!startDate || !endDate) {
-          throw new Error("Vui lòng chọn ngày bắt đầu và kết thúc cho ngày Lễ/Tết");
+          throw new Error("Vui lĂ²ng chá»n ngĂ y báº¯t Ä‘áº§u vĂ  káº¿t thĂºc cho ngĂ y Lá»…/Táº¿t");
         }
         payload.startDate = new Date(startDate).toISOString();
         payload.endDate = new Date(`${endDate}T23:59:59.999Z`).toISOString();
@@ -71,7 +71,7 @@ export default function AdminPricingRulesPage() {
       queryClient.invalidateQueries({ queryKey: ["admin-pricing-rules"] });
       closeModal();
     },
-    onError: (err: any) => setErrorMsg(err.message || "Lỗi khi lưu quy tắc"),
+    onError: (err: any) => setErrorMsg(err.message || "Lá»—i khi lÆ°u quy táº¯c"),
   });
 
   const deleteMutation = useMutation({
@@ -132,15 +132,15 @@ export default function AdminPricingRulesPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white">BẢNG GIÁ & PHỤ THU NGÀY LỄ / CHỦ NHẬT</h1>
+              <h1 className="text-xl sm:text-2xl font-black text-white">Báº¢NG GIĂ & PHá»¤ THU NGĂ€Y Lá»„ / CHá»¦ NHáº¬T</h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Thiết lập mức tăng giá tự động cho các ngày cao điểm: Chủ Nhật hàng tuần, Tết Nguyên Đán, Lễ 30/4 - 1/5.
+                Thiáº¿t láº­p má»©c tÄƒng giĂ¡ tá»± Ä‘á»™ng cho cĂ¡c ngĂ y cao Ä‘iá»ƒm: Chá»§ Nháº­t hĂ ng tuáº§n, Táº¿t NguyĂªn ÄĂ¡n, Lá»… 30/4 - 1/5.
               </p>
             </div>
 
-            <Button size="sm" className="gap-2 bg-emerald-600 font-semibold" onClick={openAddModal}>
+            <Button size="sm" className="gap-2 bg-red-600 font-semibold" onClick={openAddModal}>
               <Plus className="h-4 w-4" />
-              Thêm Quy Tắc Phụ Thu
+              ThĂªm Quy Táº¯c Phá»¥ Thu
             </Button>
           </div>
 
@@ -148,7 +148,7 @@ export default function AdminPricingRulesPage() {
           <Card className="border-amber-900/40 bg-amber-950/20 p-4 text-xs text-amber-200/90 flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <strong className="text-amber-300">Cơ chế tự động hóa:</strong> Khi khách hàng chơi vào ngày Chủ Nhật hoặc trong kỳ nghỉ Lễ/Tết đã kích hoạt, hệ thống sẽ tự động nhân tỷ lệ % phụ thu trên tiền giờ chơi và hiển thị chi tiết minh bạch trên hóa đơn của khách.
+              <strong className="text-amber-300">CÆ¡ cháº¿ tá»± Ä‘á»™ng hĂ³a:</strong> Khi khĂ¡ch hĂ ng chÆ¡i vĂ o ngĂ y Chá»§ Nháº­t hoáº·c trong ká»³ nghá»‰ Lá»…/Táº¿t Ä‘Ă£ kĂ­ch hoáº¡t, há»‡ thá»‘ng sáº½ tá»± Ä‘á»™ng nhĂ¢n tá»· lá»‡ % phá»¥ thu trĂªn tiá»n giá» chÆ¡i vĂ  hiá»ƒn thá»‹ chi tiáº¿t minh báº¡ch trĂªn hĂ³a Ä‘Æ¡n cá»§a khĂ¡ch.
             </div>
           </Card>
 
@@ -161,7 +161,7 @@ export default function AdminPricingRulesPage() {
             </div>
           ) : rules.length === 0 ? (
             <Card className="p-8 text-center border-zinc-800 bg-zinc-900/40 text-xs text-zinc-400">
-              Chưa có quy tắc phụ thu nào. Bấm &quot;Thêm Quy Tắc Phụ Thu&quot; để tạo mới.
+              ChÆ°a cĂ³ quy táº¯c phá»¥ thu nĂ o. Báº¥m &quot;ThĂªm Quy Táº¯c Phá»¥ Thu&quot; Ä‘á»ƒ táº¡o má»›i.
             </Card>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
@@ -169,12 +169,12 @@ export default function AdminPricingRulesPage() {
                 <table className="w-full text-left min-w-[700px]">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3 whitespace-nowrap">Tên Quy Tắc</th>
-                      <th className="p-3 whitespace-nowrap">Loại Áp Dụng</th>
-                      <th className="p-3 whitespace-nowrap">Mức Phụ Thu</th>
-                      <th className="p-3 whitespace-nowrap">Thời Gian / Chu Kỳ</th>
-                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
-                      <th className="p-3 text-right whitespace-nowrap">Hành Động</th>
+                      <th className="p-3 whitespace-nowrap">TĂªn Quy Táº¯c</th>
+                      <th className="p-3 whitespace-nowrap">Loáº¡i Ăp Dá»¥ng</th>
+                      <th className="p-3 whitespace-nowrap">Má»©c Phá»¥ Thu</th>
+                      <th className="p-3 whitespace-nowrap">Thá»i Gian / Chu Ká»³</th>
+                      <th className="p-3 whitespace-nowrap">Tráº¡ng ThĂ¡i</th>
+                      <th className="p-3 text-right whitespace-nowrap">HĂ nh Äá»™ng</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800 text-zinc-300">
@@ -191,12 +191,12 @@ export default function AdminPricingRulesPage() {
                       <td className="p-3">
                         <Badge variant="outline">
                           {rule.ruleType === "SUNDAY_ONLY"
-                            ? "Chủ Nhật"
+                            ? "Chá»§ Nháº­t"
                             : rule.ruleType === "WEEKEND"
-                            ? "Thứ 7 & CN"
+                            ? "Thá»© 7 & CN"
                             : rule.ruleType === "HOLIDAY"
-                            ? "Ngày Lễ / Tết"
-                            : "Ngày Đặc Biệt"}
+                            ? "NgĂ y Lá»… / Táº¿t"
+                            : "NgĂ y Äáº·c Biá»‡t"}
                         </Badge>
                       </td>
                       <td className="p-3">
@@ -211,15 +211,15 @@ export default function AdminPricingRulesPage() {
                       </td>
                       <td className="p-3 text-zinc-400 text-[11px]">
                         {rule.ruleType === "SUNDAY_ONLY" ? (
-                          "Mỗi Chủ Nhật hàng tuần"
+                          "Má»—i Chá»§ Nháº­t hĂ ng tuáº§n"
                         ) : rule.ruleType === "WEEKEND" ? (
-                          "Thứ Bảy & Chủ Nhật hàng tuần"
+                          "Thá»© Báº£y & Chá»§ Nháº­t hĂ ng tuáº§n"
                         ) : rule.startDate && rule.endDate ? (
                           `${new Date(rule.startDate).toLocaleDateString("vi-VN")} - ${new Date(
                             rule.endDate,
                           ).toLocaleDateString("vi-VN")}`
                         ) : (
-                          "Không giới hạn"
+                          "KhĂ´ng giá»›i háº¡n"
                         )}
                       </td>
                       <td className="p-3">
@@ -230,7 +230,7 @@ export default function AdminPricingRulesPage() {
                           className="cursor-pointer"
                         >
                           <Badge variant={rule.isActive ? "success" : "danger"}>
-                            {rule.isActive ? "ĐANG BẬT" : "ĐÃ TẮT"}
+                            {rule.isActive ? "ÄANG Báº¬T" : "ÄĂƒ Táº®T"}
                           </Badge>
                         </button>
                       </td>
@@ -242,14 +242,14 @@ export default function AdminPricingRulesPage() {
                           onClick={() => openEditModal(rule)}
                         >
                           <Edit className="h-3 w-3" />
-                          Sửa
+                          Sá»­a
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
                           className="h-7 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-950/30"
                           onClick={() => {
-                            if (confirm(`Bạn chắc chắn muốn xóa quy tắc: ${rule.name}?`)) {
+                            if (confirm(`Báº¡n cháº¯c cháº¯n muá»‘n xĂ³a quy táº¯c: ${rule.name}?`)) {
                               deleteMutation.mutate(rule.id);
                             }
                           }}
@@ -267,12 +267,12 @@ export default function AdminPricingRulesPage() {
         </div>
       </main>
 
-      {/* Modal Thêm / Sửa Quy Tắc */}
+      {/* Modal ThĂªm / Sá»­a Quy Táº¯c */}
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingRule ? "Sửa Quy Tắc Phụ Thu" : "Thêm Quy Tắc Phụ Thu Mới"}
-        description="Điều chỉnh giá giờ cho ca phục vụ ngày lễ Tết hoặc ngày cuối tuần"
+        title={editingRule ? "Sá»­a Quy Táº¯c Phá»¥ Thu" : "ThĂªm Quy Táº¯c Phá»¥ Thu Má»›i"}
+        description="Äiá»u chá»‰nh giĂ¡ giá» cho ca phá»¥c vá»¥ ngĂ y lá»… Táº¿t hoáº·c ngĂ y cuá»‘i tuáº§n"
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -282,31 +282,31 @@ export default function AdminPricingRulesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Tên Quy Tắc:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">TĂªn Quy Táº¯c:</label>
             <Input
-              placeholder="VD: Phụ thu Chủ Nhật, Tết Nguyên Đán..."
+              placeholder="VD: Phá»¥ thu Chá»§ Nháº­t, Táº¿t NguyĂªn ÄĂ¡n..."
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Loại Áp Dụng:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Loáº¡i Ăp Dá»¥ng:</label>
             <select
               value={ruleType}
               onChange={(e) => setRuleType(e.target.value as any)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="SUNDAY_ONLY">Riêng ngày Chủ Nhật hàng tuần</option>
-              <option value="WEEKEND">Cuối tuần (Thứ Bảy & Chủ Nhật)</option>
-              <option value="HOLIDAY">Ngày Lễ, Tết (theo khoảng ngày)</option>
-              <option value="SPECIAL_DATE">Sự kiện đặc biệt</option>
+              <option value="SUNDAY_ONLY">RiĂªng ngĂ y Chá»§ Nháº­t hĂ ng tuáº§n</option>
+              <option value="WEEKEND">Cuá»‘i tuáº§n (Thá»© Báº£y & Chá»§ Nháº­t)</option>
+              <option value="HOLIDAY">NgĂ y Lá»…, Táº¿t (theo khoáº£ng ngĂ y)</option>
+              <option value="SPECIAL_DATE">Sá»± kiá»‡n Ä‘áº·c biá»‡t</option>
             </select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">% Phụ Thu Trên Tiền Giờ:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">% Phá»¥ Thu TrĂªn Tiá»n Giá»:</label>
               <Input
                 type="number"
                 min={0}
@@ -316,7 +316,7 @@ export default function AdminPricingRulesPage() {
               />
             </div>
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">Phụ Thu Cố Định (VNĐ):</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Phá»¥ Thu Cá»‘ Äá»‹nh (VNÄ):</label>
               <Input
                 type="number"
                 min={0}
@@ -330,7 +330,7 @@ export default function AdminPricingRulesPage() {
           {(ruleType === "HOLIDAY" || ruleType === "SPECIAL_DATE") && (
             <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-zinc-950 border border-zinc-800">
               <div>
-                <label className="block text-zinc-300 font-semibold mb-1">Từ ngày:</label>
+                <label className="block text-zinc-300 font-semibold mb-1">Tá»« ngĂ y:</label>
                 <Input
                   type="date"
                   value={startDate}
@@ -338,7 +338,7 @@ export default function AdminPricingRulesPage() {
                 />
               </div>
               <div>
-                <label className="block text-zinc-300 font-semibold mb-1">Đến hết ngày:</label>
+                <label className="block text-zinc-300 font-semibold mb-1">Äáº¿n háº¿t ngĂ y:</label>
                 <Input
                   type="date"
                   value={endDate}
@@ -349,9 +349,9 @@ export default function AdminPricingRulesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Mô Tả / Ghi Chú:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">MĂ´ Táº£ / Ghi ChĂº:</label>
             <Input
-              placeholder="VD: Áp dụng phụ thu 15% vào ngày Chủ Nhật..."
+              placeholder="VD: Ăp dá»¥ng phá»¥ thu 15% vĂ o ngĂ y Chá»§ Nháº­t..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -363,25 +363,25 @@ export default function AdminPricingRulesPage() {
               id="isActiveCheck"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-emerald-600 focus:ring-0"
+              className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-red-600 focus:ring-0"
             />
             <label htmlFor="isActiveCheck" className="text-zinc-200 font-medium">
-              Kích hoạt áp dụng quy tắc này ngay
+              KĂ­ch hoáº¡t Ă¡p dá»¥ng quy táº¯c nĂ y ngay
             </label>
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={closeModal}>
-              Hủy Bỏ
+              Há»§y Bá»
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-600 hover:bg-emerald-500 font-semibold"
+              className="bg-red-600 hover:bg-red-500 font-semibold"
               isLoading={saveMutation.isPending}
               disabled={!name}
               onClick={() => saveMutation.mutate()}
             >
-              {editingRule ? "Lưu Thay Đổi" : "Tạo Quy Tắc"}
+              {editingRule ? "LÆ°u Thay Äá»•i" : "Táº¡o Quy Táº¯c"}
             </Button>
           </div>
         </div>

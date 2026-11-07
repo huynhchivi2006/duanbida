@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -45,25 +45,25 @@ export default function AdminMembershipPage() {
   const [giftStock, setGiftStock] = useState(50);
   const [giftDesc, setGiftDesc] = useState("");
 
-  // 1. Lấy danh sách hạng thành viên
+  // 1. Láº¥y danh sĂ¡ch háº¡ng thĂ nh viĂªn
   const { data: tiers = [], isLoading: isLoadingTiers } = useQuery({
     queryKey: ["admin-membership-tiers"],
     queryFn: () => apiClient("/membership/tiers"),
   });
 
-  // 2. Lấy danh mục quà tặng đổi điểm
+  // 2. Láº¥y danh má»¥c quĂ  táº·ng Ä‘á»•i Ä‘iá»ƒm
   const { data: gifts = [], isLoading: isLoadingGifts } = useQuery({
     queryKey: ["admin-membership-gifts"],
     queryFn: () => apiClient("/membership/gifts"),
   });
 
-  // 3. Lấy danh sách đổi quà
+  // 3. Láº¥y danh sĂ¡ch Ä‘á»•i quĂ 
   const { data: redemptions = [], isLoading: isLoadingRedemptions } = useQuery({
     queryKey: ["admin-membership-redemptions"],
     queryFn: () => apiClient("/membership/redemptions"),
   });
 
-  // Mutation cập nhật cấu hình hạng
+  // Mutation cáº­p nháº­t cáº¥u hĂ¬nh háº¡ng
   const updateTierMutation = useMutation({
     mutationFn: async () => {
       if (!editingTier) return;
@@ -83,10 +83,10 @@ export default function AdminMembershipPage() {
       queryClient.invalidateQueries({ queryKey: ["admin-membership-tiers"] });
       setEditingTier(null);
     },
-    onError: (err: any) => alert(err.message || "Lỗi khi cập nhật cấu hình hạng"),
+    onError: (err: any) => alert(err.message || "Lá»—i khi cáº­p nháº­t cáº¥u hĂ¬nh háº¡ng"),
   });
 
-  // Mutation thêm quà mới
+  // Mutation thĂªm quĂ  má»›i
   const addGiftMutation = useMutation({
     mutationFn: async () => {
       return apiClient("/membership/gifts", {
@@ -107,10 +107,10 @@ export default function AdminMembershipPage() {
       setGiftStock(50);
       setGiftDesc("");
     },
-    onError: (err: any) => alert(err.message || "Lỗi khi thêm quà tặng"),
+    onError: (err: any) => alert(err.message || "Lá»—i khi thĂªm quĂ  táº·ng"),
   });
 
-  // Mutation xóa quà
+  // Mutation xĂ³a quĂ 
   const deleteGiftMutation = useMutation({
     mutationFn: async (id: string) => {
       return apiClient(`/membership/gifts/${id}`, { method: "DELETE" });
@@ -118,7 +118,7 @@ export default function AdminMembershipPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-membership-gifts"] }),
   });
 
-  // Mutation xác nhận trao quà
+  // Mutation xĂ¡c nháº­n trao quĂ 
   const claimRedemptionMutation = useMutation({
     mutationFn: async (id: string) => {
       return apiClient(`/membership/redemptions/${id}/status`, {
@@ -149,22 +149,22 @@ export default function AdminMembershipPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-black text-white flex items-center gap-2">
-                <Award className="h-6 w-6 text-emerald-400" />
-                HỘI VIÊN, PHÂN HẠNG & TÍCH ĐIỂM ĐỔI QUÀ
+                <Award className="h-6 w-6 text-red-400" />
+                Há»˜I VIĂN, PHĂ‚N Háº NG & TĂCH ÄIá»‚M Äá»”I QUĂ€
               </h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Quản lý các hạng thẻ thành viên (Silver, Gold, VIP), cấu hình quyền lợi ưu đãi và kho quà tặng đổi điểm.
+                Quáº£n lĂ½ cĂ¡c háº¡ng tháº» thĂ nh viĂªn (Silver, Gold, VIP), cáº¥u hĂ¬nh quyá»n lá»£i Æ°u Ä‘Ă£i vĂ  kho quĂ  táº·ng Ä‘á»•i Ä‘iá»ƒm.
               </p>
             </div>
 
             {activeTab === "gifts" && (
               <Button
                 size="sm"
-                className="gap-2 bg-emerald-600 font-semibold"
+                className="gap-2 bg-red-600 font-semibold"
                 onClick={() => setIsAddGiftOpen(true)}
               >
                 <Plus className="h-4 w-4" />
-                Thêm Quà Tặng Mới
+                ThĂªm QuĂ  Táº·ng Má»›i
               </Button>
             )}
           </div>
@@ -172,9 +172,9 @@ export default function AdminMembershipPage() {
           {/* Navigation Tabs */}
           <div className="flex border-b border-zinc-800 gap-2">
             {[
-              { id: "tiers", label: "Cấu Hình Hạng Thẻ & Ưu Đãi", icon: Award },
-              { id: "gifts", label: "Danh Mục Quà Đổi Điểm", icon: Gift },
-              { id: "redemptions", label: "Yêu Cầu Đổi Quà Của Khách", icon: Clock },
+              { id: "tiers", label: "Cáº¥u HĂ¬nh Háº¡ng Tháº» & Æ¯u ÄĂ£i", icon: Award },
+              { id: "gifts", label: "Danh Má»¥c QuĂ  Äá»•i Äiá»ƒm", icon: Gift },
+              { id: "redemptions", label: "YĂªu Cáº§u Äá»•i QuĂ  Cá»§a KhĂ¡ch", icon: Clock },
             ].map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -184,7 +184,7 @@ export default function AdminMembershipPage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 transition-colors ${
                     isActive
-                      ? "border-emerald-500 text-emerald-400 bg-emerald-950/20"
+                      ? "border-red-500 text-red-400 bg-red-950/20"
                       : "border-transparent text-zinc-400 hover:text-zinc-200"
                   }`}
                 >
@@ -222,7 +222,7 @@ export default function AdminMembershipPage() {
                         <button
                           onClick={() => openEditTierModal(tier)}
                           className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                          title="Sửa cấu hình"
+                          title="Sá»­a cáº¥u hĂ¬nh"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </button>
@@ -230,24 +230,24 @@ export default function AdminMembershipPage() {
 
                       <h3 className="font-bold text-white text-base mt-2">{tier.name}</h3>
                       <p className="text-zinc-400 text-xs mt-1 min-h-[32px]">
-                        {tier.description || "Chưa có mô tả"}
+                        {tier.description || "ChÆ°a cĂ³ mĂ´ táº£"}
                       </p>
 
                       <div className="mt-4 pt-4 border-t border-zinc-800/80 space-y-2 text-xs">
                         <div className="flex justify-between">
-                          <span className="text-zinc-500">Chi tiêu đạt mốc:</span>
+                          <span className="text-zinc-500">Chi tiĂªu Ä‘áº¡t má»‘c:</span>
                           <strong className="text-white">{formatVND(Number(tier.minSpending))}</strong>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-zinc-500">Giảm tiền giờ:</span>
-                          <strong className="text-emerald-400">-{tier.discountTablePercent}%</strong>
+                          <span className="text-zinc-500">Giáº£m tiá»n giá»:</span>
+                          <strong className="text-red-400">-{tier.discountTablePercent}%</strong>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-zinc-500">Giảm tiền F&B:</span>
-                          <strong className="text-emerald-400">-{tier.discountServicePercent}%</strong>
+                          <span className="text-zinc-500">Giáº£m tiá»n F&B:</span>
+                          <strong className="text-red-400">-{tier.discountServicePercent}%</strong>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-zinc-500">Hệ số tích điểm:</span>
+                          <span className="text-zinc-500">Há»‡ sá»‘ tĂ­ch Ä‘iá»ƒm:</span>
                           <strong className="text-amber-300">x{tier.pointMultiplier}</strong>
                         </div>
                       </div>
@@ -260,7 +260,7 @@ export default function AdminMembershipPage() {
                       className="mt-5 w-full text-xs font-semibold"
                     >
                       <Settings className="h-3.5 w-3.5 mr-1" />
-                      Điều Chỉnh Ưu Đãi
+                      Äiá»u Chá»‰nh Æ¯u ÄĂ£i
                     </Button>
                   </Card>
                 ))}
@@ -274,12 +274,12 @@ export default function AdminMembershipPage() {
               <table className="w-full text-left">
                 <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                   <tr>
-                    <th className="p-3">Tên Phần Quà</th>
-                    <th className="p-3">Điểm Yêu Cầu</th>
-                    <th className="p-3">Tồn Kho</th>
-                    <th className="p-3">Mô Tả</th>
-                    <th className="p-3">Trạng Thái</th>
-                    <th className="p-3 text-right">Thao Tác</th>
+                    <th className="p-3">TĂªn Pháº§n QuĂ </th>
+                    <th className="p-3">Äiá»ƒm YĂªu Cáº§u</th>
+                    <th className="p-3">Tá»“n Kho</th>
+                    <th className="p-3">MĂ´ Táº£</th>
+                    <th className="p-3">Tráº¡ng ThĂ¡i</th>
+                    <th className="p-3 text-right">Thao TĂ¡c</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800">
@@ -291,7 +291,7 @@ export default function AdminMembershipPage() {
                       <td className="p-3 text-zinc-400 max-w-xs truncate">{gift.description}</td>
                       <td className="p-3">
                         <Badge variant={gift.isActive ? "success" : "default"}>
-                          {gift.isActive ? "Đang áp dụng" : "Tạm dừng"}
+                          {gift.isActive ? "Äang Ă¡p dá»¥ng" : "Táº¡m dá»«ng"}
                         </Badge>
                       </td>
                       <td className="p-3 text-right">
@@ -299,7 +299,7 @@ export default function AdminMembershipPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            if (confirm(`Bạn có chắc muốn xóa quà "${gift.name}"?`)) {
+                            if (confirm(`Báº¡n cĂ³ cháº¯c muá»‘n xĂ³a quĂ  "${gift.name}"?`)) {
                               deleteGiftMutation.mutate(gift.id);
                             }
                           }}
@@ -321,13 +321,13 @@ export default function AdminMembershipPage() {
               <table className="w-full text-left">
                 <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                   <tr>
-                    <th className="p-3">Khách Hàng</th>
-                    <th className="p-3">Số Điện Thoại</th>
-                    <th className="p-3">Phần Quà</th>
-                    <th className="p-3">Điểm Đã Trừ</th>
-                    <th className="p-3">Thời Gian Yêu Cầu</th>
-                    <th className="p-3">Trạng Thái</th>
-                    <th className="p-3 text-right">Hành Động</th>
+                    <th className="p-3">KhĂ¡ch HĂ ng</th>
+                    <th className="p-3">Sá»‘ Äiá»‡n Thoáº¡i</th>
+                    <th className="p-3">Pháº§n QuĂ </th>
+                    <th className="p-3">Äiá»ƒm ÄĂ£ Trá»«</th>
+                    <th className="p-3">Thá»i Gian YĂªu Cáº§u</th>
+                    <th className="p-3">Tráº¡ng ThĂ¡i</th>
+                    <th className="p-3 text-right">HĂ nh Äá»™ng</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800">
@@ -340,9 +340,9 @@ export default function AdminMembershipPage() {
                       <td className="p-3 text-zinc-400">{formatDateTimeVN(red.createdAt)}</td>
                       <td className="p-3">
                         {red.status === "CLAIMED" ? (
-                          <Badge variant="success">Đã Trao Quà</Badge>
+                          <Badge variant="success">ÄĂ£ Trao QuĂ </Badge>
                         ) : (
-                          <Badge variant="warning">Chờ Trao Quà</Badge>
+                          <Badge variant="warning">Chá» Trao QuĂ </Badge>
                         )}
                       </td>
                       <td className="p-3 text-right">
@@ -350,9 +350,9 @@ export default function AdminMembershipPage() {
                           <Button
                             size="sm"
                             onClick={() => claimRedemptionMutation.mutate(red.id)}
-                            className="bg-emerald-600 hover:bg-emerald-500 font-bold text-xs h-7"
+                            className="bg-red-600 hover:bg-red-500 font-bold text-xs h-7"
                           >
-                            Xác Nhận Trao Quà
+                            XĂ¡c Nháº­n Trao QuĂ 
                           </Button>
                         )}
                       </td>
@@ -368,17 +368,17 @@ export default function AdminMembershipPage() {
             <Modal
               isOpen={!!editingTier}
               onClose={() => setEditingTier(null)}
-              title={`Cấu Hình Ưu Đãi Hạng ${editingTier.tier}`}
+              title={`Cáº¥u HĂ¬nh Æ¯u ÄĂ£i Háº¡ng ${editingTier.tier}`}
             >
               <div className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Tên hiển thị:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">TĂªn hiá»ƒn thá»‹:</label>
                   <Input value={tierName} onChange={(e) => setTierName(e.target.value)} />
                 </div>
 
                 <div>
                   <label className="block text-zinc-300 font-semibold mb-1">
-                    Mức chi tiêu tối thiểu để thăng hạng (VNĐ):
+                    Má»©c chi tiĂªu tá»‘i thiá»ƒu Ä‘á»ƒ thÄƒng háº¡ng (VNÄ):
                   </label>
                   <Input
                     type="number"
@@ -389,7 +389,7 @@ export default function AdminMembershipPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Chiết khấu tiền giờ (%):</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Chiáº¿t kháº¥u tiá»n giá» (%):</label>
                     <Input
                       type="number"
                       value={tierDiscountTable}
@@ -397,7 +397,7 @@ export default function AdminMembershipPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Chiết khấu đồ F&B (%):</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Chiáº¿t kháº¥u Ä‘á»“ F&B (%):</label>
                     <Input
                       type="number"
                       value={tierDiscountService}
@@ -408,7 +408,7 @@ export default function AdminMembershipPage() {
 
                 <div>
                   <label className="block text-zinc-300 font-semibold mb-1">
-                    Hệ số nhân tích điểm (1.0 = chuẩn, 1.5 = gấp rưỡi, 2.0 = gấp đôi):
+                    Há»‡ sá»‘ nhĂ¢n tĂ­ch Ä‘iá»ƒm (1.0 = chuáº©n, 1.5 = gáº¥p rÆ°á»¡i, 2.0 = gáº¥p Ä‘Ă´i):
                   </label>
                   <Input
                     type="number"
@@ -419,21 +419,21 @@ export default function AdminMembershipPage() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Mô tả quyền lợi:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">MĂ´ táº£ quyá»n lá»£i:</label>
                   <Input value={tierDescription} onChange={(e) => setTierDescription(e.target.value)} />
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" size="sm" onClick={() => setEditingTier(null)}>
-                    Hủy
+                    Há»§y
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-emerald-600 font-bold"
+                    className="bg-red-600 font-bold"
                     isLoading={updateTierMutation.isPending}
                     onClick={() => updateTierMutation.mutate()}
                   >
-                    Lưu Thay Đổi
+                    LÆ°u Thay Äá»•i
                   </Button>
                 </div>
               </div>
@@ -445,13 +445,13 @@ export default function AdminMembershipPage() {
             <Modal
               isOpen={isAddGiftOpen}
               onClose={() => setIsAddGiftOpen(false)}
-              title="Thêm Quà Tặng Đổi Điểm Mới"
+              title="ThĂªm QuĂ  Táº·ng Äá»•i Äiá»ƒm Má»›i"
             >
               <div className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Tên phần quà:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">TĂªn pháº§n quĂ :</label>
                   <Input
-                    placeholder="VD: 01 Giờ chơi bida miễn phí"
+                    placeholder="VD: 01 Giá» chÆ¡i bida miá»…n phĂ­"
                     value={giftName}
                     onChange={(e) => setGiftName(e.target.value)}
                   />
@@ -459,7 +459,7 @@ export default function AdminMembershipPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Số điểm cần đổi (PTS):</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ Ä‘iá»ƒm cáº§n Ä‘á»•i (PTS):</label>
                     <Input
                       type="number"
                       value={giftPoints}
@@ -467,7 +467,7 @@ export default function AdminMembershipPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Số lượng tồn kho:</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ lÆ°á»£ng tá»“n kho:</label>
                     <Input
                       type="number"
                       value={giftStock}
@@ -477,9 +477,9 @@ export default function AdminMembershipPage() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Mô tả quà tặng:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">MĂ´ táº£ quĂ  táº·ng:</label>
                   <Input
-                    placeholder="Mô tả chi tiết quyền lợi..."
+                    placeholder="MĂ´ táº£ chi tiáº¿t quyá»n lá»£i..."
                     value={giftDesc}
                     onChange={(e) => setGiftDesc(e.target.value)}
                   />
@@ -487,15 +487,15 @@ export default function AdminMembershipPage() {
 
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" size="sm" onClick={() => setIsAddGiftOpen(false)}>
-                    Hủy
+                    Há»§y
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-emerald-600 font-bold"
+                    className="bg-red-600 font-bold"
                     isLoading={addGiftMutation.isPending}
                     onClick={() => addGiftMutation.mutate()}
                   >
-                    Tạo Quà Tặng
+                    Táº¡o QuĂ  Táº·ng
                   </Button>
                 </div>
               </div>

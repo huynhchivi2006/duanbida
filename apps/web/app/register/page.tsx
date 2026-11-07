@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -23,12 +23,12 @@ export default function RegisterPage() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp.");
+      setError("Máº­t kháº©u xĂ¡c nháº­n khĂ´ng khá»›p.");
       return;
     }
 
     if (password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự.");
+      setError("Máº­t kháº©u pháº£i cĂ³ Ă­t nháº¥t 6 kĂ½ tá»±.");
       return;
     }
 
@@ -42,7 +42,7 @@ export default function RegisterPage() {
         password,
       });
     } catch (err: any) {
-      setError(err.message || "Đăng ký không thành công. Vui lòng thử lại.");
+      setError(err.message || "ÄÄƒng kĂ½ khĂ´ng thĂ nh cĂ´ng. Vui lĂ²ng thá»­ láº¡i.");
     } finally {
       setIsLoading(false);
     }
@@ -52,21 +52,21 @@ export default function RegisterPage() {
     <div className="min-h-screen flex flex-col justify-center items-center bg-zinc-950 p-4 relative">
       <div className="mb-6 text-center">
         <Link href="/" className="inline-flex items-center gap-2 mb-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white font-black shadow-lg shadow-emerald-900/60">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-600 text-white font-black shadow-lg shadow-red-900/60">
             <CircleDot className="h-6 w-6" />
           </div>
           <span className="font-extrabold text-2xl tracking-tight text-white">
-            ROYAL <span className="text-emerald-500">BILLIARDS</span>
+            ROYAL <span className="text-red-500">BILLIARDS</span>
           </span>
         </Link>
-        <p className="text-xs text-zinc-400">Tạo tài khoản để theo dõi lịch đặt và hưởng ưu đãi</p>
+        <p className="text-xs text-zinc-400">Táº¡o tĂ i khoáº£n Ä‘á»ƒ theo dĂµi lá»‹ch Ä‘áº·t vĂ  hÆ°á»Ÿng Æ°u Ä‘Ă£i</p>
       </div>
 
       <Card className="w-full max-w-md border-zinc-800 bg-zinc-900/80 shadow-2xl backdrop-blur-md">
         <CardHeader className="text-center pb-4">
-          <CardTitle className="text-xl font-bold text-white">Đăng Ký Thành Viên</CardTitle>
+          <CardTitle className="text-xl font-bold text-white">ÄÄƒng KĂ½ ThĂ nh ViĂªn</CardTitle>
           <CardDescription className="text-xs text-zinc-400">
-            Trải nghiệm dịch vụ đặt bàn bi-da cao cấp trực tuyến
+            Tráº£i nghiá»‡m dá»‹ch vá»¥ Ä‘áº·t bĂ n bi-da cao cáº¥p trá»±c tuyáº¿n
           </CardDescription>
         </CardHeader>
 
@@ -81,10 +81,10 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Họ và tên
+                Há» vĂ  tĂªn
               </label>
               <Input
-                placeholder="Nguyễn Văn An"
+                placeholder="Nguyá»…n VÄƒn An"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
@@ -93,7 +93,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Địa chỉ Email
+                Äá»‹a chá»‰ Email
               </label>
               <Input
                 type="email"
@@ -106,7 +106,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Số điện thoại
+                Sá»‘ Ä‘iá»‡n thoáº¡i
               </label>
               <Input
                 type="tel"
@@ -118,11 +118,11 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Mật khẩu (tối thiểu 6 ký tự)
+                Máº­t kháº©u (tá»‘i thiá»ƒu 6 kĂ½ tá»±)
               </label>
               <Input
                 type="password"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -131,11 +131,11 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                Xác nhận mật khẩu
+                XĂ¡c nháº­n máº­t kháº©u
               </label>
               <Input
                 type="password"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -143,16 +143,16 @@ export default function RegisterPage() {
             </div>
 
             <Button type="submit" isLoading={isLoading} className="w-full text-sm font-semibold mt-3">
-              Hoàn Tất Đăng Ký
+              HoĂ n Táº¥t ÄÄƒng KĂ½
             </Button>
           </form>
         </CardContent>
 
         <CardFooter className="flex justify-center border-t border-zinc-800/80 pt-4">
           <p className="text-xs text-zinc-400">
-            Đã có tài khoản?{" "}
-            <Link href="/login" className="text-emerald-400 hover:underline font-semibold">
-              Đăng nhập ngay
+            ÄĂ£ cĂ³ tĂ i khoáº£n?{" "}
+            <Link href="/login" className="text-red-400 hover:underline font-semibold">
+              ÄÄƒng nháº­p ngay
             </Link>
           </p>
         </CardFooter>

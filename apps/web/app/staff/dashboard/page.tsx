@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -65,11 +65,11 @@ export default function StaffDashboardPage() {
     queryFn: () => apiClient("/users", { params: { role: "STAFF" } }),
   });
 
-  // Chuyển bàn khi khách muốn đổi vị trí
+  // Chuyá»ƒn bĂ n khi khĂ¡ch muá»‘n Ä‘á»•i vá»‹ trĂ­
   const switchTableMutation = useMutation({
     mutationFn: async () => {
       if (!selectedTable?.id || !targetSwitchTableId) {
-        throw new Error("Vui lòng chọn bàn đích muốn chuyển đến");
+        throw new Error("Vui lĂ²ng chá»n bĂ n Ä‘Ă­ch muá»‘n chuyá»ƒn Ä‘áº¿n");
       }
       return apiClient("/tables/switch", {
         method: "POST",
@@ -86,16 +86,16 @@ export default function StaffDashboardPage() {
       setSelectedTable(null);
       setTargetSwitchTableId("");
       setSwitchReason("");
-      alert(res?.message || "✅ Chuyển bàn thành công!");
+      alert(res?.message || "âœ… Chuyá»ƒn bĂ n thĂ nh cĂ´ng!");
     },
-    onError: (err: any) => alert(err.message || "Không thể chuyển bàn"),
+    onError: (err: any) => alert(err.message || "KhĂ´ng thá»ƒ chuyá»ƒn bĂ n"),
   });
 
-  // Gộp bàn khi nhóm khách muốn gộp thanh toán chung
+  // Gá»™p bĂ n khi nhĂ³m khĂ¡ch muá»‘n gá»™p thanh toĂ¡n chung
   const mergeTableMutation = useMutation({
     mutationFn: async () => {
       if (!selectedTable?.id || !targetMergeTableId) {
-        throw new Error("Vui lòng chọn bàn đích để gộp vào");
+        throw new Error("Vui lĂ²ng chá»n bĂ n Ä‘Ă­ch Ä‘á»ƒ gá»™p vĂ o");
       }
       return apiClient("/tables/merge", {
         method: "POST",
@@ -110,12 +110,12 @@ export default function StaffDashboardPage() {
       setIsMergeModalOpen(false);
       setSelectedTable(null);
       setTargetMergeTableId("");
-      alert(res?.message || "✅ Gộp bàn thành công!");
+      alert(res?.message || "âœ… Gá»™p bĂ n thĂ nh cĂ´ng!");
     },
-    onError: (err: any) => alert(err.message || "Không thể gộp bàn"),
+    onError: (err: any) => alert(err.message || "KhĂ´ng thá»ƒ gá»™p bĂ n"),
   });
 
-  // Mở bàn nhanh cho khách vãng lai
+  // Má»Ÿ bĂ n nhanh cho khĂ¡ch vĂ£ng lai
   const quickOpenMutation = useMutation({
     mutationFn: (tableId: string) =>
       apiClient(`/invoices/quick-open/${tableId}`, {
@@ -123,12 +123,12 @@ export default function StaffDashboardPage() {
       }),
     onSuccess: (res: any) => {
       queryClient.invalidateQueries({ queryKey: ["staff-tables"] });
-      alert(res?.message || "✅ Đã mở bàn thành công! Bắt đầu tính giờ chơi.");
+      alert(res?.message || "âœ… ÄĂ£ má»Ÿ bĂ n thĂ nh cĂ´ng! Báº¯t Ä‘áº§u tĂ­nh giá» chÆ¡i.");
     },
-    onError: (err: any) => alert(err.message || "Không thể mở bàn"),
+    onError: (err: any) => alert(err.message || "KhĂ´ng thá»ƒ má»Ÿ bĂ n"),
   });
 
-  // Order đồ uống / món ăn trong lúc bàn đang chơi
+  // Order Ä‘á»“ uá»‘ng / mĂ³n Äƒn trong lĂºc bĂ n Ä‘ang chÆ¡i
   const addSessionOrderMutation = useMutation({
     mutationFn: async () => {
       const currentTable = tables.find((t: any) => t.id === selectedTable?.id) || selectedTable;
@@ -136,11 +136,11 @@ export default function StaffDashboardPage() {
 
       if (!activeSession?.id) {
         throw new Error(
-          `Bàn ${currentTable?.tableNumber || ""} chưa được mở phiên chơi. Vui lòng bấm "Mở Bàn Nhanh" trước khi gọi món!`
+          `BĂ n ${currentTable?.tableNumber || ""} chÆ°a Ä‘Æ°á»£c má»Ÿ phiĂªn chÆ¡i. Vui lĂ²ng báº¥m "Má»Ÿ BĂ n Nhanh" trÆ°á»›c khi gá»i mĂ³n!`
         );
       }
 
-      // Thử gọi endpoint session (hỗ trợ cả server Wispbyte hiện tại và local)
+      // Thá»­ gá»i endpoint session (há»— trá»£ cáº£ server Wispbyte hiá»‡n táº¡i vĂ  local)
       try {
         return await apiClient(`/invoices/session/${activeSession.id}/order`, {
           method: "POST",
@@ -150,7 +150,7 @@ export default function StaffDashboardPage() {
           }),
         });
       } catch (err: any) {
-        // Fallback sang endpoint table nếu backend mới
+        // Fallback sang endpoint table náº¿u backend má»›i
         return await apiClient(`/invoices/table/${currentTable.id}/order`, {
           method: "POST",
           body: JSON.stringify({
@@ -165,12 +165,12 @@ export default function StaffDashboardPage() {
       setIsOrderModalOpen(false);
       setSelectedServiceId("");
       setOrderQuantity(1);
-      alert("✅ Đã gọi món thành công vào bàn!");
+      alert("âœ… ÄĂ£ gá»i mĂ³n thĂ nh cĂ´ng vĂ o bĂ n!");
     },
-    onError: (err: any) => alert(err.message || "Lỗi khi gọi món"),
+    onError: (err: any) => alert(err.message || "Lá»—i khi gá»i mĂ³n"),
   });
 
-  // Gán nhân viên phục vụ bàn (xếp bi / đứng bàn)
+  // GĂ¡n nhĂ¢n viĂªn phá»¥c vá»¥ bĂ n (xáº¿p bi / Ä‘á»©ng bĂ n)
   const assignStaffMutation = useMutation({
     mutationFn: async () => {
       const currentTable = tables.find((t: any) => t.id === selectedTable?.id) || selectedTable;
@@ -178,7 +178,7 @@ export default function StaffDashboardPage() {
 
       if (!activeSession?.id) {
         throw new Error(
-          `Bàn ${currentTable?.tableNumber || ""} chưa được mở phiên chơi. Vui lòng bấm "Mở Bàn Nhanh" trước khi phân công nhân viên!`
+          `BĂ n ${currentTable?.tableNumber || ""} chÆ°a Ä‘Æ°á»£c má»Ÿ phiĂªn chÆ¡i. Vui lĂ²ng báº¥m "Má»Ÿ BĂ n Nhanh" trÆ°á»›c khi phĂ¢n cĂ´ng nhĂ¢n viĂªn!`
         );
       }
 
@@ -209,9 +209,9 @@ export default function StaffDashboardPage() {
       setIsStaffModalOpen(false);
       setSelectedStaffId("");
       setStaffNotes("");
-      alert("✅ Đã phân công nhân viên phục vụ bàn!");
+      alert("âœ… ÄĂ£ phĂ¢n cĂ´ng nhĂ¢n viĂªn phá»¥c vá»¥ bĂ n!");
     },
-    onError: (err: any) => alert(err.message || "Lỗi khi gán nhân viên"),
+    onError: (err: any) => alert(err.message || "Lá»—i khi gĂ¡n nhĂ¢n viĂªn"),
   });
 
   const currentTable = tables.find((t: any) => t.id === selectedTable?.id) || selectedTable;
@@ -234,9 +234,9 @@ export default function StaffDashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-black text-white">SƠ ĐỒ BÀN TRỰC QUAN (CA LÀM VIỆC)</h1>
+              <h1 className="text-2xl font-black text-white">SÆ  Äá»’ BĂ€N TRá»°C QUAN (CA LĂ€M VIá»†C)</h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Quản lý bàn thời gian thực: mở bàn nhanh, gọi thêm món, gán nhân viên xếp bi và xuất mã QR.
+                Quáº£n lĂ½ bĂ n thá»i gian thá»±c: má»Ÿ bĂ n nhanh, gá»i thĂªm mĂ³n, gĂ¡n nhĂ¢n viĂªn xáº¿p bi vĂ  xuáº¥t mĂ£ QR.
               </p>
             </div>
 
@@ -248,12 +248,12 @@ export default function StaffDashboardPage() {
                 className="text-xs gap-1.5"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
-                Làm Mới
+                LĂ m Má»›i
               </Button>
               <Link href="/staff/billing">
-                <Button size="sm" className="text-xs gap-1.5 bg-emerald-600">
+                <Button size="sm" className="text-xs gap-1.5 bg-red-600">
                   <Receipt className="h-4 w-4" />
-                  Quầy Thu Ngân & POS
+                  Quáº§y Thu NgĂ¢n & POS
                 </Button>
               </Link>
             </div>
@@ -261,22 +261,22 @@ export default function StaffDashboardPage() {
 
           {/* Quick Status Legend */}
           <div className="flex flex-wrap items-center gap-4 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800 text-xs">
-            <span className="font-semibold text-zinc-300">Chú thích trạng thái:</span>
+            <span className="font-semibold text-zinc-300">ChĂº thĂ­ch tráº¡ng thĂ¡i:</span>
             <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full bg-emerald-500" />
-              <span className="text-zinc-300">Bàn Trống (Sẵn Sàng)</span>
+              <span className="h-3 w-3 rounded-full bg-red-500" />
+              <span className="text-zinc-300">BĂ n Trá»‘ng (Sáºµn SĂ ng)</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-rose-500 animate-pulse" />
-              <span className="text-zinc-300">Đang Chơi (Bấm để gọi món/QR)</span>
+              <span className="text-zinc-300">Äang ChÆ¡i (Báº¥m Ä‘á»ƒ gá»i mĂ³n/QR)</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-amber-500" />
-              <span className="text-zinc-300">Có Lịch Đặt Trước</span>
+              <span className="text-zinc-300">CĂ³ Lá»‹ch Äáº·t TrÆ°á»›c</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-zinc-600" />
-              <span className="text-zinc-400">Bảo Trì</span>
+              <span className="text-zinc-400">Báº£o TrĂ¬</span>
             </div>
           </div>
 
@@ -300,7 +300,7 @@ export default function StaffDashboardPage() {
                     className={`border-zinc-800 transition-all cursor-pointer relative overflow-hidden ${
                       isPlaying
                         ? "bg-rose-950/20 border-rose-800/60 hover:border-rose-500 shadow-lg shadow-rose-950/30"
-                        : "bg-zinc-900/70 hover:border-emerald-500/60"
+                        : "bg-zinc-900/70 hover:border-red-500/60"
                     }`}
                     onClick={() => setSelectedTable(table)}
                   >
@@ -310,7 +310,7 @@ export default function StaffDashboardPage() {
                           ? "bg-rose-500"
                           : table.status === "MAINTENANCE"
                           ? "bg-zinc-600"
-                          : "bg-emerald-500"
+                          : "bg-red-500"
                       }`}
                     />
 
@@ -331,7 +331,7 @@ export default function StaffDashboardPage() {
                                 : "success"
                             }
                           >
-                            {isPlaying ? "ĐANG CHƠI" : table.status === "AVAILABLE" ? "SẴN SÀNG" : table.status}
+                            {isPlaying ? "ÄANG CHÆ I" : table.status === "AVAILABLE" ? "Sáº´N SĂ€NG" : table.status}
                           </Badge>
                         </div>
 
@@ -339,7 +339,7 @@ export default function StaffDashboardPage() {
                           {table.tableType?.name}
                         </div>
                         <div className="text-[11px] text-zinc-400 mt-0.5">
-                          Khu: {table.area} • {formatVND(table.hourlyRate || table.tableType?.hourlyRate)}/h
+                          Khu: {table.area} â€¢ {formatVND(table.hourlyRate || table.tableType?.hourlyRate)}/h
                         </div>
                       </div>
 
@@ -347,13 +347,13 @@ export default function StaffDashboardPage() {
                         {isPlaying ? (
                           <div className="text-rose-400 font-semibold flex items-center gap-1">
                             <Clock className="h-3.5 w-3.5 animate-spin" />
-                            <span>Đang tính giờ</span>
+                            <span>Äang tĂ­nh giá»</span>
                           </div>
                         ) : (
-                          <span className="text-emerald-400 font-medium">Bấm để mở bàn</span>
+                          <span className="text-red-400 font-medium">Báº¥m Ä‘á»ƒ má»Ÿ bĂ n</span>
                         )}
 
-                        <span className="text-[11px] text-zinc-500 underline">Thao tác</span>
+                        <span className="text-[11px] text-zinc-500 underline">Thao tĂ¡c</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -368,25 +368,25 @@ export default function StaffDashboardPage() {
       <Modal
         isOpen={Boolean(selectedTable)}
         onClose={() => setSelectedTable(null)}
-        title={`Thao Tác Bàn ${selectedTable?.tableNumber}`}
+        title={`Thao TĂ¡c BĂ n ${selectedTable?.tableNumber}`}
         description={`${selectedTable?.tableType?.name} (${selectedTable?.area})`}
       >
         {selectedTable && (
           <div className="space-y-4 text-xs">
             <div className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-2">
               <div className="flex justify-between">
-                <span className="text-zinc-400">Trạng thái:</span>
+                <span className="text-zinc-400">Tráº¡ng thĂ¡i:</span>
                 <span className="font-bold text-white">{selectedTable.status}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">Đơn giá giờ:</span>
-                <span className="font-bold text-emerald-400">
-                  {formatVND(selectedTable.hourlyRate || selectedTable.tableType?.hourlyRate)} / giờ
+                <span className="text-zinc-400">ÄÆ¡n giĂ¡ giá»:</span>
+                <span className="font-bold text-red-400">
+                  {formatVND(selectedTable.hourlyRate || selectedTable.tableType?.hourlyRate)} / giá»
                 </span>
               </div>
               {selectedTable.playSessions?.[0] && (
                 <div className="flex justify-between pt-1 border-t border-zinc-800">
-                  <span className="text-zinc-400">Mã phiên chơi:</span>
+                  <span className="text-zinc-400">MĂ£ phiĂªn chÆ¡i:</span>
                   <span className="font-mono font-bold text-zinc-200">
                     {selectedTable.playSessions[0].sessionCode}
                   </span>
@@ -398,11 +398,11 @@ export default function StaffDashboardPage() {
             {selectedTable.playSessions?.[0] ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                 <Button
-                  className="bg-emerald-600 hover:bg-emerald-500 text-xs gap-1.5 h-10"
+                  className="bg-red-600 hover:bg-red-500 text-xs gap-1.5 h-10"
                   onClick={() => setIsOrderModalOpen(true)}
                 >
                   <UtensilsCrossed className="h-4 w-4" />
-                  Gọi Thêm Đồ Uống / Món
+                  Gá»i ThĂªm Äá»“ Uá»‘ng / MĂ³n
                 </Button>
 
                 <Button
@@ -415,7 +415,7 @@ export default function StaffDashboardPage() {
                   }}
                 >
                   <UserCheck className="h-4 w-4" />
-                  Nhân Viên Xếp Bi / Đứng Bàn
+                  NhĂ¢n ViĂªn Xáº¿p Bi / Äá»©ng BĂ n
                 </Button>
 
                 <Button
@@ -429,7 +429,7 @@ export default function StaffDashboardPage() {
                   }}
                 >
                   <ArrowRightLeft className="h-4 w-4" />
-                  Chuyển Vị Trí Bàn
+                  Chuyá»ƒn Vá»‹ TrĂ­ BĂ n
                 </Button>
 
                 <Button
@@ -443,7 +443,7 @@ export default function StaffDashboardPage() {
                   }}
                 >
                   <Layers className="h-4 w-4" />
-                  Gộp Bàn (Dồn Hóa Đơn)
+                  Gá»™p BĂ n (Dá»“n HĂ³a ÄÆ¡n)
                 </Button>
 
                 <Button
@@ -451,14 +451,14 @@ export default function StaffDashboardPage() {
                   className="text-xs gap-1.5 h-10 border-zinc-700 hover:bg-zinc-800"
                   onClick={() => setIsQrModalOpen(true)}
                 >
-                  <QrCode className="h-4 w-4 text-emerald-400" />
-                  Xuất Mã QR Cho Khách Quét
+                  <QrCode className="h-4 w-4 text-red-400" />
+                  Xuáº¥t MĂ£ QR Cho KhĂ¡ch QuĂ©t
                 </Button>
 
                 <Link href="/staff/billing" className="block">
                   <Button className="w-full bg-amber-600 hover:bg-amber-500 text-xs gap-1.5 h-10">
                     <Receipt className="h-4 w-4" />
-                    Chốt Tiền & Thanh Toán
+                    Chá»‘t Tiá»n & Thanh ToĂ¡n
                   </Button>
                 </Link>
               </div>
@@ -467,23 +467,23 @@ export default function StaffDashboardPage() {
               <div className="space-y-2.5 pt-1">
                 {selectedTable.status === "OCCUPIED" && (
                   <p className="text-amber-400 text-[11px] font-semibold bg-amber-950/40 border border-amber-800/60 p-2 rounded-lg">
-                    ⚠️ Bàn đang được đánh dấu bận nhưng chưa có giờ chơi. Bấm nút dưới để bắt đầu tính giờ ngay!
+                    â ï¸ BĂ n Ä‘ang Ä‘Æ°á»£c Ä‘Ă¡nh dáº¥u báº­n nhÆ°ng chÆ°a cĂ³ giá» chÆ¡i. Báº¥m nĂºt dÆ°á»›i Ä‘á»ƒ báº¯t Ä‘áº§u tĂ­nh giá» ngay!
                   </p>
                 )}
 
                 <Button
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold gap-2 h-10"
+                  className="w-full bg-red-600 hover:bg-red-500 font-bold gap-2 h-10"
                   isLoading={quickOpenMutation.isPending}
                   onClick={() => quickOpenMutation.mutate(selectedTable.id)}
                 >
                   <Zap className="h-4 w-4" />
-                  Mở Bàn Nhanh Cho Khách Vãng Lai (Bắt Đầu Ngay)
+                  Má»Ÿ BĂ n Nhanh Cho KhĂ¡ch VĂ£ng Lai (Báº¯t Äáº§u Ngay)
                 </Button>
 
                 <Link href={`/book?tableId=${selectedTable.id}`} className="block">
                   <Button variant="outline" className="w-full gap-2 text-xs h-9">
                     <Play className="h-3.5 w-3.5" />
-                    Tạo Đặt Bàn Khung Giờ Cụ Thể
+                    Táº¡o Äáº·t BĂ n Khung Giá» Cá»¥ Thá»ƒ
                   </Button>
                 </Link>
               </div>
@@ -492,22 +492,22 @@ export default function StaffDashboardPage() {
         )}
       </Modal>
 
-      {/* Modal 1: Gọi Thêm Đồ Khi Bàn Đang Chơi */}
+      {/* Modal 1: Gá»i ThĂªm Äá»“ Khi BĂ n Äang ChÆ¡i */}
       <Modal
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}
-        title={`Gọi Thêm Đồ Vào Bàn ${selectedTable?.tableNumber}`}
-        description="Món ăn / nước uống sẽ được cộng trực tiếp vào hóa đơn của lượt chơi này"
+        title={`Gá»i ThĂªm Äá»“ VĂ o BĂ n ${selectedTable?.tableNumber}`}
+        description="MĂ³n Äƒn / nÆ°á»›c uá»‘ng sáº½ Ä‘Æ°á»£c cá»™ng trá»±c tiáº¿p vĂ o hĂ³a Ä‘Æ¡n cá»§a lÆ°á»£t chÆ¡i nĂ y"
       >
         <div className="space-y-4 text-xs">
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Chọn món trong menu:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Chá»n mĂ³n trong menu:</label>
             <select
               value={selectedServiceId}
               onChange={(e) => setSelectedServiceId(e.target.value)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="">-- Bấm để chọn món --</option>
+              <option value="">-- Báº¥m Ä‘á»ƒ chá»n mĂ³n --</option>
               {services.map((s: any) => (
                 <option key={s.id} value={s.id}>
                   {s.name} ({formatVND(s.unitPrice)} / {s.unit})
@@ -517,7 +517,7 @@ export default function StaffDashboardPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Số lượng:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ lÆ°á»£ng:</label>
             <Input
               type="number"
               min={1}
@@ -528,38 +528,38 @@ export default function StaffDashboardPage() {
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setIsOrderModalOpen(false)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-600 font-semibold gap-1.5"
+              className="bg-red-600 font-semibold gap-1.5"
               disabled={!selectedServiceId}
               isLoading={addSessionOrderMutation.isPending}
               onClick={() => addSessionOrderMutation.mutate()}
             >
               <Plus className="h-4 w-4" />
-              Thêm Vào Bàn
+              ThĂªm VĂ o BĂ n
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Modal 2: Gán Nhân Viên Phục Vụ Bàn */}
+      {/* Modal 2: GĂ¡n NhĂ¢n ViĂªn Phá»¥c Vá»¥ BĂ n */}
       <Modal
         isOpen={isStaffModalOpen}
         onClose={() => setIsStaffModalOpen(false)}
-        title={`Nhân Viên Phục Vụ Bàn ${selectedTable?.tableNumber}`}
-        description="Ghi nhận nhân viên hỗ trợ xếp bi hoặc phục vụ liên tục cho khách"
+        title={`NhĂ¢n ViĂªn Phá»¥c Vá»¥ BĂ n ${selectedTable?.tableNumber}`}
+        description="Ghi nháº­n nhĂ¢n viĂªn há»— trá»£ xáº¿p bi hoáº·c phá»¥c vá»¥ liĂªn tá»¥c cho khĂ¡ch"
       >
         <div className="space-y-4 text-xs">
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Nhân viên phụ trách:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">NhĂ¢n viĂªn phá»¥ trĂ¡ch:</label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="">-- Chọn nhân viên trong ca --</option>
+              <option value="">-- Chá»n nhĂ¢n viĂªn trong ca --</option>
               {staffUsers.map((u: any) => (
                 <option key={u.id} value={u.id}>
                   {u.fullName} ({u.email})
@@ -569,7 +569,7 @@ export default function StaffDashboardPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Nhiệm vụ phục vụ:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Nhiá»‡m vá»¥ phá»¥c vá»¥:</label>
             <select
               value={staffRoleType}
               onChange={(e) => {
@@ -579,13 +579,13 @@ export default function StaffDashboardPage() {
               }}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="BALL_RACKER">Xếp bi theo từng ván / bàn</option>
-              <option value="TABLE_ATTENDANT">Nhân viên đứng bàn phục vụ (Marker)</option>
+              <option value="BALL_RACKER">Xáº¿p bi theo tá»«ng vĂ¡n / bĂ n</option>
+              <option value="TABLE_ATTENDANT">NhĂ¢n viĂªn Ä‘á»©ng bĂ n phá»¥c vá»¥ (Marker)</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Phí dịch vụ nhân viên (VNĐ):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">PhĂ­ dá»‹ch vá»¥ nhĂ¢n viĂªn (VNÄ):</label>
             <Input
               type="number"
               min={0}
@@ -594,22 +594,22 @@ export default function StaffDashboardPage() {
               onChange={(e) => setStaffFee(Number(e.target.value))}
             />
             <span className="text-[11px] text-zinc-500 mt-1 block">
-              Nhập 0 nếu đây là dịch vụ miễn phí của quán.
+              Nháº­p 0 náº¿u Ä‘Ă¢y lĂ  dá»‹ch vá»¥ miá»…n phĂ­ cá»§a quĂ¡n.
             </span>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Ghi chú yêu cầu của khách:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Ghi chĂº yĂªu cáº§u cá»§a khĂ¡ch:</label>
             <Input
               value={staffNotes}
               onChange={(e) => setStaffNotes(e.target.value)}
-              placeholder="VD: Hỗ trợ xếp bi nhanh trận giao hữu..."
+              placeholder="VD: Há»— trá»£ xáº¿p bi nhanh tráº­n giao há»¯u..."
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setIsStaffModalOpen(false)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
@@ -618,32 +618,32 @@ export default function StaffDashboardPage() {
               isLoading={assignStaffMutation.isPending}
               onClick={() => assignStaffMutation.mutate()}
             >
-              Xác Nhận Phân Công
+              XĂ¡c Nháº­n PhĂ¢n CĂ´ng
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Modal 3: Xuất Mã QR Hóa Đơn Cho Khách Quét */}
+      {/* Modal 3: Xuáº¥t MĂ£ QR HĂ³a ÄÆ¡n Cho KhĂ¡ch QuĂ©t */}
       <Modal
         isOpen={isQrModalOpen}
         onClose={() => setIsQrModalOpen(false)}
-        title={`Mã QR Hóa Đơn Trực Tiếp - Bàn ${selectedTable?.tableNumber}`}
-        description="Khách dùng camera điện thoại quét mã này để xem chi tiết tiêu dùng thời gian thực"
+        title={`MĂ£ QR HĂ³a ÄÆ¡n Trá»±c Tiáº¿p - BĂ n ${selectedTable?.tableNumber}`}
+        description="KhĂ¡ch dĂ¹ng camera Ä‘iá»‡n thoáº¡i quĂ©t mĂ£ nĂ y Ä‘á»ƒ xem chi tiáº¿t tiĂªu dĂ¹ng thá»i gian thá»±c"
       >
         <div className="space-y-4 text-center text-xs">
           <div className="p-3 bg-white rounded-xl inline-block shadow-lg mx-auto">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={qrImageUrl}
-              alt="Mã QR Bàn Trực Tiếp"
+              alt="MĂ£ QR BĂ n Trá»±c Tiáº¿p"
               className="w-56 h-56 object-contain mx-auto"
             />
           </div>
 
           <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400 text-left space-y-1">
-            <div>Link hóa đơn: <strong className="text-emerald-400 break-all">{liveBillUrl}</strong></div>
-            <div className="text-zinc-500">Khách quét mã sẽ thấy: Thời gian chơi, tiền bàn, các món đã gọi và mã VietQR thanh toán.</div>
+            <div>Link hĂ³a Ä‘Æ¡n: <strong className="text-red-400 break-all">{liveBillUrl}</strong></div>
+            <div className="text-zinc-500">KhĂ¡ch quĂ©t mĂ£ sáº½ tháº¥y: Thá»i gian chÆ¡i, tiá»n bĂ n, cĂ¡c mĂ³n Ä‘Ă£ gá»i vĂ  mĂ£ VietQR thanh toĂ¡n.</div>
           </div>
 
           <div className="flex justify-center gap-3 pt-2 border-t border-zinc-800">
@@ -652,60 +652,60 @@ export default function StaffDashboardPage() {
               size="sm"
               onClick={() => window.open(liveBillUrl, "_blank")}
             >
-              Mở Trang Xem Thử
+              Má»Ÿ Trang Xem Thá»­
             </Button>
             <Button size="sm" onClick={() => setIsQrModalOpen(false)}>
-              Đóng
+              ÄĂ³ng
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Modal 4: Chuyển Vị Trí Bàn */}
+      {/* Modal 4: Chuyá»ƒn Vá»‹ TrĂ­ BĂ n */}
       <Modal
         isOpen={isSwitchModalOpen}
         onClose={() => setIsSwitchModalOpen(false)}
-        title={`Chuyển Vị Trí Bàn - Nguồn: ${selectedTable?.tableNumber}`}
-        description="Toàn bộ thời gian chơi và dịch vụ đã gọi sẽ được chuyển sang bàn mới"
+        title={`Chuyá»ƒn Vá»‹ TrĂ­ BĂ n - Nguá»“n: ${selectedTable?.tableNumber}`}
+        description="ToĂ n bá»™ thá»i gian chÆ¡i vĂ  dá»‹ch vá»¥ Ä‘Ă£ gá»i sáº½ Ä‘Æ°á»£c chuyá»ƒn sang bĂ n má»›i"
       >
         <div className="space-y-4 text-xs">
           <div>
             <label className="block text-zinc-300 font-semibold mb-1">
-              Chọn bàn trống muốn chuyển sang:
+              Chá»n bĂ n trá»‘ng muá»‘n chuyá»ƒn sang:
             </label>
             <select
               value={targetSwitchTableId}
               onChange={(e) => setTargetSwitchTableId(e.target.value)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="">-- Chọn bàn đích khả dụng --</option>
+              <option value="">-- Chá»n bĂ n Ä‘Ă­ch kháº£ dá»¥ng --</option>
               {tables
                 .filter((t: any) => t.id !== selectedTable?.id && t.status === "AVAILABLE")
                 .map((t: any) => (
                   <option key={t.id} value={t.id}>
-                    Bàn {t.tableNumber} - {t.tableType?.name} ({t.area}) • {formatVND(t.hourlyRate || t.tableType?.hourlyRate)}/h
+                    BĂ n {t.tableNumber} - {t.tableType?.name} ({t.area}) â€¢ {formatVND(t.hourlyRate || t.tableType?.hourlyRate)}/h
                   </option>
                 ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Lý do đổi vị trí (tùy chọn):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">LĂ½ do Ä‘á»•i vá»‹ trĂ­ (tĂ¹y chá»n):</label>
             <Input
               value={switchReason}
               onChange={(e) => setSwitchReason(e.target.value)}
-              placeholder="VD: Khách đổi sang bàn gần máy lạnh, đổi loại bàn lỗ sang carom..."
+              placeholder="VD: KhĂ¡ch Ä‘á»•i sang bĂ n gáº§n mĂ¡y láº¡nh, Ä‘á»•i loáº¡i bĂ n lá»— sang carom..."
             />
           </div>
 
           <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400 space-y-1">
-            <p>• Bàn nguồn <strong className="text-white">{selectedTable?.tableNumber}</strong> sẽ trở về trạng thái Sẵn Sàng (Trống).</p>
-            <p>• Bàn đích được chọn sẽ chuyển sang trạng thái Đang Chơi (Occupied).</p>
+            <p>â€¢ BĂ n nguá»“n <strong className="text-white">{selectedTable?.tableNumber}</strong> sáº½ trá»Ÿ vá» tráº¡ng thĂ¡i Sáºµn SĂ ng (Trá»‘ng).</p>
+            <p>â€¢ BĂ n Ä‘Ă­ch Ä‘Æ°á»£c chá»n sáº½ chuyá»ƒn sang tráº¡ng thĂ¡i Äang ChÆ¡i (Occupied).</p>
           </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setIsSwitchModalOpen(false)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
@@ -714,50 +714,50 @@ export default function StaffDashboardPage() {
               isLoading={switchTableMutation.isPending}
               onClick={() => switchTableMutation.mutate()}
             >
-              Xác Nhận Chuyển Bàn
+              XĂ¡c Nháº­n Chuyá»ƒn BĂ n
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Modal 5: Gộp Bàn (Dồn Hóa Đơn) */}
+      {/* Modal 5: Gá»™p BĂ n (Dá»“n HĂ³a ÄÆ¡n) */}
       <Modal
         isOpen={isMergeModalOpen}
         onClose={() => setIsMergeModalOpen(false)}
-        title={`Gộp Bàn - Bàn Nguồn: ${selectedTable?.tableNumber}`}
-        description="Tính tiền giờ bàn này tính đến hiện tại và dồn toàn bộ tiền giờ + món F&B sang bàn đích"
+        title={`Gá»™p BĂ n - BĂ n Nguá»“n: ${selectedTable?.tableNumber}`}
+        description="TĂ­nh tiá»n giá» bĂ n nĂ y tĂ­nh Ä‘áº¿n hiá»‡n táº¡i vĂ  dá»“n toĂ n bá»™ tiá»n giá» + mĂ³n F&B sang bĂ n Ä‘Ă­ch"
       >
         <div className="space-y-4 text-xs">
           <div>
             <label className="block text-zinc-300 font-semibold mb-1">
-              Chọn bàn đích nhận gộp hóa đơn:
+              Chá»n bĂ n Ä‘Ă­ch nháº­n gá»™p hĂ³a Ä‘Æ¡n:
             </label>
             <select
               value={targetMergeTableId}
               onChange={(e) => setTargetMergeTableId(e.target.value)}
               className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
             >
-              <option value="">-- Chọn bàn đích đang chơi --</option>
+              <option value="">-- Chá»n bĂ n Ä‘Ă­ch Ä‘ang chÆ¡i --</option>
               {tables
                 .filter((t: any) => t.id !== selectedTable?.id && t.playSessions?.length > 0)
                 .map((t: any) => (
                   <option key={t.id} value={t.id}>
-                    Bàn {t.tableNumber} - {t.tableType?.name} (Đang chơi)
+                    BĂ n {t.tableNumber} - {t.tableType?.name} (Äang chÆ¡i)
                   </option>
                 ))}
             </select>
           </div>
 
           <div className="p-3 rounded-lg bg-purple-950/30 border border-purple-800/50 text-[11px] text-purple-200 space-y-1">
-            <p className="font-semibold text-purple-300">Quy trình sau khi gộp bàn:</p>
-            <p>1. Tiền giờ bàn {selectedTable?.tableNumber} được tính theo block và chuyển sang hóa đơn bàn đích.</p>
-            <p>2. Toàn bộ đồ uống, món ăn đã gọi ở bàn này được chuyển sang bàn đích.</p>
-            <p>3. Bàn {selectedTable?.tableNumber} sẽ kết thúc và giải phóng thành Sẵn Sàng (Trống).</p>
+            <p className="font-semibold text-purple-300">Quy trĂ¬nh sau khi gá»™p bĂ n:</p>
+            <p>1. Tiá»n giá» bĂ n {selectedTable?.tableNumber} Ä‘Æ°á»£c tĂ­nh theo block vĂ  chuyá»ƒn sang hĂ³a Ä‘Æ¡n bĂ n Ä‘Ă­ch.</p>
+            <p>2. ToĂ n bá»™ Ä‘á»“ uá»‘ng, mĂ³n Äƒn Ä‘Ă£ gá»i á»Ÿ bĂ n nĂ y Ä‘Æ°á»£c chuyá»ƒn sang bĂ n Ä‘Ă­ch.</p>
+            <p>3. BĂ n {selectedTable?.tableNumber} sáº½ káº¿t thĂºc vĂ  giáº£i phĂ³ng thĂ nh Sáºµn SĂ ng (Trá»‘ng).</p>
           </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setIsMergeModalOpen(false)}>
-              Hủy
+              Há»§y
             </Button>
             <Button
               size="sm"
@@ -766,7 +766,7 @@ export default function StaffDashboardPage() {
               isLoading={mergeTableMutation.isPending}
               onClick={() => mergeTableMutation.mutate()}
             >
-              Xác Nhận Gộp Bàn Ngay
+              XĂ¡c Nháº­n Gá»™p BĂ n Ngay
             </Button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -29,13 +29,13 @@ export default function AdminDashboardPage() {
   const curM = now.getMonth() + 1;
   const todayStr = now.toISOString().slice(0, 10);
 
-  // Tính số tuần hiện tại
+  // TĂ­nh sá»‘ tuáº§n hiá»‡n táº¡i
   const firstDay = new Date(curY, 0, 1);
   const pastDays = (now.getTime() - firstDay.getTime()) / 86400000;
   const curWeek = Math.max(1, Math.ceil((pastDays + firstDay.getDay() + 1) / 7));
   const curQuarter = Math.floor((curM - 1) / 3) + 1;
 
-  // State các bộ lọc
+  // State cĂ¡c bá»™ lá»c
   const [period, setPeriod] = useState<"day" | "week" | "month" | "quarter" | "year">("day");
   const [selectedDate, setSelectedDate] = useState<string>(todayStr);
   const [selectedYear, setSelectedYear] = useState<number>(curY);
@@ -82,11 +82,11 @@ export default function AdminDashboardPage() {
   const maxRevenue = Math.max(...chartData.map((c: any) => c.revenue), 100000);
   const totalChartRevenue = chartData.reduce((sum: number, c: any) => sum + Number(c.revenue || 0), 0);
 
-  // Tạo danh sách 52 tuần trong năm
+  // Táº¡o danh sĂ¡ch 52 tuáº§n trong nÄƒm
   const weeksList = Array.from({ length: 52 }, (_, i) => i + 1);
-  // Tạo danh sách 12 tháng
+  // Táº¡o danh sĂ¡ch 12 thĂ¡ng
   const monthsList = Array.from({ length: 12 }, (_, i) => i + 1);
-  // Danh sách năm
+  // Danh sĂ¡ch nÄƒm
   const yearsList = [2024, 2025, 2026, 2027];
 
   return (
@@ -98,28 +98,28 @@ export default function AdminDashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-black text-white">TỔNG QUAN HỆ THỐNG (ADMIN DASHBOARD)</h1>
+              <h1 className="text-2xl font-black text-white">Tá»”NG QUAN Há»† THá»NG (ADMIN DASHBOARD)</h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Số liệu thống kê thời gian thực theo từng ngày, từng tuần, từng tháng, từng quý và từng năm cụ thể.
+                Sá»‘ liá»‡u thá»‘ng kĂª thá»i gian thá»±c theo tá»«ng ngĂ y, tá»«ng tuáº§n, tá»«ng thĂ¡ng, tá»«ng quĂ½ vĂ  tá»«ng nÄƒm cá»¥ thá»ƒ.
               </p>
             </div>
 
-            {/* Thanh Tab chọn chu kỳ */}
+            {/* Thanh Tab chá»n chu ká»³ */}
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-900 border border-zinc-800 text-xs">
               <span className="text-zinc-500 font-semibold px-2">Xem theo:</span>
               {[
-                { id: "day", label: "Ngày" },
-                { id: "week", label: "Tuần" },
-                { id: "month", label: "Tháng" },
-                { id: "quarter", label: "Quý" },
-                { id: "year", label: "Năm" },
+                { id: "day", label: "NgĂ y" },
+                { id: "week", label: "Tuáº§n" },
+                { id: "month", label: "ThĂ¡ng" },
+                { id: "quarter", label: "QuĂ½" },
+                { id: "year", label: "NÄƒm" },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setPeriod(item.id as any)}
                   className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                     period === item.id
-                      ? "bg-emerald-600 text-white shadow-sm shadow-emerald-950"
+                      ? "bg-red-600 text-white shadow-sm shadow-red-950"
                       : "text-zinc-400 hover:text-white hover:bg-zinc-800"
                   }`}
                 >
@@ -129,21 +129,21 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Bộ lọc chi tiết cho từng chu kỳ (Chọn ngày, chọn tuần 1 2 3..., chọn tháng 1 2 3...) */}
+          {/* Bá»™ lá»c chi tiáº¿t cho tá»«ng chu ká»³ (Chá»n ngĂ y, chá»n tuáº§n 1 2 3..., chá»n thĂ¡ng 1 2 3...) */}
           <Card className="border-zinc-800 bg-zinc-900/60 p-4">
             <div className="flex flex-wrap items-center justify-between gap-4 text-xs">
               <div className="flex items-center gap-2 text-zinc-300 font-semibold">
-                <Filter className="h-4 w-4 text-emerald-400" />
+                <Filter className="h-4 w-4 text-red-400" />
                 <span>
-                  {period === "day" && "Chọn ngày cụ thể cần xem:"}
-                  {period === "week" && "Chọn tuần & năm cần xem:"}
-                  {period === "month" && "Chọn tháng & năm cần xem:"}
-                  {period === "quarter" && "Chọn quý & năm cần xem:"}
-                  {period === "year" && "Chọn năm cần xem:"}
+                  {period === "day" && "Chá»n ngĂ y cá»¥ thá»ƒ cáº§n xem:"}
+                  {period === "week" && "Chá»n tuáº§n & nÄƒm cáº§n xem:"}
+                  {period === "month" && "Chá»n thĂ¡ng & nÄƒm cáº§n xem:"}
+                  {period === "quarter" && "Chá»n quĂ½ & nÄƒm cáº§n xem:"}
+                  {period === "year" && "Chá»n nÄƒm cáº§n xem:"}
                 </span>
               </div>
 
-              {/* 1. Lọc theo từng ngày */}
+              {/* 1. Lá»c theo tá»«ng ngĂ y */}
               {period === "day" && (
                 <div className="flex items-center gap-3">
                   <Input
@@ -158,16 +158,16 @@ export default function AdminDashboardPage() {
                     className="h-8 text-xs"
                     onClick={() => setSelectedDate(todayStr)}
                   >
-                    Xem Hôm Nay
+                    Xem HĂ´m Nay
                   </Button>
                 </div>
               )}
 
-              {/* 2. Lọc theo từng tuần */}
+              {/* 2. Lá»c theo tá»«ng tuáº§n */}
               {period === "week" && (
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-zinc-400">Năm:</span>
+                    <span className="text-zinc-400">NÄƒm:</span>
                     <select
                       value={selectedYear}
                       onChange={(e) => setSelectedYear(Number(e.target.value))}
@@ -182,7 +182,7 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    <span className="text-zinc-400">Chọn Tuần:</span>
+                    <span className="text-zinc-400">Chá»n Tuáº§n:</span>
                     <select
                       value={selectedWeek}
                       onChange={(e) => setSelectedWeek(Number(e.target.value))}
@@ -190,7 +190,7 @@ export default function AdminDashboardPage() {
                     >
                       {weeksList.map((w) => (
                         <option key={w} value={w}>
-                          Tuần {w} {w === curWeek && selectedYear === curY ? "(Tuần hiện tại)" : ""}
+                          Tuáº§n {w} {w === curWeek && selectedYear === curY ? "(Tuáº§n hiá»‡n táº¡i)" : ""}
                         </option>
                       ))}
                     </select>
@@ -198,11 +198,11 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* 3. Lọc theo từng tháng (Tháng 1, 2, 3, 4...) */}
+              {/* 3. Lá»c theo tá»«ng thĂ¡ng (ThĂ¡ng 1, 2, 3, 4...) */}
               {period === "month" && (
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-zinc-400">Năm:</span>
+                    <span className="text-zinc-400">NÄƒm:</span>
                     <select
                       value={selectedYear}
                       onChange={(e) => setSelectedYear(Number(e.target.value))}
@@ -217,7 +217,7 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    <span className="text-zinc-400">Chọn Tháng:</span>
+                    <span className="text-zinc-400">Chá»n ThĂ¡ng:</span>
                     <select
                       value={selectedMonth}
                       onChange={(e) => setSelectedMonth(Number(e.target.value))}
@@ -225,7 +225,7 @@ export default function AdminDashboardPage() {
                     >
                       {monthsList.map((m) => (
                         <option key={m} value={m}>
-                          Tháng {m} {m === curM && selectedYear === curY ? "(Tháng hiện tại)" : ""}
+                          ThĂ¡ng {m} {m === curM && selectedYear === curY ? "(ThĂ¡ng hiá»‡n táº¡i)" : ""}
                         </option>
                       ))}
                     </select>
@@ -233,11 +233,11 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* 4. Lọc theo từng quý (Quý 1, 2, 3, 4) */}
+              {/* 4. Lá»c theo tá»«ng quĂ½ (QuĂ½ 1, 2, 3, 4) */}
               {period === "quarter" && (
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-zinc-400">Năm:</span>
+                    <span className="text-zinc-400">NÄƒm:</span>
                     <select
                       value={selectedYear}
                       onChange={(e) => setSelectedYear(Number(e.target.value))}
@@ -252,25 +252,25 @@ export default function AdminDashboardPage() {
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    <span className="text-zinc-400">Chọn Quý:</span>
+                    <span className="text-zinc-400">Chá»n QuĂ½:</span>
                     <select
                       value={selectedQuarter}
                       onChange={(e) => setSelectedQuarter(Number(e.target.value))}
                       className="h-8 rounded-lg border border-zinc-700 bg-zinc-950 px-2.5 text-xs text-zinc-100"
                     >
-                      <option value={1}>Quý 1 (Tháng 1 - Tháng 3)</option>
-                      <option value={2}>Quý 2 (Tháng 4 - Tháng 6)</option>
-                      <option value={3}>Quý 3 (Tháng 7 - Tháng 9)</option>
-                      <option value={4}>Quý 4 (Tháng 10 - Tháng 12)</option>
+                      <option value={1}>QuĂ½ 1 (ThĂ¡ng 1 - ThĂ¡ng 3)</option>
+                      <option value={2}>QuĂ½ 2 (ThĂ¡ng 4 - ThĂ¡ng 6)</option>
+                      <option value={3}>QuĂ½ 3 (ThĂ¡ng 7 - ThĂ¡ng 9)</option>
+                      <option value={4}>QuĂ½ 4 (ThĂ¡ng 10 - ThĂ¡ng 12)</option>
                     </select>
                   </div>
                 </div>
               )}
 
-              {/* 5. Lọc theo từng năm */}
+              {/* 5. Lá»c theo tá»«ng nÄƒm */}
               {period === "year" && (
                 <div className="flex items-center gap-3">
-                  <span className="text-zinc-400">Chọn Năm:</span>
+                  <span className="text-zinc-400">Chá»n NÄƒm:</span>
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(Number(e.target.value))}
@@ -278,7 +278,7 @@ export default function AdminDashboardPage() {
                   >
                     {yearsList.map((y) => (
                       <option key={y} value={y}>
-                        Năm {y}
+                        NÄƒm {y}
                       </option>
                     ))}
                   </select>
@@ -286,35 +286,35 @@ export default function AdminDashboardPage() {
               )}
 
               <Badge variant="outline" className="text-zinc-400 font-mono text-[11px] ml-auto">
-                Đang xem: {overview?.periodTitle || "..."}
+                Äang xem: {overview?.periodTitle || "..."}
               </Badge>
             </div>
           </Card>
 
           {/* 4 Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Card 1: Doanh thu theo thời gian đã chọn */}
+            {/* Card 1: Doanh thu theo thá»i gian Ä‘Ă£ chá»n */}
             <Card className="border-zinc-800 bg-zinc-900/60 p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-zinc-400 truncate">
-                  Doanh Thu ({overview?.periodTitle || "Đang tải"})
+                  Doanh Thu ({overview?.periodTitle || "Äang táº£i"})
                 </span>
-                <div className="p-2 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400">
+                <div className="p-2 rounded-lg bg-red-950/60 border border-red-800 text-red-400">
                   <DollarSign className="h-4 w-4" />
                 </div>
               </div>
-              <div className="mt-3 text-2xl font-black text-emerald-400">
+              <div className="mt-3 text-2xl font-black text-red-400">
                 {isLoading ? "..." : formatVND(overview?.periodRevenue || 0)}
               </div>
               <div className="text-[11px] text-zinc-500 mt-1">
-                Từ {overview?.periodInvoicesCount || 0} hóa đơn thanh toán ({formatVND(overview?.periodTableAmount || 0)} tiền bàn)
+                Tá»« {overview?.periodInvoicesCount || 0} hĂ³a Ä‘Æ¡n thanh toĂ¡n ({formatVND(overview?.periodTableAmount || 0)} tiá»n bĂ n)
               </div>
             </Card>
 
-            {/* Card 2: Tỷ lệ lấp đầy bàn */}
+            {/* Card 2: Tá»· lá»‡ láº¥p Ä‘áº§y bĂ n */}
             <Card className="border-zinc-800 bg-zinc-900/60 p-5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-zinc-400">Tỷ Lệ Lấp Đầy Bàn Hiện Tại</span>
+                <span className="text-xs font-semibold text-zinc-400">Tá»· Lá»‡ Láº¥p Äáº§y BĂ n Hiá»‡n Táº¡i</span>
                 <div className="p-2 rounded-lg bg-sky-950/60 border border-sky-800 text-sky-400">
                   <Percent className="h-4 w-4" />
                 </div>
@@ -323,15 +323,15 @@ export default function AdminDashboardPage() {
                 {isLoading ? "..." : `${overview?.occupancyRate || 0}%`}
               </div>
               <div className="text-[11px] text-zinc-500 mt-1">
-                {overview?.occupiedTables || 0} / {overview?.totalTables || 0} bàn đang chơi
+                {overview?.occupiedTables || 0} / {overview?.totalTables || 0} bĂ n Ä‘ang chÆ¡i
               </div>
             </Card>
 
-            {/* Card 3: Lượt đặt bàn theo thời gian đã chọn */}
+            {/* Card 3: LÆ°á»£t Ä‘áº·t bĂ n theo thá»i gian Ä‘Ă£ chá»n */}
             <Card className="border-zinc-800 bg-zinc-900/60 p-5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-zinc-400 truncate">
-                  Lượt Chơi ({overview?.periodTitle || "Đang tải"})
+                  LÆ°á»£t ChÆ¡i ({overview?.periodTitle || "Äang táº£i"})
                 </span>
                 <div className="p-2 rounded-lg bg-amber-950/60 border border-amber-800 text-amber-400">
                   <CalendarDays className="h-4 w-4" />
@@ -341,14 +341,14 @@ export default function AdminDashboardPage() {
                 {isLoading ? "..." : overview?.periodBookingsCount || 0}
               </div>
               <div className="text-[11px] text-zinc-500 mt-1">
-                {overview?.periodCompletedCount || 0} lượt chơi đã kết thúc
+                {overview?.periodCompletedCount || 0} lÆ°á»£t chÆ¡i Ä‘Ă£ káº¿t thĂºc
               </div>
             </Card>
 
-            {/* Card 4: Tổng số bàn bi-da */}
+            {/* Card 4: Tá»•ng sá»‘ bĂ n bi-da */}
             <Card className="border-zinc-800 bg-zinc-900/60 p-5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-zinc-400">Tổng Số Bàn Bi-da</span>
+                <span className="text-xs font-semibold text-zinc-400">Tá»•ng Sá»‘ BĂ n Bi-da</span>
                 <div className="p-2 rounded-lg bg-purple-950/60 border border-purple-800 text-purple-400">
                   <TableProperties className="h-4 w-4" />
                 </div>
@@ -356,30 +356,30 @@ export default function AdminDashboardPage() {
               <div className="mt-3 text-2xl font-black text-white">
                 {isLoading ? "..." : overview?.totalTables || 0}
               </div>
-              <div className="text-[11px] text-emerald-400 mt-1">
-                {overview?.availableTables || 0} bàn sẵn sàng phục vụ
+              <div className="text-[11px] text-red-400 mt-1">
+                {overview?.availableTables || 0} bĂ n sáºµn sĂ ng phá»¥c vá»¥
               </div>
             </Card>
           </div>
 
-          {/* Revenue Visual Chart Theo Chu Kỳ Được Chọn */}
+          {/* Revenue Visual Chart Theo Chu Ká»³ ÄÆ°á»£c Chá»n */}
           <Card className="border-zinc-800 bg-zinc-900/70 p-6 space-y-4">
             <CardHeader className="p-0 flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-base text-zinc-100 flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-emerald-400" />
-                  {overview?.chartTitle || "Biểu Đồ Doanh Thu"}
+                  <TrendingUp className="h-4 w-4 text-red-400" />
+                  {overview?.chartTitle || "Biá»ƒu Äá»“ Doanh Thu"}
                 </CardTitle>
                 <p className="text-xs text-zinc-400 mt-0.5">
-                  Tổng doanh thu trong chu kỳ:{" "}
-                  <strong className="text-emerald-400 font-mono">
+                  Tá»•ng doanh thu trong chu ká»³:{" "}
+                  <strong className="text-red-400 font-mono">
                     {formatVND(totalChartRevenue)}
                   </strong>
                 </p>
               </div>
 
               <Badge variant="outline" className="text-xs font-mono">
-                {overview?.periodTitle || "Thống kê"}
+                {overview?.periodTitle || "Thá»‘ng kĂª"}
               </Badge>
             </CardHeader>
 
@@ -390,12 +390,12 @@ export default function AdminDashboardPage() {
 
                   return (
                     <div key={d.date} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
-                      <span className="text-[10px] text-zinc-400 font-medium group-hover:text-emerald-400 transition-colors">
+                      <span className="text-[10px] text-zinc-400 font-medium group-hover:text-red-400 transition-colors">
                         {d.revenue > 0 ? `${Math.round(d.revenue / 1000)}k` : "0"}
                       </span>
                       <div
                         style={{ height: `${heightPercent}%` }}
-                        className="w-full max-w-[48px] rounded-t-md bg-gradient-to-t from-emerald-700 to-emerald-400 transition-all group-hover:from-emerald-500 group-hover:to-emerald-300 shadow-sm shadow-emerald-950"
+                        className="w-full max-w-[48px] rounded-t-md bg-gradient-to-t from-red-700 to-red-400 transition-all group-hover:from-red-500 group-hover:to-red-300 shadow-sm shadow-red-950"
                         title={`${d.date}: ${formatVND(d.revenue)}`}
                       />
                       <span className="text-[10px] text-zinc-400 font-semibold group-hover:text-white transition-colors text-center truncate max-w-[64px]">
@@ -408,13 +408,13 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Phân Tích Cơ Cấu Doanh Thu: Tiền Giờ vs F&B vs Bán Phụ Kiện */}
+          {/* PhĂ¢n TĂ­ch CÆ¡ Cáº¥u Doanh Thu: Tiá»n Giá» vs F&B vs BĂ¡n Phá»¥ Kiá»‡n */}
           <RevenueStructureCard
             data={data?.revenueStructure}
             isLoading={isLoading}
           />
 
-          {/* Hiệu Suất Khai Thác Bàn: 24h & Loại Bàn Ưa Chuộng */}
+          {/* Hiá»‡u Suáº¥t Khai ThĂ¡c BĂ n: 24h & Loáº¡i BĂ n Æ¯a Chuá»™ng */}
           <TableUtilizationCard
             data={data?.tableUtilization}
             isLoading={isLoading}
@@ -424,8 +424,8 @@ export default function AdminDashboardPage() {
           <Card className="border-zinc-800 bg-zinc-900/60 p-6 space-y-4">
             <CardHeader className="p-0">
               <CardTitle className="text-base text-zinc-100 flex items-center gap-2">
-                <Clock className="h-4 w-4 text-emerald-400" />
-                Các Lượt Đặt Bàn Gần Nhất
+                <Clock className="h-4 w-4 text-red-400" />
+                CĂ¡c LÆ°á»£t Äáº·t BĂ n Gáº§n Nháº¥t
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -433,24 +433,24 @@ export default function AdminDashboardPage() {
                 <table className="w-full text-left">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3">Mã Đặt Bàn</th>
-                      <th className="p-3">Khách Hàng</th>
-                      <th className="p-3">Bàn</th>
-                      <th className="p-3">Loại Bàn</th>
-                      <th className="p-3">Trạng Thái</th>
+                      <th className="p-3">MĂ£ Äáº·t BĂ n</th>
+                      <th className="p-3">KhĂ¡ch HĂ ng</th>
+                      <th className="p-3">BĂ n</th>
+                      <th className="p-3">Loáº¡i BĂ n</th>
+                      <th className="p-3">Tráº¡ng ThĂ¡i</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800 text-zinc-300">
                     {recentBookings.map((b: any) => (
                       <tr key={b.id} className="hover:bg-zinc-900/50">
-                        <td className="p-3 font-mono font-bold text-emerald-400">
+                        <td className="p-3 font-mono font-bold text-red-400">
                           {b.bookingCode}
                         </td>
                         <td className="p-3 font-medium text-white">
                           {b.customerName}
                         </td>
                         <td className="p-3 font-bold text-white">
-                          Bàn {b.tableNumber}
+                          BĂ n {b.tableNumber}
                         </td>
                         <td className="p-3 text-zinc-400">
                           {b.tableType}

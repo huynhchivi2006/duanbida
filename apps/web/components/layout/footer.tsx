@@ -9,11 +9,11 @@ export function Footer() {
           {/* Col 1 */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-600 text-white font-bold">
                 <CircleDot className="h-4 w-4" />
               </div>
               <span className="font-extrabold text-base text-zinc-100">
-                ROYAL <span className="text-emerald-500">BILLIARDS</span>
+                ROYAL <span className="text-red-500">BILLIARDS</span>
               </span>
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
@@ -26,17 +26,17 @@ export function Footer() {
             <h4 className="text-zinc-200 font-semibold text-sm">Liên Kết Nhanh</h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/tables" className="hover:text-emerald-400">
+                <Link href="/tables" className="hover:text-red-400">
                   Danh sách bàn & bảng giá
                 </Link>
               </li>
               <li>
-                <Link href="/book" className="hover:text-emerald-400">
+                <Link href="/book" className="hover:text-red-400">
                   Đặt bàn trước trực tuyến
                 </Link>
               </li>
               <li>
-                <Link href="/lookup" className="hover:text-emerald-400">
+                <Link href="/lookup" className="hover:text-red-400">
                   Tra cứu tình trạng đặt bàn
                 </Link>
               </li>
@@ -48,15 +48,15 @@ export function Footer() {
             <h4 className="text-zinc-200 font-semibold text-sm">Thông Tin Liên Hệ</h4>
             <ul className="space-y-2 text-xs">
               <li className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-emerald-500 shrink-0" />
+                <MapPin className="h-4 w-4 text-red-500 shrink-0" />
                 <span>123 Đường Số 7, Phường Tân Phong, Quận 7, TP.HCM</span>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-emerald-500 shrink-0" />
+                <Phone className="h-4 w-4 text-red-500 shrink-0" />
                 <span>Hotline đặt bàn: 0909 888 999</span>
               </li>
               <li className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-emerald-500 shrink-0" />
+                <Clock className="h-4 w-4 text-red-500 shrink-0" />
                 <span>Mở cửa: 08:00 - 24:00 hàng ngày</span>
               </li>
             </ul>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -45,13 +45,13 @@ export default function TablesPage() {
   const statusBadge = (status: BilliardTable["status"]) => {
     switch (status) {
       case "AVAILABLE":
-        return <Badge variant="success">Bàn Trống (Sẵn Sàng)</Badge>;
+        return <Badge variant="success">BĂ n Trá»‘ng (Sáºµn SĂ ng)</Badge>;
       case "OCCUPIED":
-        return <Badge variant="danger">Đang Có Khách Chơi</Badge>;
+        return <Badge variant="danger">Äang CĂ³ KhĂ¡ch ChÆ¡i</Badge>;
       case "RESERVED":
-        return <Badge variant="warning">Đã Có Khách Đặt</Badge>;
+        return <Badge variant="warning">ÄĂ£ CĂ³ KhĂ¡ch Äáº·t</Badge>;
       case "MAINTENANCE":
-        return <Badge variant="default">Đang Bảo Trì</Badge>;
+        return <Badge variant="default">Äang Báº£o TrĂ¬</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -63,16 +63,16 @@ export default function TablesPage() {
 
       <main className="container mx-auto px-4 py-10 flex-1">
         <div className="max-w-4xl mx-auto mb-8">
-          <h1 className="text-3xl font-black text-white">DANH SÁCH BÀN BI-DA & BẢNG GIÁ</h1>
+          <h1 className="text-3xl font-black text-white">DANH SĂCH BĂ€N BI-DA & Báº¢NG GIĂ</h1>
           <p className="text-zinc-400 text-sm mt-1">
-            Theo dõi trạng thái thời gian thực và đặt bàn ngay trước khi đến quán.
+            Theo dĂµi tráº¡ng thĂ¡i thá»i gian thá»±c vĂ  Ä‘áº·t bĂ n ngay trÆ°á»›c khi Ä‘áº¿n quĂ¡n.
           </p>
 
           {/* Filters */}
           <div className="mt-6 flex flex-wrap items-center gap-3 bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
             <div className="flex items-center gap-1.5 text-xs text-zinc-400 mr-2">
-              <Filter className="h-4 w-4 text-emerald-400" />
-              Lọc theo:
+              <Filter className="h-4 w-4 text-red-400" />
+              Lá»c theo:
             </div>
 
             {/* Area Filter */}
@@ -83,11 +83,11 @@ export default function TablesPage() {
                   onClick={() => setSelectedArea(area)}
                   className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
                     selectedArea === area
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-red-600 text-white"
                       : "bg-zinc-800 text-zinc-400 hover:text-white"
                   }`}
                 >
-                  {area === "ALL" ? "Tất cả khu vực" : area === "VIP" ? "Phòng VIP" : "Khu Thường"}
+                  {area === "ALL" ? "Táº¥t cáº£ khu vá»±c" : area === "VIP" ? "PhĂ²ng VIP" : "Khu ThÆ°á»ng"}
                 </button>
               ))}
             </div>
@@ -104,7 +104,7 @@ export default function TablesPage() {
                       : "bg-zinc-800 text-zinc-400 hover:text-white"
                   }`}
                 >
-                  {st === "ALL" ? "Mọi trạng thái" : st === "AVAILABLE" ? "Bàn trống" : "Đang chơi"}
+                  {st === "ALL" ? "Má»i tráº¡ng thĂ¡i" : st === "AVAILABLE" ? "BĂ n trá»‘ng" : "Äang chÆ¡i"}
                 </button>
               ))}
             </div>
@@ -123,18 +123,18 @@ export default function TablesPage() {
           </div>
         ) : isError ? (
           <div className="text-center py-12 text-zinc-400 text-sm">
-            Không thể tải dữ liệu bàn từ máy chủ. Vui lòng kiểm tra lại kết nối.
+            KhĂ´ng thá»ƒ táº£i dá»¯ liá»‡u bĂ n tá»« mĂ¡y chá»§. Vui lĂ²ng kiá»ƒm tra láº¡i káº¿t ná»‘i.
           </div>
         ) : filteredTables.length === 0 ? (
           <div className="text-center py-16 text-zinc-400 text-sm">
-            Không có bàn nào phù hợp với bộ lọc hiện tại.
+            KhĂ´ng cĂ³ bĂ n nĂ o phĂ¹ há»£p vá»›i bá»™ lá»c hiá»‡n táº¡i.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {filteredTables.map((table) => (
               <Card
                 key={table.id}
-                className="border-zinc-800 bg-zinc-900/60 hover:border-emerald-600/40 transition-all flex flex-col justify-between"
+                className="border-zinc-800 bg-zinc-900/60 hover:border-red-600/40 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -147,9 +147,9 @@ export default function TablesPage() {
                   <div className="space-y-1.5 text-xs text-zinc-300">
                     <div className="font-semibold text-zinc-100">{table.tableType.name}</div>
                     <div className="text-zinc-400">
-                      Khu vực:{" "}
+                      Khu vá»±c:{" "}
                       <span className="text-zinc-200 font-medium">
-                        {table.area === "VIP" ? "Phòng VIP Cao Cấp" : "Khu Vực Tiêu Chuẩn"}
+                        {table.area === "VIP" ? "PhĂ²ng VIP Cao Cáº¥p" : "Khu Vá»±c TiĂªu Chuáº©n"}
                       </span>
                     </div>
                     {table.note && (
@@ -160,8 +160,8 @@ export default function TablesPage() {
 
                 <div className="mt-6 pt-4 border-t border-zinc-800 flex items-center justify-between">
                   <div>
-                    <div className="text-[10px] text-zinc-400">Đơn giá:</div>
-                    <div className="text-sm font-bold text-emerald-400">
+                    <div className="text-[10px] text-zinc-400">ÄÆ¡n giĂ¡:</div>
+                    <div className="text-sm font-bold text-red-400">
                       {formatVND(table.hourlyRate || table.tableType.hourlyRate)}/h
                     </div>
                   </div>
@@ -173,7 +173,7 @@ export default function TablesPage() {
                       className="text-xs"
                       disabled={table.status === "MAINTENANCE"}
                     >
-                      {table.status === "AVAILABLE" ? "Đặt Bàn" : "Xem Lịch"}
+                      {table.status === "AVAILABLE" ? "Äáº·t BĂ n" : "Xem Lá»‹ch"}
                     </Button>
                   </Link>
                 </div>

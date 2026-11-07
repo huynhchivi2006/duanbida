@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -60,7 +60,7 @@ export default function AdminVouchersPage() {
       setDescription("");
       setFormError(null);
     },
-    onError: (err: any) => setFormError(err.message || "Lỗi khi tạo voucher"),
+    onError: (err: any) => setFormError(err.message || "Lá»—i khi táº¡o voucher"),
   });
 
   // Mutation toggle active status
@@ -92,24 +92,24 @@ export default function AdminVouchersPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                <Ticket className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-400" />
-                QUẢN LÝ VOUCHER & MÃ GIẢM GIÁ
+                <Ticket className="h-5 w-5 sm:h-6 sm:w-6 text-red-400" />
+                QUáº¢N LĂ VOUCHER & MĂƒ GIáº¢M GIĂ
               </h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Tạo mã khuyến mãi, thiết lập giảm giá theo % hoặc tiền cố định, giới hạn lượt dùng và đơn tối thiểu.
+                Táº¡o mĂ£ khuyáº¿n mĂ£i, thiáº¿t láº­p giáº£m giĂ¡ theo % hoáº·c tiá»n cá»‘ Ä‘á»‹nh, giá»›i háº¡n lÆ°á»£t dĂ¹ng vĂ  Ä‘Æ¡n tá»‘i thiá»ƒu.
               </p>
             </div>
 
             <Button
               size="sm"
-              className="gap-2 bg-emerald-600 font-semibold"
+              className="gap-2 bg-red-600 font-semibold"
               onClick={() => {
                 setIsAddModalOpen(true);
                 setFormError(null);
               }}
             >
               <Plus className="h-4 w-4" />
-              Tạo Voucher Mới
+              Táº¡o Voucher Má»›i
             </Button>
           </div>
 
@@ -123,12 +123,12 @@ export default function AdminVouchersPage() {
           ) : vouchers.length === 0 ? (
             <Card className="text-center py-16 border-zinc-800 bg-zinc-900/40">
               <Ticket className="h-12 w-12 text-zinc-600 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-zinc-300">Chưa có mã giảm giá nào</h3>
+              <h3 className="text-base font-bold text-zinc-300">ChÆ°a cĂ³ mĂ£ giáº£m giĂ¡ nĂ o</h3>
               <p className="text-xs text-zinc-500 mt-1 mb-6">
-                Tạo mã voucher để thu hút khách hàng và gia tăng doanh thu câu lạc bộ.
+                Táº¡o mĂ£ voucher Ä‘á»ƒ thu hĂºt khĂ¡ch hĂ ng vĂ  gia tÄƒng doanh thu cĂ¢u láº¡c bá»™.
               </p>
               <Button size="sm" onClick={() => setIsAddModalOpen(true)}>
-                Tạo Voucher Đầu Tiên
+                Táº¡o Voucher Äáº§u TiĂªn
               </Button>
             </Card>
           ) : (
@@ -137,43 +137,43 @@ export default function AdminVouchersPage() {
                 <table className="w-full text-left min-w-[750px]">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3 whitespace-nowrap">Mã Voucher</th>
-                      <th className="p-3 whitespace-nowrap">Tên Chương Trình</th>
-                      <th className="p-3 whitespace-nowrap">Mức Giảm</th>
-                      <th className="p-3 whitespace-nowrap">Đơn Tối Thiểu</th>
-                      <th className="p-3 whitespace-nowrap">Áp Dụng</th>
-                      <th className="p-3 whitespace-nowrap">Đã Dùng / Giới Hạn</th>
-                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
-                      <th className="p-3 text-right whitespace-nowrap">Thao Tác</th>
+                      <th className="p-3 whitespace-nowrap">MĂ£ Voucher</th>
+                      <th className="p-3 whitespace-nowrap">TĂªn ChÆ°Æ¡ng TrĂ¬nh</th>
+                      <th className="p-3 whitespace-nowrap">Má»©c Giáº£m</th>
+                      <th className="p-3 whitespace-nowrap">ÄÆ¡n Tá»‘i Thiá»ƒu</th>
+                      <th className="p-3 whitespace-nowrap">Ăp Dá»¥ng</th>
+                      <th className="p-3 whitespace-nowrap">ÄĂ£ DĂ¹ng / Giá»›i Háº¡n</th>
+                      <th className="p-3 whitespace-nowrap">Tráº¡ng ThĂ¡i</th>
+                      <th className="p-3 text-right whitespace-nowrap">Thao TĂ¡c</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800">
                     {vouchers.map((vc: any) => (
                       <tr key={vc.id} className="hover:bg-zinc-800/30">
-                        <td className="p-3 font-mono font-black text-emerald-400 whitespace-nowrap">{vc.code}</td>
+                        <td className="p-3 font-mono font-black text-red-400 whitespace-nowrap">{vc.code}</td>
                         <td className="p-3 font-semibold text-white whitespace-nowrap">{vc.name}</td>
                         <td className="p-3 font-bold text-amber-300 whitespace-nowrap">
                           {vc.discountType === "PERCENT"
-                            ? `-${vc.discountValue}% (Tối đa ${formatVND(Number(vc.maxDiscount || 0))})`
+                            ? `-${vc.discountValue}% (Tá»‘i Ä‘a ${formatVND(Number(vc.maxDiscount || 0))})`
                             : `-${formatVND(Number(vc.discountValue))}`}
                         </td>
                         <td className="p-3 text-zinc-300 whitespace-nowrap">{formatVND(Number(vc.minOrderValue || 0))}</td>
                         <td className="p-3 whitespace-nowrap">
                           <Badge variant="outline">
                             {vc.applicableTo === "TABLE_ONLY"
-                              ? "Chỉ Tiền Giờ"
+                              ? "Chá»‰ Tiá»n Giá»"
                               : vc.applicableTo === "SERVICE_ONLY"
-                              ? "Chỉ F&B"
-                              : "Toàn Bộ Đơn"}
+                              ? "Chá»‰ F&B"
+                              : "ToĂ n Bá»™ ÄÆ¡n"}
                           </Badge>
                         </td>
                         <td className="p-3 text-zinc-300 whitespace-nowrap">
                           <span className="font-bold text-white">{vc.usedCount}</span> /{" "}
-                          {vc.usageLimit ? vc.usageLimit : "∞"}
+                          {vc.usageLimit ? vc.usageLimit : "âˆ"}
                         </td>
                         <td className="p-3 whitespace-nowrap">
                           <Badge variant={vc.isActive ? "success" : "default"}>
-                            {vc.isActive ? "Hoạt động" : "Tạm dừng"}
+                            {vc.isActive ? "Hoáº¡t Ä‘á»™ng" : "Táº¡m dá»«ng"}
                           </Badge>
                         </td>
                         <td className="p-3 text-right space-x-2 whitespace-nowrap">
@@ -185,13 +185,13 @@ export default function AdminVouchersPage() {
                           }
                           className="h-7 text-[11px] px-2.5"
                         >
-                          {vc.isActive ? "Tạm Dừng" : "Kích Hoạt"}
+                          {vc.isActive ? "Táº¡m Dá»«ng" : "KĂ­ch Hoáº¡t"}
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            if (confirm(`Bạn có chắc muốn xóa voucher ${vc.code}?`)) {
+                            if (confirm(`Báº¡n cĂ³ cháº¯c muá»‘n xĂ³a voucher ${vc.code}?`)) {
                               deleteVoucherMutation.mutate(vc.id);
                             }
                           }}
@@ -213,7 +213,7 @@ export default function AdminVouchersPage() {
             <Modal
               isOpen={isAddModalOpen}
               onClose={() => setIsAddModalOpen(false)}
-              title="Tạo Voucher Khuyến Mãi Mới"
+              title="Táº¡o Voucher Khuyáº¿n MĂ£i Má»›i"
             >
               <div className="space-y-4 text-xs">
                 {formError && (
@@ -224,7 +224,7 @@ export default function AdminVouchersPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Mã Voucher (Code):</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">MĂ£ Voucher (Code):</label>
                     <Input
                       placeholder="VD: CHAOMUNG20"
                       value={code}
@@ -232,22 +232,22 @@ export default function AdminVouchersPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Loại giảm giá:</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Loáº¡i giáº£m giĂ¡:</label>
                     <select
                       value={discountType}
                       onChange={(e) => setDiscountType(e.target.value as any)}
                       className="w-full h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-zinc-200 text-xs"
                     >
-                      <option value="PERCENT">Theo phần trăm (%)</option>
-                      <option value="FIXED_AMOUNT">Số tiền cố định (VNĐ)</option>
+                      <option value="PERCENT">Theo pháº§n trÄƒm (%)</option>
+                      <option value="FIXED_AMOUNT">Sá»‘ tiá»n cá»‘ Ä‘á»‹nh (VNÄ)</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Tên chương trình khuyến mãi:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">TĂªn chÆ°Æ¡ng trĂ¬nh khuyáº¿n mĂ£i:</label>
                   <Input
-                    placeholder="VD: Ưu đãi chào mừng khách mới"
+                    placeholder="VD: Æ¯u Ä‘Ă£i chĂ o má»«ng khĂ¡ch má»›i"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -256,7 +256,7 @@ export default function AdminVouchersPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-zinc-300 font-semibold mb-1">
-                      {discountType === "PERCENT" ? "Phần trăm giảm (%):" : "Số tiền giảm (VNĐ):"}
+                      {discountType === "PERCENT" ? "Pháº§n trÄƒm giáº£m (%):" : "Sá»‘ tiá»n giáº£m (VNÄ):"}
                     </label>
                     <Input
                       type="number"
@@ -266,7 +266,7 @@ export default function AdminVouchersPage() {
                   </div>
                   {discountType === "PERCENT" ? (
                     <div>
-                      <label className="block text-zinc-300 font-semibold mb-1">Giảm tối đa (VNĐ):</label>
+                      <label className="block text-zinc-300 font-semibold mb-1">Giáº£m tá»‘i Ä‘a (VNÄ):</label>
                       <Input
                         type="number"
                         value={maxDiscount}
@@ -275,7 +275,7 @@ export default function AdminVouchersPage() {
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-zinc-300 font-semibold mb-1">Giá trị đơn tối thiểu (VNĐ):</label>
+                      <label className="block text-zinc-300 font-semibold mb-1">GiĂ¡ trá»‹ Ä‘Æ¡n tá»‘i thiá»ƒu (VNÄ):</label>
                       <Input
                         type="number"
                         value={minOrderValue}
@@ -287,7 +287,7 @@ export default function AdminVouchersPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Số lượt sử dụng tối đa:</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ lÆ°á»£t sá»­ dá»¥ng tá»‘i Ä‘a:</label>
                     <Input
                       type="number"
                       value={usageLimit}
@@ -295,23 +295,23 @@ export default function AdminVouchersPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-zinc-300 font-semibold mb-1">Áp dụng cho:</label>
+                    <label className="block text-zinc-300 font-semibold mb-1">Ăp dá»¥ng cho:</label>
                     <select
                       value={applicableTo}
                       onChange={(e) => setApplicableTo(e.target.value)}
                       className="w-full h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-zinc-200 text-xs"
                     >
-                      <option value="ALL">Toàn bộ hóa đơn</option>
-                      <option value="TABLE_ONLY">Chỉ tiền giờ chơi</option>
-                      <option value="SERVICE_ONLY">Chỉ đồ ăn & nước uống (F&B)</option>
+                      <option value="ALL">ToĂ n bá»™ hĂ³a Ä‘Æ¡n</option>
+                      <option value="TABLE_ONLY">Chá»‰ tiá»n giá» chÆ¡i</option>
+                      <option value="SERVICE_ONLY">Chá»‰ Ä‘á»“ Äƒn & nÆ°á»›c uá»‘ng (F&B)</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Mô tả điều kiện:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">MĂ´ táº£ Ä‘iá»u kiá»‡n:</label>
                   <Input
-                    placeholder="Mô tả quyền lợi hoặc ghi chú thêm..."
+                    placeholder="MĂ´ táº£ quyá»n lá»£i hoáº·c ghi chĂº thĂªm..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
@@ -319,15 +319,15 @@ export default function AdminVouchersPage() {
 
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" size="sm" onClick={() => setIsAddModalOpen(false)}>
-                    Hủy
+                    Há»§y
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-emerald-600 font-bold"
+                    className="bg-red-600 font-bold"
                     isLoading={createVoucherMutation.isPending}
                     onClick={() => createVoucherMutation.mutate()}
                   >
-                    Tạo Voucher
+                    Táº¡o Voucher
                   </Button>
                 </div>
               </div>
