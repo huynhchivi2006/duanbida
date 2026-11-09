@@ -117,7 +117,7 @@ export function Sidebar({ role }: SidebarProps) {
 
             {!isCollapsed && (
               <div className="whitespace-nowrap overflow-hidden">
-                <div className="font-extrabold text-sm tracking-tight text-zinc-100">
+                <div className="font-extrabold text-sm tracking-wider font-azonix text-zinc-100">
                   ROYAL BILLIARDS
                 </div>
                 <div className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
