@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -253,7 +253,9 @@ export default function StaffBillingPage() {
 
   const openQrModal = (code: string, title: string) => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH !== undefined ? process.env.NEXT_PUBLIC_BASE_PATH : "/huynhchivi/doan";
+    const basePath = typeof window !== "undefined" && window.location.pathname.startsWith("/huynhchivi/doan")
+      ? "/huynhchivi/doan"
+      : (process.env.NEXT_PUBLIC_BASE_PATH || "");
     const url = `${origin}${basePath}/live-bill?${code}`;
     setQrCodeData({ url, title });
     setIsQrModalOpen(true);

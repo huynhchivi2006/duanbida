@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production';
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH !== undefined 
   ? process.env.NEXT_PUBLIC_BASE_PATH 
-  : '/huynhchivi/doan';
+  : (isProd ? '/huynhchivi/doan' : '');
 
 const nextConfig = {
   output: 'export',
@@ -14,5 +15,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-
-
