@@ -13,6 +13,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
+          '"Azonix"',
           '"Be Vietnam Pro"',
           '-apple-system',
           'BlinkMacSystemFont',
