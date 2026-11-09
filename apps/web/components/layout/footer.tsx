@@ -12,7 +12,7 @@ export function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
                 <CircleDot className="h-4 w-4" />
               </div>
-              <span className="font-extrabold text-base tracking-wider font-azonix text-zinc-100">
+              <span className="font-extrabold text-base text-zinc-100">
                 ROYAL <span className="text-emerald-500">BILLIARDS</span>
               </span>
             </div>

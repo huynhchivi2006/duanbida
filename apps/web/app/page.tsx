@@ -22,7 +22,7 @@ export default function HomePage() {
 
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight">
               TRẢI NGHIỆM BI-DA ĐẲNG CẤP TẠI{" "}
-              <span className="text-emerald-500 underline decoration-emerald-600/50 font-azonix tracking-wider">ROYAL CLUB</span>
+              <span className="text-emerald-500 underline decoration-emerald-600/50">ROYAL CLUB</span>
             </h1>
 
             <p className="mt-6 text-base md:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">

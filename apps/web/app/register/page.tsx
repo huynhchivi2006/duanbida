@@ -55,7 +55,7 @@ export default function RegisterPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white font-black shadow-lg shadow-emerald-900/60">
             <CircleDot className="h-6 w-6" />
           </div>
-          <span className="font-extrabold text-2xl tracking-wider font-azonix text-white">
+          <span className="font-extrabold text-2xl tracking-tight text-white">
             ROYAL <span className="text-emerald-500">BILLIARDS</span>
           </span>
         </Link>

@@ -13,7 +13,6 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
-          '"Azonix"',
           '"Be Vietnam Pro"',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -21,7 +20,6 @@ const config: Config = {
           'Roboto',
           'sans-serif',
         ],
-        azonix: ['"Azonix"', 'sans-serif'],
       },
       colors: {
         emerald: colors.red,
