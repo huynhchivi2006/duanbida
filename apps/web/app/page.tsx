@@ -22,7 +22,7 @@ export default function HomePage() {
 
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight">
               TRẢI NGHIỆM BI-DA ĐẲNG CẤP TẠI{" "}
-              <span className="text-emerald-500 underline decoration-emerald-600/50">ROYAL CLUB</span>
+              <span className="text-emerald-500 underline decoration-emerald-600/50 font-azonix tracking-wider">ROYAL CLUB</span>
             </h1>
 
             <p className="mt-6 text-base md:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
@@ -47,19 +47,19 @@ export default function HomePage() {
             {/* Quick stats banner */}
             <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-emerald-400">8+</div>
+                <div className="text-2xl md:text-3xl font-black font-azonix tracking-wider text-emerald-400">8+</div>
                 <div className="text-xs text-zinc-400 mt-1">Bàn Thi Đấu Chuẩn</div>
               </div>
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-emerald-400">100%</div>
+                <div className="text-2xl md:text-3xl font-black font-azonix tracking-wider text-emerald-400">100%</div>
                 <div className="text-xs text-zinc-400 mt-1">Nỉ Simonis Nhập Khẩu</div>
               </div>
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-emerald-400">0s</div>
+                <div className="text-2xl md:text-3xl font-black font-azonix tracking-wider text-emerald-400">0s</div>
                 <div className="text-xs text-zinc-400 mt-1">Thời Gian Chờ Giữ Chỗ</div>
               </div>
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-emerald-400">16h/24h</div>
+                <div className="text-2xl md:text-3xl font-black font-azonix tracking-wider text-emerald-400">16h/24h</div>
                 <div className="text-xs text-zinc-400 mt-1">Giờ Mở Cửa (08:00 - 24:00)</div>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function HomePage() {
               {/* Pool */}
               <Card className="border-zinc-800 bg-zinc-900/40 hover:border-emerald-600/50 transition-all">
                 <CardHeader>
-                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold mb-2">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold font-azonix mb-2">
                     8
                   </div>
                   <CardTitle>Bàn Bida Lỗ (Pool 9-Ball)</CardTitle>
@@ -104,7 +104,7 @@ export default function HomePage() {
               {/* Carom */}
               <Card className="border-zinc-800 bg-zinc-900/40 hover:border-emerald-600/50 transition-all">
                 <CardHeader>
-                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold mb-2">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold font-azonix mb-2">
                     3C
                   </div>
                   <CardTitle>Bàn Phăng / 3 Băng (Carom)</CardTitle>
@@ -128,7 +128,7 @@ export default function HomePage() {
               {/* Snooker */}
               <Card className="border-zinc-800 bg-zinc-900/40 hover:border-emerald-600/50 transition-all">
                 <CardHeader>
-                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold mb-2">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold font-azonix mb-2">
                     SN
                   </div>
                   <CardTitle>Bàn Snooker VIP Quốc Tế</CardTitle>

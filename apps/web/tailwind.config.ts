@@ -20,6 +20,7 @@ const config: Config = {
           'Roboto',
           'sans-serif',
         ],
+        azonix: ['"Azonix"', '"Be Vietnam Pro"', 'sans-serif'],
       },
       colors: {
         emerald: colors.red,

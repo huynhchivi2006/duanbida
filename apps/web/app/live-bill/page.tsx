@@ -113,7 +113,7 @@ function LiveBillContent() {
               <CircleDot className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm font-extrabold tracking-tight text-white">ROYAL BILLIARDS</div>
+              <div className="text-sm font-extrabold tracking-wider font-azonix text-white">ROYAL BILLIARDS</div>
               <div className="text-[10px] text-emerald-400 font-semibold uppercase">
                 Hóa Đơn & Tiêu Dùng Trực Tiếp
               </div>
@@ -282,7 +282,7 @@ function LiveBillContent() {
       </div>
 
       <footer className="text-center py-4 text-[11px] text-zinc-500 border-t border-zinc-900 max-w-md mx-auto w-full">
-        ROYAL BILLIARDS CLUB • Hệ thống đặt bàn & quản lý chuyên nghiệp
+        <span className="font-azonix">ROYAL BILLIARDS CLUB</span> • Hệ thống đặt bàn & quản lý chuyên nghiệp
       </footer>
     </div>
   );

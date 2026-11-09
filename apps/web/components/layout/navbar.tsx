@@ -19,7 +19,7 @@ export function Navbar() {
             <CircleDot className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-base tracking-tight text-zinc-100">
+            <span className="font-extrabold text-base tracking-wider font-azonix text-zinc-100">
               ROYAL <span className="text-emerald-500">BILLIARDS</span>
             </span>
             <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-semibold">

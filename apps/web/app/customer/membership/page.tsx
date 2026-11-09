@@ -145,7 +145,7 @@ export default function CustomerMembershipPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <Crown className="h-5 w-5 text-amber-400" />
-                    <span className="text-xs font-black tracking-widest uppercase text-white/90">
+                    <span className="text-xs font-black tracking-widest uppercase font-azonix text-white/90">
                       ROYAL BILLIARDS CLUB
                     </span>
                   </div>
