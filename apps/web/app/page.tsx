@@ -13,16 +13,16 @@ export default function HomePage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 lg:py-28 border-b border-zinc-800">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-950/20 via-zinc-950 to-zinc-950 -z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/20 via-zinc-950 to-zinc-950 -z-10"></div>
           <div className="container mx-auto px-4 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-950/40 px-4 py-1.5 text-xs font-medium text-red-400 mb-6">
-              <span className="flex h-2 w-2 rounded-full bg-red-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-4 py-1.5 text-xs font-medium text-emerald-400 mb-6">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               Hệ thống đặt bàn thời gian thực - Chống trùng lịch 100%
             </div>
 
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight">
               TRẢI NGHIỆM BI-DA ĐẲNG CẤP TẠI{" "}
-              <span className="text-red-500 underline decoration-red-600/50">ROYAL CLUB</span>
+              <span className="text-emerald-500 underline decoration-emerald-600/50">ROYAL CLUB</span>
             </h1>
 
             <p className="mt-6 text-base md:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
@@ -32,7 +32,7 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/book">
-                <Button size="lg" className="text-base px-8 font-semibold shadow-lg shadow-red-900/40">
+                <Button size="lg" className="text-base px-8 font-semibold shadow-lg shadow-emerald-900/40">
                   <Calendar className="mr-2 h-5 w-5" />
                   Đặt Bàn Ngay Bây Giờ
                 </Button>
@@ -47,19 +47,19 @@ export default function HomePage() {
             {/* Quick stats banner */}
             <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-red-400">8+</div>
+                <div className="text-2xl md:text-3xl font-black text-emerald-400">8+</div>
                 <div className="text-xs text-zinc-400 mt-1">Bàn Thi Đấu Chuẩn</div>
               </div>
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-red-400">100%</div>
+                <div className="text-2xl md:text-3xl font-black text-emerald-400">100%</div>
                 <div className="text-xs text-zinc-400 mt-1">Nỉ Simonis Nhập Khẩu</div>
               </div>
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-red-400">0s</div>
+                <div className="text-2xl md:text-3xl font-black text-emerald-400">0s</div>
                 <div className="text-xs text-zinc-400 mt-1">Thời Gian Chờ Giữ Chỗ</div>
               </div>
               <div className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50">
-                <div className="text-2xl md:text-3xl font-black text-red-400">16h/24h</div>
+                <div className="text-2xl md:text-3xl font-black text-emerald-400">16h/24h</div>
                 <div className="text-xs text-zinc-400 mt-1">Giờ Mở Cửa (08:00 - 24:00)</div>
               </div>
             </div>
@@ -78,9 +78,9 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Pool */}
-              <Card className="border-zinc-800 bg-zinc-900/40 hover:border-red-600/50 transition-all">
+              <Card className="border-zinc-800 bg-zinc-900/40 hover:border-emerald-600/50 transition-all">
                 <CardHeader>
-                  <div className="h-10 w-10 rounded-lg bg-red-950/80 border border-red-800/60 flex items-center justify-center text-red-400 font-bold mb-2">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold mb-2">
                     8
                   </div>
                   <CardTitle>Bàn Bida Lỗ (Pool 9-Ball)</CardTitle>
@@ -91,7 +91,7 @@ export default function HomePage() {
                   </p>
                   <div className="flex items-baseline justify-between border-t border-zinc-800/80 pt-4">
                     <span className="text-xs text-zinc-400">Giá thuê chỉ từ:</span>
-                    <span className="text-lg font-bold text-red-400">80.000 ₫ / giờ</span>
+                    <span className="text-lg font-bold text-emerald-400">80.000 ₫ / giờ</span>
                   </div>
                   <Link href="/book?type=POOL" className="block">
                     <Button variant="secondary" className="w-full text-xs" size="sm">
@@ -102,9 +102,9 @@ export default function HomePage() {
               </Card>
 
               {/* Carom */}
-              <Card className="border-zinc-800 bg-zinc-900/40 hover:border-red-600/50 transition-all">
+              <Card className="border-zinc-800 bg-zinc-900/40 hover:border-emerald-600/50 transition-all">
                 <CardHeader>
-                  <div className="h-10 w-10 rounded-lg bg-red-950/80 border border-red-800/60 flex items-center justify-center text-red-400 font-bold mb-2">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold mb-2">
                     3C
                   </div>
                   <CardTitle>Bàn Phăng / 3 Băng (Carom)</CardTitle>
@@ -115,7 +115,7 @@ export default function HomePage() {
                   </p>
                   <div className="flex items-baseline justify-between border-t border-zinc-800/80 pt-4">
                     <span className="text-xs text-zinc-400">Giá thuê chỉ từ:</span>
-                    <span className="text-lg font-bold text-red-400">90.000 ₫ / giờ</span>
+                    <span className="text-lg font-bold text-emerald-400">90.000 ₫ / giờ</span>
                   </div>
                   <Link href="/book?type=CAROM_3C" className="block">
                     <Button variant="secondary" className="w-full text-xs" size="sm">
@@ -126,9 +126,9 @@ export default function HomePage() {
               </Card>
 
               {/* Snooker */}
-              <Card className="border-zinc-800 bg-zinc-900/40 hover:border-red-600/50 transition-all">
+              <Card className="border-zinc-800 bg-zinc-900/40 hover:border-emerald-600/50 transition-all">
                 <CardHeader>
-                  <div className="h-10 w-10 rounded-lg bg-red-950/80 border border-red-800/60 flex items-center justify-center text-red-400 font-bold mb-2">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-950/80 border border-emerald-800/60 flex items-center justify-center text-emerald-400 font-bold mb-2">
                     SN
                   </div>
                   <CardTitle>Bàn Snooker VIP Quốc Tế</CardTitle>
@@ -139,7 +139,7 @@ export default function HomePage() {
                   </p>
                   <div className="flex items-baseline justify-between border-t border-zinc-800/80 pt-4">
                     <span className="text-xs text-zinc-400">Giá thuê chỉ từ:</span>
-                    <span className="text-lg font-bold text-red-400">120.000 ₫ / giờ</span>
+                    <span className="text-lg font-bold text-emerald-400">120.000 ₫ / giờ</span>
                   </div>
                   <Link href="/book?type=SNOOKER" className="block">
                     <Button variant="secondary" className="w-full text-xs" size="sm">
@@ -157,7 +157,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-xl bg-red-950/50 border border-red-800/50 text-red-400 shrink-0">
+                <div className="p-3 rounded-xl bg-emerald-950/50 border border-emerald-800/50 text-emerald-400 shrink-0">
                   <ShieldCheck className="h-6 w-6" />
                 </div>
                 <div>
@@ -169,7 +169,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-xl bg-red-950/50 border border-red-800/50 text-red-400 shrink-0">
+                <div className="p-3 rounded-xl bg-emerald-950/50 border border-emerald-800/50 text-emerald-400 shrink-0">
                   <Zap className="h-6 w-6" />
                 </div>
                 <div>
@@ -181,7 +181,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-xl bg-red-950/50 border border-red-800/50 text-red-400 shrink-0">
+                <div className="p-3 rounded-xl bg-emerald-950/50 border border-emerald-800/50 text-emerald-400 shrink-0">
                   <Clock className="h-6 w-6" />
                 </div>
                 <div>

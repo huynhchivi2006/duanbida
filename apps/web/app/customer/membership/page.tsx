@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,42 +31,42 @@ export default function CustomerMembershipPage() {
   const [redeemSuccessMsg, setRedeemSuccessMsg] = useState<string | null>(null);
   const [redeemErrorMsg, setRedeemErrorMsg] = useState<string | null>(null);
 
-  // 1. Láº¥y thĂ´ng tin tháº» thĂ nh viĂªn & tiáº¿n trĂ¬nh thÄƒng háº¡ng
+  // 1. Lấy thông tin thẻ thành viên & tiến trình thăng hạng
   const { data: memberData, isLoading: isLoadingCard } = useQuery({
     queryKey: ["my-membership-card"],
     queryFn: () => apiClient("/membership/my-card"),
   });
 
-  // 2. Láº¥y danh sĂ¡ch quĂ  Ä‘á»•i Ä‘iá»ƒm
+  // 2. Lấy danh sách quà đổi điểm
   const { data: gifts = [], isLoading: isLoadingGifts } = useQuery({
     queryKey: ["reward-gifts"],
     queryFn: () => apiClient("/membership/gifts"),
   });
 
-  // 3. Láº¥y lá»‹ch sá»­ Ä‘á»•i quĂ  cá»§a khĂ¡ch
+  // 3. Lấy lịch sử đổi quà của khách
   const { data: myRedemptions = [] } = useQuery({
     queryKey: ["my-redemptions"],
     queryFn: () => apiClient("/membership/my-redemptions"),
   });
 
-  // Mutation Ä‘á»•i quĂ 
+  // Mutation đổi quà
   const redeemMutation = useMutation({
     mutationFn: async (giftId: string) => {
       return apiClient("/membership/redeem", {
         method: "POST",
-        body: JSON.stringify({ giftId, note: "Äá»•i quĂ  trá»±c tiáº¿p tá»« cá»•ng Há»™i ViĂªn" }),
+        body: JSON.stringify({ giftId, note: "Đổi quà trực tiếp từ cổng Hội Viên" }),
       });
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["my-membership-card"] });
       queryClient.invalidateQueries({ queryKey: ["reward-gifts"] });
       queryClient.invalidateQueries({ queryKey: ["my-redemptions"] });
-      setRedeemSuccessMsg(`Äá»•i thĂ nh cĂ´ng "${selectedGift?.name}"! Vui lĂ²ng liĂªn há»‡ quáº§y thu ngĂ¢n Ä‘á»ƒ nháº­n quĂ .`);
+      setRedeemSuccessMsg(`Đổi thành công "${selectedGift?.name}"! Vui lòng liên hệ quầy thu ngân để nhận quà.`);
       setSelectedGift(null);
       setRedeemErrorMsg(null);
     },
     onError: (err: any) => {
-      setRedeemErrorMsg(err.message || "KhĂ´ng thá»ƒ Ä‘á»•i quĂ , vui lĂ²ng thá»­ láº¡i");
+      setRedeemErrorMsg(err.message || "Không thể đổi quà, vui lòng thử lại");
     },
   });
 
@@ -115,22 +115,22 @@ export default function CustomerMembershipPage() {
           {/* Header */}
           <div>
             <h1 className="text-2xl font-black text-white flex items-center gap-2">
-              <Award className="h-6 w-6 text-red-400" />
-              THáºº Há»˜I VIĂN & TĂCH ÄIá»‚M Äá»”I QUĂ€
+              <Award className="h-6 w-6 text-emerald-400" />
+              THẺ HỘI VIÊN & TÍCH ĐIỂM ĐỔI QUÀ
             </h1>
             <p className="text-zinc-400 text-xs mt-1">
-              Xem háº¡ng tháº» thĂ nh viĂªn (Silver, Gold, VIP), tĂ­ch lÅ©y Ä‘iá»ƒm thÆ°á»Ÿng sau má»—i tráº­n chÆ¡i vĂ  Ä‘á»•i quĂ  háº¥p dáº«n.
+              Xem hạng thẻ thành viên (Silver, Gold, VIP), tích lũy điểm thưởng sau mỗi trận chơi và đổi quà hấp dẫn.
             </p>
           </div>
 
           {redeemSuccessMsg && (
-            <div className="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-300 text-xs flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-red-400 shrink-0" />
+                <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
                 <span>{redeemSuccessMsg}</span>
               </div>
-              <button onClick={() => setRedeemSuccessMsg(null)} className="text-red-400 hover:text-white font-bold ml-4">
-                âœ•
+              <button onClick={() => setRedeemSuccessMsg(null)} className="text-emerald-400 hover:text-white font-bold ml-4">
+                ✕
               </button>
             </div>
           )}
@@ -150,19 +150,19 @@ export default function CustomerMembershipPage() {
                     </span>
                   </div>
                   <h2 className="text-xl font-black text-white mt-2 tracking-wide uppercase">
-                    {cardInfo?.fullName || "KhĂ¡ch HĂ ng"}
+                    {cardInfo?.fullName || "Khách Hàng"}
                   </h2>
                   <p className="text-xs text-white/70 font-mono mt-0.5">
-                    SÄT: {cardInfo?.phone || "ChÆ°a cáº­p nháº­t"}
+                    SĐT: {cardInfo?.phone || "Chưa cập nhật"}
                   </p>
                 </div>
 
                 <div className="text-right">
                   <Badge className="bg-white/20 text-white font-black px-3 py-1 text-xs border border-white/30 backdrop-blur-sm uppercase">
-                    Háº NG {currentTier}
+                    HẠNG {currentTier}
                   </Badge>
                   <div className="mt-3 text-right">
-                    <div className="text-[10px] text-white/70 uppercase tracking-wider">Äiá»ƒm tĂ­ch lÅ©y</div>
+                    <div className="text-[10px] text-white/70 uppercase tracking-wider">Điểm tích lũy</div>
                     <div className="text-2xl font-black text-amber-300">
                       {cardInfo?.points?.toLocaleString("vi-VN") || 0} <span className="text-xs">PTS</span>
                     </div>
@@ -173,21 +173,21 @@ export default function CustomerMembershipPage() {
               {/* Card Footer details */}
               <div className="pt-6 border-t border-white/10 mt-6 grid grid-cols-3 gap-4 text-xs">
                 <div>
-                  <div className="text-[10px] text-white/60">Tá»•ng chi tiĂªu</div>
+                  <div className="text-[10px] text-white/60">Tổng chi tiêu</div>
                   <div className="font-bold text-white">
                     {formatVND(Number(cardInfo?.totalSpending || 0))}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-white/60">Táº§n suáº¥t chÆ¡i</div>
+                  <div className="text-[10px] text-white/60">Tần suất chơi</div>
                   <div className="font-bold text-white">
-                    {cardInfo?.visitCount || 0} lÆ°á»£t chÆ¡i
+                    {cardInfo?.visitCount || 0} lượt chơi
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-white/60">Æ¯u Ä‘Ă£i giá» & F&B</div>
-                  <div className="font-bold text-red-300">
-                    Giáº£m -{currentBenefit?.discountTablePercent || 0}%
+                  <div className="text-[10px] text-white/60">Ưu đãi giờ & F&B</div>
+                  <div className="font-bold text-emerald-300">
+                    Giảm -{currentBenefit?.discountTablePercent || 0}%
                   </div>
                 </div>
               </div>
@@ -198,16 +198,16 @@ export default function CustomerMembershipPage() {
               <div>
                 <div className="flex items-center justify-between text-xs font-bold text-zinc-300 mb-2">
                   <span className="flex items-center gap-1.5">
-                    <TrendingUp className="h-4 w-4 text-red-400" />
-                    Tiáº¿n TrĂ¬nh ThÄƒng Háº¡ng
+                    <TrendingUp className="h-4 w-4 text-emerald-400" />
+                    Tiến Trình Thăng Hạng
                   </span>
-                  <span className="text-red-400 font-black">{progressPercent}%</span>
+                  <span className="text-emerald-400 font-black">{progressPercent}%</span>
                 </div>
 
                 {/* Progress bar */}
                 <div className="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-red-500 to-amber-400 h-2.5 rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-emerald-500 to-amber-400 h-2.5 rounded-full transition-all duration-500"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -215,27 +215,27 @@ export default function CustomerMembershipPage() {
                 {nextBenefit ? (
                   <div className="mt-4 space-y-2 text-xs">
                     <p className="text-zinc-400">
-                      Chi tiĂªu thĂªm <strong className="text-amber-300 font-bold">{formatVND(spendNeeded)}</strong> Ä‘á»ƒ thÄƒng háº¡ng{" "}
+                      Chi tiêu thêm <strong className="text-amber-300 font-bold">{formatVND(spendNeeded)}</strong> để thăng hạng{" "}
                       <strong className="text-white uppercase font-black">{nextBenefit.tier}</strong>.
                     </p>
                     <div className="p-2.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80 text-[11px] text-zinc-300 space-y-1">
-                      <div className="font-semibold text-red-400">Quyá»n lá»£i háº¡ng {nextBenefit.tier}:</div>
-                      <div>â€¢ Giáº£m {nextBenefit.discountTablePercent}% tiá»n giá» chÆ¡i</div>
-                      <div>â€¢ Giáº£m {nextBenefit.discountServicePercent}% Ä‘á»“ Äƒn & thá»©c uá»‘ng</div>
-                      <div>â€¢ TĂ­ch Ä‘iá»ƒm x{nextBenefit.pointMultiplier} sau má»—i hĂ³a Ä‘Æ¡n</div>
+                      <div className="font-semibold text-emerald-400">Quyền lợi hạng {nextBenefit.tier}:</div>
+                      <div>• Giảm {nextBenefit.discountTablePercent}% tiền giờ chơi</div>
+                      <div>• Giảm {nextBenefit.discountServicePercent}% đồ ăn & thức uống</div>
+                      <div>• Tích điểm x{nextBenefit.pointMultiplier} sau mỗi hóa đơn</div>
                     </div>
                   </div>
                 ) : (
                   <div className="mt-4 p-3 rounded-lg bg-purple-950/30 border border-purple-800/50 text-xs text-purple-300 flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-purple-400 shrink-0" />
-                    <span>ChĂºc má»«ng! Báº¡n Ä‘Ă£ Ä‘áº¡t háº¡ng thĂ nh viĂªn cao nháº¥t (VIP Diamond)!</span>
+                    <span>Chúc mừng! Bạn đã đạt hạng thành viên cao nhất (VIP Diamond)!</span>
                   </div>
                 )}
               </div>
 
               <div className="pt-4 border-t border-zinc-800/80 text-[11px] text-zinc-500 flex items-center justify-between">
-                <span>Quy táº¯c: 10.000Ä‘ = 1 Ä‘iá»ƒm</span>
-                <span className="text-red-400 font-medium">Tá»± Ä‘á»™ng cá»™ng Ä‘iá»ƒm khi thanh toĂ¡n</span>
+                <span>Quy tắc: 10.000đ = 1 điểm</span>
+                <span className="text-emerald-400 font-medium">Tự động cộng điểm khi thanh toán</span>
               </div>
             </Card>
           </div>
@@ -246,15 +246,15 @@ export default function CustomerMembershipPage() {
               <div>
                 <h3 className="text-lg font-black text-white flex items-center gap-2">
                   <Gift className="h-5 w-5 text-amber-400" />
-                  Äá»”I QUĂ€ Báº°NG ÄIá»‚M THÆ¯á»NG
+                  ĐỔI QUÀ BẰNG ĐIỂM THƯỞNG
                 </h3>
                 <p className="text-zinc-400 text-xs mt-0.5">
-                  DĂ¹ng Ä‘iá»ƒm tĂ­ch lÅ©y cá»§a báº¡n Ä‘á»ƒ Ä‘á»•i láº¥y giá» chÆ¡i miá»…n phĂ­, nÆ°á»›c ngá»t, phá»¥ kiá»‡n thi Ä‘áº¥u chuyĂªn nghiá»‡p.
+                  Dùng điểm tích lũy của bạn để đổi lấy giờ chơi miễn phí, nước ngọt, phụ kiện thi đấu chuyên nghiệp.
                 </p>
               </div>
 
               <div className="text-xs text-zinc-400">
-                Äiá»ƒm kháº£ dá»¥ng: <strong className="text-amber-400 text-sm">{cardInfo?.points || 0} PTS</strong>
+                Điểm khả dụng: <strong className="text-amber-400 text-sm">{cardInfo?.points || 0} PTS</strong>
               </div>
             </div>
 
@@ -267,7 +267,7 @@ export default function CustomerMembershipPage() {
             ) : gifts.length === 0 ? (
               <Card className="p-8 text-center border-zinc-800 bg-zinc-900/40">
                 <Gift className="h-10 w-10 text-zinc-600 mx-auto mb-2" />
-                <p className="text-zinc-400 text-xs">Hiá»‡n chÆ°a cĂ³ pháº§n quĂ  Ä‘á»•i thÆ°á»Ÿng nĂ o kháº£ dá»¥ng.</p>
+                <p className="text-zinc-400 text-xs">Hiện chưa có phần quà đổi thưởng nào khả dụng.</p>
               </Card>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -286,13 +286,13 @@ export default function CustomerMembershipPage() {
                           </Badge>
                         </div>
                         <p className="text-zinc-400 text-xs mt-2 line-clamp-2">
-                          {gift.description || "QuĂ  táº·ng tri Ă¢n Ä‘áº·c quyá»n dĂ nh riĂªng cho há»™i viĂªn."}
+                          {gift.description || "Quà tặng tri ân đặc quyền dành riêng cho hội viên."}
                         </p>
                       </div>
 
                       <div className="pt-4 mt-4 border-t border-zinc-800/80 flex items-center justify-between">
                         <span className="text-[11px] text-zinc-500">
-                          CĂ²n láº¡i: <strong className="text-zinc-300">{gift.stockQuantity}</strong> pháº§n
+                          Còn lại: <strong className="text-zinc-300">{gift.stockQuantity}</strong> phần
                         </span>
 
                         <Button
@@ -309,7 +309,7 @@ export default function CustomerMembershipPage() {
                           }`}
                         >
                           <Gift className="h-3.5 w-3.5 mr-1" />
-                          Äá»•i QuĂ 
+                          Đổi Quà
                         </Button>
                       </div>
                     </Card>
@@ -323,22 +323,22 @@ export default function CustomerMembershipPage() {
           <div className="space-y-4">
             <h3 className="text-base font-black text-white flex items-center gap-2">
               <Clock className="h-4 w-4 text-zinc-400" />
-              Lá»CH Sá»¬ Äá»”I QUĂ€ Cá»¦A Báº N
+              LỊCH SỬ ĐỔI QUÀ CỦA BẠN
             </h3>
 
             {myRedemptions.length === 0 ? (
               <div className="p-6 rounded-xl border border-zinc-800/80 bg-zinc-900/30 text-center text-xs text-zinc-500">
-                Báº¡n chÆ°a thá»±c hiá»‡n yĂªu cáº§u Ä‘á»•i quĂ  nĂ o.
+                Bạn chưa thực hiện yêu cầu đổi quà nào.
               </div>
             ) : (
               <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/40 text-xs">
                 <table className="w-full text-left">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3">Pháº§n QuĂ </th>
-                      <th className="p-3">Äiá»ƒm ÄĂ£ DĂ¹ng</th>
-                      <th className="p-3">Thá»i Gian Äá»•i</th>
-                      <th className="p-3">Tráº¡ng ThĂ¡i</th>
+                      <th className="p-3">Phần Quà</th>
+                      <th className="p-3">Điểm Đã Dùng</th>
+                      <th className="p-3">Thời Gian Đổi</th>
+                      <th className="p-3">Trạng Thái</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800">
@@ -349,9 +349,9 @@ export default function CustomerMembershipPage() {
                         <td className="p-3 text-zinc-400">{formatDateTimeVN(red.createdAt)}</td>
                         <td className="p-3">
                           {red.status === "CLAIMED" ? (
-                            <Badge variant="success">ÄĂ£ Nháº­n QuĂ </Badge>
+                            <Badge variant="success">Đã Nhận Quà</Badge>
                           ) : (
-                            <Badge variant="warning">Chá» Nháº­n Táº¡i Quáº§y</Badge>
+                            <Badge variant="warning">Chờ Nhận Tại Quầy</Badge>
                           )}
                         </td>
                       </tr>
@@ -367,7 +367,7 @@ export default function CustomerMembershipPage() {
             <Modal
               isOpen={!!selectedGift}
               onClose={() => setSelectedGift(null)}
-              title="XĂ¡c Nháº­n Äá»•i QuĂ  ThÆ°á»Ÿng"
+              title="Xác Nhận Đổi Quà Thưởng"
             >
               <div className="space-y-4 text-xs">
                 {redeemErrorMsg && (
@@ -377,21 +377,21 @@ export default function CustomerMembershipPage() {
                 )}
 
                 <p className="text-zinc-300">
-                  Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n dĂ¹ng <strong className="text-amber-300 font-bold">{selectedGift.pointsRequired} Ä‘iá»ƒm</strong> Ä‘á»ƒ Ä‘á»•i pháº§n quĂ :
+                  Bạn có chắc chắn muốn dùng <strong className="text-amber-300 font-bold">{selectedGift.pointsRequired} điểm</strong> để đổi phần quà:
                 </p>
 
                 <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
                   <div className="font-bold text-white text-sm">{selectedGift.name}</div>
                   <div className="text-zinc-400 text-xs mt-1">{selectedGift.description}</div>
                   <div className="mt-3 flex items-center justify-between text-[11px] pt-3 border-t border-zinc-800 text-zinc-400">
-                    <span>Äiá»ƒm hiá»‡n cĂ³: <strong className="text-white">{cardInfo?.points || 0} PTS</strong></span>
-                    <span>Äiá»ƒm sau khi Ä‘á»•i: <strong className="text-red-400">{(cardInfo?.points || 0) - selectedGift.pointsRequired} PTS</strong></span>
+                    <span>Điểm hiện có: <strong className="text-white">{cardInfo?.points || 0} PTS</strong></span>
+                    <span>Điểm sau khi đổi: <strong className="text-emerald-400">{(cardInfo?.points || 0) - selectedGift.pointsRequired} PTS</strong></span>
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" size="sm" onClick={() => setSelectedGift(null)}>
-                    Há»§y Bá»
+                    Hủy Bỏ
                   </Button>
                   <Button
                     size="sm"
@@ -399,7 +399,7 @@ export default function CustomerMembershipPage() {
                     disabled={redeemMutation.isPending}
                     onClick={() => redeemMutation.mutate(selectedGift.id)}
                   >
-                    {redeemMutation.isPending ? "Äang xá»­ lĂ½..." : "XĂ¡c Nháº­n Äá»•i Ngay"}
+                    {redeemMutation.isPending ? "Đang xử lý..." : "Xác Nhận Đổi Ngay"}
                   </Button>
                 </div>
               </div>

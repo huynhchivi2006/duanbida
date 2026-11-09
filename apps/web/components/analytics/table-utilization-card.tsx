@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,23 +43,23 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      {/* Cá»™t 1: Tá»· lá»‡ láº¥p Ä‘áº§y bĂ n theo 24 khung giá» */}
+      {/* Cột 1: Tỷ lệ lấp đầy bàn theo 24 khung giờ */}
       <Card className="lg:col-span-7 border-zinc-800 bg-zinc-900/60 p-6 space-y-4">
         <CardHeader className="p-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <CardTitle className="text-base text-zinc-100 flex items-center gap-2">
-              <Activity className="h-4 w-4 text-red-400" />
-              Tá»· Lá»‡ Láº¥p Äáº§y BĂ n Theo Khung Giá» (24 Giá»)
+              <Activity className="h-4 w-4 text-emerald-400" />
+              Tỷ Lệ Lấp Đầy Bàn Theo Khung Giờ (24 Giờ)
             </CardTitle>
             <p className="text-xs text-zinc-400 mt-1">
-              PhĂ¢n tĂ­ch cĂ´ng suáº¥t khai thĂ¡c bĂ n tá»« 00:00 Ä‘áº¿n 23:00 trong ngĂ y
+              Phân tích công suất khai thác bàn từ 00:00 đến 23:00 trong ngày
             </p>
           </div>
 
           {peakHours.length > 0 && (
             <Badge variant="warning" className="gap-1 text-[11px] self-start sm:self-center">
               <Flame className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
-              {peakHours.length} khung giá» cao Ä‘iá»ƒm (&ge;60%)
+              {peakHours.length} khung giờ cao điểm (&ge;60%)
             </Badge>
           )}
         </CardHeader>
@@ -81,10 +81,10 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
                       {/* Tooltip on hover */}
                       <div className="absolute -top-12 z-20 hidden group-hover:flex flex-col items-center bg-zinc-900 border border-zinc-700 px-2 py-1 rounded shadow-lg text-[10px] whitespace-nowrap pointer-events-none">
                         <span className="font-bold text-white">{item.hourLabel}</span>
-                        <span className="text-red-400">
-                          {item.occupancyRate}% ({item.activeCount} bĂ n hoáº¡t Ä‘á»™ng)
+                        <span className="text-emerald-400">
+                          {item.occupancyRate}% ({item.activeCount} bàn hoạt động)
                         </span>
-                        {item.isPeak && <span className="text-amber-400 font-semibold">Giá» Cao Äiá»ƒm đŸ”¥</span>}
+                        {item.isPeak && <span className="text-amber-400 font-semibold">Giờ Cao Điểm 🔥</span>}
                       </div>
 
                       <span className="text-[9px] text-zinc-500 font-mono group-hover:text-white transition-colors mb-1">
@@ -97,7 +97,7 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
                           item.isPeak
                             ? "bg-gradient-to-t from-amber-600 to-amber-400 shadow-sm shadow-amber-950/80 group-hover:from-amber-500 group-hover:to-amber-300"
                             : item.occupancyRate > 25
-                            ? "bg-gradient-to-t from-red-700 to-red-400 group-hover:from-red-600 group-hover:to-red-300"
+                            ? "bg-gradient-to-t from-emerald-700 to-emerald-400 group-hover:from-emerald-600 group-hover:to-emerald-300"
                             : "bg-zinc-800 group-hover:bg-zinc-700"
                         }`}
                       />
@@ -115,21 +115,21 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
                     <span className="h-2.5 w-2.5 rounded bg-zinc-700" />
-                    <span className="text-[11px]">Tháº¥p (&lt;25%)</span>
+                    <span className="text-[11px]">Thấp (&lt;25%)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded bg-red-500" />
-                    <span className="text-[11px]">BĂ¬nh thÆ°á»ng (25-59%)</span>
+                    <span className="h-2.5 w-2.5 rounded bg-emerald-500" />
+                    <span className="text-[11px]">Bình thường (25-59%)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="h-2.5 w-2.5 rounded bg-amber-400" />
-                    <span className="text-[11px] font-bold text-amber-400">Cao Ä‘iá»ƒm (&ge;60% đŸ”¥)</span>
+                    <span className="text-[11px] font-bold text-amber-400">Cao điểm (&ge;60% 🔥)</span>
                   </div>
                 </div>
 
                 {peakHours.length > 0 && (
                   <div className="text-[11px] text-zinc-400">
-                    Khung giá» sĂ´i Ä‘á»™ng nháº¥t:{" "}
+                    Khung giờ sôi động nhất:{" "}
                     <strong className="text-amber-400">
                       {peakHours.map((p) => `${p.hour}h`).join(", ")}
                     </strong>
@@ -141,15 +141,15 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
         </CardContent>
       </Card>
 
-      {/* Cá»™t 2: Loáº¡i bĂ n Ä‘Æ°á»£c Æ°a chuá»™ng nháº¥t */}
+      {/* Cột 2: Loại bàn được ưa chuộng nhất */}
       <Card className="lg:col-span-5 border-zinc-800 bg-zinc-900/60 p-6 space-y-4">
         <CardHeader className="p-0">
           <CardTitle className="text-base text-zinc-100 flex items-center gap-2">
             <Trophy className="h-4 w-4 text-amber-400" />
-            Loáº¡i BĂ n ÄÆ°á»£c Æ¯a Chuá»™ng Nháº¥t
+            Loại Bàn Được Ưa Chuộng Nhất
           </CardTitle>
           <p className="text-xs text-zinc-400 mt-1">
-            Xáº¿p háº¡ng theo sá»‘ lÆ°á»£t chÆ¡i vĂ  tá»•ng thá»i gian khĂ¡ch sá»­ dá»¥ng bĂ n
+            Xếp hạng theo số lượt chơi và tổng thời gian khách sử dụng bàn
           </p>
         </CardHeader>
 
@@ -162,7 +162,7 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
             </div>
           ) : popularTableTypes.length === 0 ? (
             <div className="text-center py-10 text-xs text-zinc-500">
-              ChÆ°a cĂ³ dá»¯ liá»‡u phiĂªn chÆ¡i cho cĂ¡c loáº¡i bĂ n.
+              Chưa có dữ liệu phiên chơi cho các loại bàn.
             </div>
           ) : (
             <div className="space-y-3">
@@ -195,18 +195,18 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
                               ({t.code})
                             </span>
                           </div>
-                          <span className="text-[11px] text-red-400 font-medium">
-                            {formatVND(t.hourlyRate)}/giá» &bull; {t.tableCount} bĂ n
+                          <span className="text-[11px] text-emerald-400 font-medium">
+                            {formatVND(t.hourlyRate)}/giờ &bull; {t.tableCount} bàn
                           </span>
                         </div>
                       </div>
 
                       <div className="text-right">
                         <div className="text-xs font-bold text-white">
-                          {t.sessionCount} lÆ°á»£t chÆ¡i
+                          {t.sessionCount} lượt chơi
                         </div>
                         <div className="text-[10px] text-zinc-400">
-                          {hoursPlayed} giá» chÆ¡i
+                          {hoursPlayed} giờ chơi
                         </div>
                       </div>
                     </div>
@@ -219,15 +219,15 @@ export function TableUtilizationCard({ data, isLoading }: TableUtilizationCardPr
                             idx === 0
                               ? "bg-amber-500"
                               : idx === 1
-                              ? "bg-red-500"
+                              ? "bg-emerald-500"
                               : "bg-sky-500"
                           }`}
                           style={{ width: `${Math.max(4, t.popularityPercent)}%` }}
                         />
                       </div>
                       <div className="flex justify-between items-center text-[10px] text-zinc-500 font-mono">
-                        <span>Chiáº¿m {t.popularityPercent}% tá»•ng lÆ°á»£t chÆ¡i</span>
-                        <span className="text-red-400 font-bold">
+                        <span>Chiếm {t.popularityPercent}% tổng lượt chơi</span>
+                        <span className="text-emerald-400 font-bold">
                           {formatVND(t.totalRevenue)}
                         </span>
                       </div>

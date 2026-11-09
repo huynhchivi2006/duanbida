@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -36,9 +36,9 @@ export default function CustomerProfilePage() {
         body: JSON.stringify({ fullName, phone, dateOfBirth: dateOfBirth || null }),
       });
       await refreshProfile();
-      setProfileMsg("Cáº­p nháº­t thĂ´ng tin cĂ¡ nhĂ¢n thĂ nh cĂ´ng!");
+      setProfileMsg("Cập nhật thông tin cá nhân thành công!");
     } catch (err: any) {
-      setProfileMsg(err.message || "Lá»—i khi cáº­p nháº­t");
+      setProfileMsg(err.message || "Lỗi khi cập nhật");
     } finally {
       setIsUpdating(false);
     }
@@ -54,11 +54,11 @@ export default function CustomerProfilePage() {
         method: "PUT",
         body: JSON.stringify({ oldPassword, newPassword }),
       });
-      setPassMsg({ type: "success", text: "Äá»•i máº­t kháº©u thĂ nh cĂ´ng!" });
+      setPassMsg({ type: "success", text: "Đổi mật khẩu thành công!" });
       setOldPassword("");
       setNewPassword("");
     } catch (err: any) {
-      setPassMsg({ type: "error", text: err.message || "KhĂ´ng thá»ƒ Ä‘á»•i máº­t kháº©u" });
+      setPassMsg({ type: "error", text: err.message || "Không thể đổi mật khẩu" });
     } finally {
       setIsChangingPass(false);
     }
@@ -71,20 +71,20 @@ export default function CustomerProfilePage() {
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-8">
           <div>
-            <h1 className="text-2xl font-black text-white">Há»’ SÆ  CĂ NHĂ‚N</h1>
+            <h1 className="text-2xl font-black text-white">HỒ SƠ CÁ NHÂN</h1>
             <p className="text-zinc-400 text-xs mt-1">
-              Quáº£n lĂ½ thĂ´ng tin liĂªn há»‡ vĂ  báº£o máº­t tĂ i khoáº£n cá»§a báº¡n.
+              Quản lý thông tin liên hệ và bảo mật tài khoản của bạn.
             </p>
           </div>
 
           {/* Profile Form */}
           <Card className="border-zinc-800 bg-zinc-900/60 p-6">
             <CardHeader className="p-0 pb-4">
-              <CardTitle className="text-base text-zinc-200">ThĂ´ng Tin TĂ i Khoáº£n</CardTitle>
+              <CardTitle className="text-base text-zinc-200">Thông Tin Tài Khoản</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {profileMsg && (
-                <div className="mb-4 p-3 rounded-lg bg-red-950/40 border border-red-800 text-red-300 text-xs flex items-center gap-2">
+                <div className="mb-4 p-3 rounded-lg bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4" />
                   {profileMsg}
                 </div>
@@ -92,12 +92,12 @@ export default function CustomerProfilePage() {
 
               <form onSubmit={handleUpdateProfile} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-zinc-400 font-semibold mb-1">Email (Äá»‹nh danh):</label>
+                  <label className="block text-zinc-400 font-semibold mb-1">Email (Định danh):</label>
                   <Input value={user?.email || ""} disabled className="bg-zinc-950/40 opacity-70" />
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Há» vĂ  tĂªn:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">Họ và tên:</label>
                   <Input
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
@@ -106,7 +106,7 @@ export default function CustomerProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ Ä‘iá»‡n thoáº¡i:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">Số điện thoại:</label>
                   <Input
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -114,7 +114,7 @@ export default function CustomerProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">NgĂ y sinh (DĂ nh cho Æ°u Ä‘Ă£i sinh nháº­t):</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">Ngày sinh (Dành cho ưu đãi sinh nhật):</label>
                   <Input
                     type="date"
                     value={dateOfBirth}
@@ -123,7 +123,7 @@ export default function CustomerProfilePage() {
                 </div>
 
                 <Button type="submit" size="sm" isLoading={isUpdating}>
-                  LÆ°u Thay Äá»•i
+                  Lưu Thay Đổi
                 </Button>
               </form>
             </CardContent>
@@ -132,14 +132,14 @@ export default function CustomerProfilePage() {
           {/* Change Password */}
           <Card className="border-zinc-800 bg-zinc-900/60 p-6">
             <CardHeader className="p-0 pb-4">
-              <CardTitle className="text-base text-zinc-200">Äá»•i Máº­t Kháº©u</CardTitle>
+              <CardTitle className="text-base text-zinc-200">Đổi Mật Khẩu</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {passMsg && (
                 <div
                   className={`mb-4 p-3 rounded-lg text-xs flex items-center gap-2 ${
                     passMsg.type === "success"
-                      ? "bg-red-950/40 border border-red-800 text-red-300"
+                      ? "bg-emerald-950/40 border border-emerald-800 text-emerald-300"
                       : "bg-rose-950/40 border border-rose-800 text-rose-300"
                   }`}
                 >
@@ -154,7 +154,7 @@ export default function CustomerProfilePage() {
 
               <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Máº­t kháº©u hiá»‡n táº¡i:</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">Mật khẩu hiện tại:</label>
                   <Input
                     type="password"
                     required
@@ -164,7 +164,7 @@ export default function CustomerProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-semibold mb-1">Máº­t kháº©u má»›i (tá»‘i thiá»ƒu 6 kĂ½ tá»±):</label>
+                  <label className="block text-zinc-300 font-semibold mb-1">Mật khẩu mới (tối thiểu 6 ký tự):</label>
                   <Input
                     type="password"
                     required
@@ -174,7 +174,7 @@ export default function CustomerProfilePage() {
                 </div>
 
                 <Button type="submit" size="sm" variant="secondary" isLoading={isChangingPass}>
-                  Äá»•i Máº­t Kháº©u
+                  Đổi Mật Khẩu
                 </Button>
               </form>
             </CardContent>

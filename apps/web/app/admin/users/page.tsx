@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -52,7 +52,7 @@ export default function AdminUsersPage() {
       setPhone("");
       setErrorMsg(null);
     },
-    onError: (err: any) => setErrorMsg(err.message || "KhĂ´ng thá»ƒ táº¡o tĂ i khoáº£n"),
+    onError: (err: any) => setErrorMsg(err.message || "Không thể tạo tài khoản"),
   });
 
   const updateStatusMutation = useMutation({
@@ -88,21 +88,21 @@ export default function AdminUsersPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-red-400" />
-                KHĂCH HĂ€NG & PHĂ‚N QUYá»€N (RBAC)
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-400" />
+                KHÁCH HÀNG & PHÂN QUYỀN (RBAC)
               </h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Theo dĂµi dá»¯ liá»‡u khĂ¡ch hĂ ng (SÄT, ngĂ y sinh, tá»•ng chi tiĂªu, táº§n suáº¥t chÆ¡i, phĂ¢n háº¡ng thĂ nh viĂªn Silver, Gold, VIP).
+                Theo dõi dữ liệu khách hàng (SĐT, ngày sinh, tổng chi tiêu, tần suất chơi, phân hạng thành viên Silver, Gold, VIP).
               </p>
             </div>
 
             <Button
               size="sm"
-              className="gap-2 bg-red-600 font-semibold"
+              className="gap-2 bg-emerald-600 font-semibold"
               onClick={() => setIsAddModalOpen(true)}
             >
               <Plus className="h-4 w-4" />
-              Táº¡o TĂ i Khoáº£n Má»›i
+              Tạo Tài Khoản Mới
             </Button>
           </div>
 
@@ -111,7 +111,7 @@ export default function AdminUsersPage() {
             <div className="relative">
               <Search className="h-4 w-4 text-zinc-500 absolute left-3 top-2.5" />
               <Input
-                placeholder="TĂ¬m theo há» tĂªn, SÄT, email..."
+                placeholder="Tìm theo họ tên, SĐT, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9 h-9"
@@ -124,11 +124,11 @@ export default function AdminUsersPage() {
                 onChange={(e) => setSelectedTier(e.target.value)}
                 className="w-full h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-zinc-200 text-xs"
               >
-                <option value="">Táº¥t cáº£ háº¡ng thĂ nh viĂªn</option>
-                <option value="STANDARD">Háº¡ng ThÆ°á»ng (Standard)</option>
-                <option value="SILVER">Háº¡ng Báº¡c (Silver)</option>
-                <option value="GOLD">Háº¡ng VĂ ng (Gold)</option>
-                <option value="VIP">Háº¡ng VIP Kim CÆ°Æ¡ng</option>
+                <option value="">Tất cả hạng thành viên</option>
+                <option value="STANDARD">Hạng Thường (Standard)</option>
+                <option value="SILVER">Hạng Bạc (Silver)</option>
+                <option value="GOLD">Hạng Vàng (Gold)</option>
+                <option value="VIP">Hạng VIP Kim Cương</option>
               </select>
             </div>
 
@@ -138,10 +138,10 @@ export default function AdminUsersPage() {
                 onChange={(e) => setSelectedRole(e.target.value)}
                 className="w-full h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-zinc-200 text-xs"
               >
-                <option value="">Táº¥t cáº£ vai trĂ²</option>
-                <option value="CUSTOMER">KhĂ¡ch HĂ ng</option>
-                <option value="STAFF">NhĂ¢n ViĂªn</option>
-                <option value="ADMIN">Quáº£n Trá»‹ ViĂªn</option>
+                <option value="">Tất cả vai trò</option>
+                <option value="CUSTOMER">Khách Hàng</option>
+                <option value="STAFF">Nhân Viên</option>
+                <option value="ADMIN">Quản Trị Viên</option>
               </select>
             </div>
           </div>
@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
             </div>
           ) : users.length === 0 ? (
             <div className="text-center py-12 border border-zinc-800 rounded-xl bg-zinc-900/40 text-xs text-zinc-500">
-              KhĂ´ng tĂ¬m tháº¥y ngÆ°á»i dĂ¹ng phĂ¹ há»£p vá»›i Ä‘iá»u kiá»‡n tĂ¬m kiáº¿m.
+              Không tìm thấy người dùng phù hợp với điều kiện tìm kiếm.
             </div>
           ) : (
             <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/60 text-xs">
@@ -163,16 +163,16 @@ export default function AdminUsersPage() {
                 <table className="w-full text-left min-w-[850px]">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3 whitespace-nowrap">Há» vĂ  TĂªn</th>
-                      <th className="p-3 whitespace-nowrap">Sá»‘ Äiá»‡n Thoáº¡i</th>
-                      <th className="p-3 whitespace-nowrap">NgĂ y Sinh</th>
-                      <th className="p-3 whitespace-nowrap">Háº¡ng Tháº»</th>
-                      <th className="p-3 whitespace-nowrap">Äiá»ƒm TĂ­ch LÅ©y</th>
-                      <th className="p-3 whitespace-nowrap">Tá»•ng Chi TiĂªu</th>
-                      <th className="p-3 whitespace-nowrap">Táº§n Suáº¥t ChÆ¡i</th>
-                      <th className="p-3 whitespace-nowrap">Vai TrĂ²</th>
-                      <th className="p-3 whitespace-nowrap">Tráº¡ng ThĂ¡i</th>
-                      <th className="p-3 text-right whitespace-nowrap">KhĂ³a / Má»Ÿ</th>
+                      <th className="p-3 whitespace-nowrap">Họ và Tên</th>
+                      <th className="p-3 whitespace-nowrap">Số Điện Thoại</th>
+                      <th className="p-3 whitespace-nowrap">Ngày Sinh</th>
+                      <th className="p-3 whitespace-nowrap">Hạng Thẻ</th>
+                      <th className="p-3 whitespace-nowrap">Điểm Tích Lũy</th>
+                      <th className="p-3 whitespace-nowrap">Tổng Chi Tiêu</th>
+                      <th className="p-3 whitespace-nowrap">Tần Suất Chơi</th>
+                      <th className="p-3 whitespace-nowrap">Vai Trò</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
+                      <th className="p-3 text-right whitespace-nowrap">Khóa / Mở</th>
                     </tr>
                   </thead>
                 <tbody className="divide-y divide-zinc-800 text-zinc-300">
@@ -194,11 +194,11 @@ export default function AdminUsersPage() {
                       <td className="p-3 font-bold text-amber-300">
                         {u.role === "CUSTOMER" ? `${(u.points || 0).toLocaleString("vi-VN")} PTS` : "-"}
                       </td>
-                      <td className="p-3 font-bold text-red-400">
+                      <td className="p-3 font-bold text-emerald-400">
                         {u.role === "CUSTOMER" ? formatVND(Number(u.totalSpending || 0)) : "-"}
                       </td>
                       <td className="p-3 text-zinc-300">
-                        {u.role === "CUSTOMER" ? `${u.visitCount || 0} láº§n` : "-"}
+                        {u.role === "CUSTOMER" ? `${u.visitCount || 0} lần` : "-"}
                       </td>
                       <td className="p-3">
                         <Badge
@@ -217,7 +217,7 @@ export default function AdminUsersPage() {
                         <span
                           className={`font-semibold ${
                             u.status === "ACTIVE"
-                              ? "text-red-400"
+                              ? "text-emerald-400"
                               : "text-rose-400"
                           }`}
                         >
@@ -237,7 +237,7 @@ export default function AdminUsersPage() {
                               })
                             }
                           >
-                            {u.status === "ACTIVE" ? "KhĂ³a" : "Má»Ÿ KhĂ³a"}
+                            {u.status === "ACTIVE" ? "Khóa" : "Mở Khóa"}
                           </Button>
                         )}
                       </td>
@@ -255,7 +255,7 @@ export default function AdminUsersPage() {
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Táº¡o TĂ i Khoáº£n Má»›i"
+        title="Tạo Tài Khoản Mới"
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -265,28 +265,28 @@ export default function AdminUsersPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Vai trĂ² ngÆ°á»i dĂ¹ng:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Vai trò người dùng:</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as any)}
               className="w-full h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-zinc-200 text-xs"
             >
-              <option value="STAFF">NhĂ¢n ViĂªn Thu NgĂ¢n (STAFF)</option>
-              <option value="CUSTOMER">KhĂ¡ch HĂ ng (CUSTOMER)</option>
+              <option value="STAFF">Nhân Viên Thu Ngân (STAFF)</option>
+              <option value="CUSTOMER">Khách Hàng (CUSTOMER)</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Há» vĂ  tĂªn:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Họ và tên:</label>
             <Input
-              placeholder="VD: Tráº§n VÄƒn Nam"
+              placeholder="VD: Trần Văn Nam"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Email (Äá»‹nh danh Ä‘Äƒng nháº­p):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Email (Định danh đăng nhập):</label>
             <Input
               type="email"
               placeholder="VD: nam.tv@billiards.local"
@@ -296,7 +296,7 @@ export default function AdminUsersPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Sá»‘ Ä‘iá»‡n thoáº¡i:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Số điện thoại:</label>
             <Input
               placeholder="VD: 0912345678"
               value={phone}
@@ -305,7 +305,7 @@ export default function AdminUsersPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">Máº­t kháº©u khá»Ÿi táº¡o:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Mật khẩu khởi tạo:</label>
             <Input
               type="password"
               value={password}
@@ -315,15 +315,15 @@ export default function AdminUsersPage() {
 
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="outline" size="sm" onClick={() => setIsAddModalOpen(false)}>
-              Há»§y
+              Hủy
             </Button>
             <Button
               size="sm"
-              className="bg-red-600 font-semibold"
+              className="bg-emerald-600 font-semibold"
               isLoading={addUserMutation.isPending}
               onClick={() => addUserMutation.mutate()}
             >
-              Táº¡o NgÆ°á»i DĂ¹ng
+              Tạo Người Dùng
             </Button>
           </div>
         </div>

@@ -15,12 +15,12 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-600 text-white font-black shadow-md shadow-red-900/50">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-white font-black shadow-md shadow-emerald-900/50">
             <CircleDot className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-base tracking-tight text-zinc-100">
-              ROYAL <span className="text-red-500">BILLIARDS</span>
+              ROYAL <span className="text-emerald-500">BILLIARDS</span>
             </span>
             <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-semibold">
               Club & Lounge
@@ -30,16 +30,16 @@ export function Navbar() {
 
         {/* Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-300">
-          <Link href="/" className="hover:text-red-400 transition-colors">
+          <Link href="/" className="hover:text-emerald-400 transition-colors">
             Trang Chủ
           </Link>
-          <Link href="/tables" className="hover:text-red-400 transition-colors">
+          <Link href="/tables" className="hover:text-emerald-400 transition-colors">
             Bàn & Giá Thuê
           </Link>
-          <Link href="/book" className="hover:text-red-400 transition-colors">
+          <Link href="/book" className="hover:text-emerald-400 transition-colors">
             Đặt Bàn Trực Tuyến
           </Link>
-          <Link href="/lookup" className="hover:text-red-400 transition-colors">
+          <Link href="/lookup" className="hover:text-emerald-400 transition-colors">
             Tra Cứu Lịch Đặt
           </Link>
         </nav>
@@ -52,12 +52,12 @@ export function Navbar() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-1.5 text-xs text-zinc-200 hover:bg-zinc-800 transition-colors"
               >
-                <div className="h-6 w-6 rounded-full bg-red-800 text-red-200 flex items-center justify-center font-bold text-xs">
+                <div className="h-6 w-6 rounded-full bg-emerald-800 text-emerald-200 flex items-center justify-center font-bold text-xs">
                   {user.fullName.charAt(0)}
                 </div>
                 <div className="text-left hidden sm:block">
                   <div className="font-medium text-xs leading-none">{user.fullName}</div>
-                  <div className="text-[10px] text-red-400 uppercase font-semibold mt-0.5">
+                  <div className="text-[10px] text-emerald-400 uppercase font-semibold mt-0.5">
                     {user.role}
                   </div>
                 </div>
@@ -90,7 +90,7 @@ export function Navbar() {
                     href="/customer/dashboard"
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white"
                   >
-                    <Calendar className="h-4 w-4 text-red-400" />
+                    <Calendar className="h-4 w-4 text-emerald-400" />
                     Lịch Đặt Của Tôi
                   </Link>
                   <Link

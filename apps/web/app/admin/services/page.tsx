@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -48,7 +48,7 @@ export default function AdminServicesPage() {
       setName("");
       setErrorMsg(null);
     },
-    onError: (err: any) => setErrorMsg(err.message || "KhĂ´ng thá»ƒ thĂªm mĂ³n"),
+    onError: (err: any) => setErrorMsg(err.message || "Không thể thêm món"),
   });
 
   const updateServiceMutation = useMutation({
@@ -69,7 +69,7 @@ export default function AdminServicesPage() {
       setEditingItem(null);
       setErrorMsg(null);
     },
-    onError: (err: any) => setErrorMsg(err.message || "Lá»—i khi cáº­p nháº­t mĂ³n"),
+    onError: (err: any) => setErrorMsg(err.message || "Lỗi khi cập nhật món"),
   });
 
   const deleteServiceMutation = useMutation({
@@ -95,15 +95,15 @@ export default function AdminServicesPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white">MENU Dá»CH Vá»¤ & Äá»’ Uá»NG</h1>
+              <h1 className="text-xl sm:text-2xl font-black text-white">MENU DỊCH VỤ & ĐỒ UỐNG</h1>
               <p className="text-zinc-400 text-xs mt-1">
-                Quáº£n lĂ½ danh má»¥c nÆ°á»›c giáº£i khĂ¡t, Ä‘á»“ Äƒn nháº¹ vĂ  sá»­a Ä‘Æ¡n giĂ¡ bĂ¡n trá»±c tiáº¿p.
+                Quản lý danh mục nước giải khát, đồ ăn nhẹ và sửa đơn giá bán trực tiếp.
               </p>
             </div>
 
             <Button
               size="sm"
-              className="gap-2 bg-red-600 font-semibold"
+              className="gap-2 bg-emerald-600 font-semibold"
               onClick={() => {
                 setCode("");
                 setName("");
@@ -114,7 +114,7 @@ export default function AdminServicesPage() {
               }}
             >
               <Plus className="h-4 w-4" />
-              ThĂªm MĂ³n Má»›i
+              Thêm Món Mới
             </Button>
           </div>
 
@@ -131,19 +131,19 @@ export default function AdminServicesPage() {
                 <table className="w-full text-left min-w-[700px]">
                   <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                     <tr>
-                      <th className="p-3 whitespace-nowrap">MĂ£</th>
-                      <th className="p-3 whitespace-nowrap">TĂªn MĂ³n / Dá»‹ch Vá»¥</th>
-                      <th className="p-3 whitespace-nowrap">PhĂ¢n Loáº¡i</th>
-                      <th className="p-3 whitespace-nowrap">ÄÆ¡n GiĂ¡ Hiá»‡n Táº¡i</th>
-                      <th className="p-3 whitespace-nowrap">ÄÆ¡n Vá»‹</th>
-                      <th className="p-3 whitespace-nowrap">Tráº¡ng ThĂ¡i</th>
-                      <th className="p-3 text-right whitespace-nowrap">HĂ nh Äá»™ng</th>
+                      <th className="p-3 whitespace-nowrap">Mã</th>
+                      <th className="p-3 whitespace-nowrap">Tên Món / Dịch Vụ</th>
+                      <th className="p-3 whitespace-nowrap">Phân Loại</th>
+                      <th className="p-3 whitespace-nowrap">Đơn Giá Hiện Tại</th>
+                      <th className="p-3 whitespace-nowrap">Đơn Vị</th>
+                      <th className="p-3 whitespace-nowrap">Trạng Thái</th>
+                      <th className="p-3 text-right whitespace-nowrap">Hành Động</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800 text-zinc-300">
                     {services.map((s: any) => (
                       <tr key={s.id} className="hover:bg-zinc-900/50">
-                        <td className="p-3 font-mono font-bold text-red-400 whitespace-nowrap">{s.code}</td>
+                        <td className="p-3 font-mono font-bold text-emerald-400 whitespace-nowrap">{s.code}</td>
                         <td className="p-3 font-semibold text-white whitespace-nowrap">{s.name}</td>
                         <td className="p-3 whitespace-nowrap">
                           <Badge
@@ -158,13 +158,13 @@ export default function AdminServicesPage() {
                             {s.category}
                           </Badge>
                         </td>
-                        <td className="p-3 font-bold text-red-400 text-sm whitespace-nowrap">
+                        <td className="p-3 font-bold text-emerald-400 text-sm whitespace-nowrap">
                           {formatVND(s.unitPrice)}
                         </td>
                         <td className="p-3 text-zinc-400 whitespace-nowrap">{s.unit}</td>
                         <td className="p-3 whitespace-nowrap">
                           <Badge variant={s.isActive ? "success" : "danger"}>
-                            {s.isActive ? "Äang bĂ¡n" : "Ngá»«ng bĂ¡n"}
+                            {s.isActive ? "Đang bán" : "Ngừng bán"}
                           </Badge>
                         </td>
                         <td className="p-3 text-right space-x-2 whitespace-nowrap">
@@ -175,14 +175,14 @@ export default function AdminServicesPage() {
                           onClick={() => openEditModal(s)}
                         >
                           <Edit className="h-3 w-3" />
-                          Sá»­a GiĂ¡
+                          Sửa Giá
                         </Button>
                         <Button
                           variant="danger"
                           size="sm"
                           className="h-7 text-xs px-2"
                           onClick={() => {
-                            if (confirm(`Ngá»«ng kinh doanh mĂ³n ${s.name}?`)) {
+                            if (confirm(`Ngừng kinh doanh món ${s.name}?`)) {
                               deleteServiceMutation.mutate(s.id);
                             }
                           }}
@@ -204,7 +204,7 @@ export default function AdminServicesPage() {
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="ThĂªm MĂ³n / Dá»‹ch Vá»¥ Má»›i"
+        title="Thêm Món / Dịch Vụ Mới"
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -214,7 +214,7 @@ export default function AdminServicesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">MĂ£ mĂ³n (VD: DRK06):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Mã món (VD: DRK06):</label>
             <Input
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
@@ -223,40 +223,40 @@ export default function AdminServicesPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">TĂªn mĂ³n:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Tên món:</label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="VD: CĂ  phĂª sá»¯a Ä‘Ă¡..."
+              placeholder="VD: Cà phê sữa đá..."
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">PhĂ¢n loáº¡i:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Phân loại:</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
                 className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
               >
-                <option value="DRINK">NÆ°á»›c giáº£i khĂ¡t (DRINK)</option>
-                <option value="FOOD">Äá»“ Äƒn nhanh (FOOD)</option>
-                <option value="ACCESSORY">Phá»¥ kiá»‡n & CÆ¡ (ACCESSORY)</option>
+                <option value="DRINK">Nước giải khát (DRINK)</option>
+                <option value="FOOD">Đồ ăn nhanh (FOOD)</option>
+                <option value="ACCESSORY">Phụ kiện & Cơ (ACCESSORY)</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">ÄÆ¡n vá»‹ tĂ­nh:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Đơn vị tính:</label>
               <Input
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                placeholder="Lon / Chai / DÄ©a..."
+                placeholder="Lon / Chai / Dĩa..."
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">ÄÆ¡n giĂ¡ bĂ¡n (VNÄ):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Đơn giá bán (VNĐ):</label>
             <Input
               type="number"
               min={1000}
@@ -268,27 +268,27 @@ export default function AdminServicesPage() {
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setIsAddModalOpen(false)}>
-              Há»§y
+              Hủy
             </Button>
             <Button
               size="sm"
-              className="bg-red-600 font-semibold"
+              className="bg-emerald-600 font-semibold"
               isLoading={addServiceMutation.isPending}
               disabled={!code || !name}
               onClick={() => addServiceMutation.mutate()}
             >
-              LÆ°u MĂ³n Má»›i
+              Lưu Món Mới
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Edit Modal (Sá»­a GiĂ¡ & ThĂ´ng Tin MĂ³n) */}
+      {/* Edit Modal (Sửa Giá & Thông Tin Món) */}
       <Modal
         isOpen={Boolean(editingItem)}
         onClose={() => setEditingItem(null)}
-        title={`Sá»­a GiĂ¡ & MĂ³n: ${editingItem?.name}`}
-        description={`MĂ£ mĂ³n: ${editingItem?.code}`}
+        title={`Sửa Giá & Món: ${editingItem?.name}`}
+        description={`Mã món: ${editingItem?.code}`}
       >
         <div className="space-y-4 text-xs">
           {errorMsg && (
@@ -298,7 +298,7 @@ export default function AdminServicesPage() {
           )}
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">TĂªn mĂ³n:</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Tên món:</label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -307,20 +307,20 @@ export default function AdminServicesPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">PhĂ¢n loáº¡i:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Phân loại:</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
                 className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
               >
-                <option value="DRINK">NÆ°á»›c giáº£i khĂ¡t (DRINK)</option>
-                <option value="FOOD">Äá»“ Äƒn nhanh (FOOD)</option>
-                <option value="ACCESSORY">Phá»¥ kiá»‡n & CÆ¡ (ACCESSORY)</option>
+                <option value="DRINK">Nước giải khát (DRINK)</option>
+                <option value="FOOD">Đồ ăn nhanh (FOOD)</option>
+                <option value="ACCESSORY">Phụ kiện & Cơ (ACCESSORY)</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">ÄÆ¡n vá»‹ tĂ­nh:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Đơn vị tính:</label>
               <Input
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
@@ -329,29 +329,29 @@ export default function AdminServicesPage() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-semibold mb-1">ÄÆ¡n giĂ¡ bĂ¡n má»›i (VNÄ):</label>
+            <label className="block text-zinc-300 font-semibold mb-1">Đơn giá bán mới (VNĐ):</label>
             <Input
               type="number"
               min={1000}
               step={1000}
               value={unitPrice}
               onChange={(e) => setUnitPrice(Number(e.target.value))}
-              className="text-red-400 font-bold text-sm"
+              className="text-emerald-400 font-bold text-sm"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
             <Button variant="outline" size="sm" onClick={() => setEditingItem(null)}>
-              Há»§y
+              Hủy
             </Button>
             <Button
               size="sm"
-              className="bg-red-600 font-semibold"
+              className="bg-emerald-600 font-semibold"
               isLoading={updateServiceMutation.isPending}
               disabled={!name}
               onClick={() => updateServiceMutation.mutate()}
             >
-              Cáº­p Nháº­t GiĂ¡ MĂ³n
+              Cập Nhật Giá Món
             </Button>
           </div>
         </div>

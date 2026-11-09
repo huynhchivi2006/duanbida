@@ -62,20 +62,20 @@ export default function StaffBillingPage() {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [qrCodeData, setQrCodeData] = useState<{ url: string; title: string } | null>(null);
 
-  // 1. Láº¥y danh sĂ¡ch bĂ n Ä‘ang chÆ¡i
+  // 1. Lấy danh sách bàn đang chơi
   const { data: tables = [], isLoading: isLoadingTables } = useQuery({
     queryKey: ["staff-billing-tables"],
     queryFn: () => apiClient("/tables"),
     refetchInterval: 10000,
   });
 
-  // 2. Láº¥y danh sĂ¡ch dá»‹ch vá»¥ / Ä‘á»“ uá»‘ng
+  // 2. Lấy danh sách dịch vụ / đồ uống
   const { data: services = [] } = useQuery({
     queryKey: ["services-menu"],
     queryFn: () => apiClient("/services"),
   });
 
-  // 3. Tra cá»©u khĂ¡ch hĂ ng theo SÄT
+  // 3. Tra cứu khách hàng theo SĐT
   const handleSearchCustomer = async () => {
     if (!customerPhone.trim()) return;
     setIsSearchingCustomer(true);
@@ -85,13 +85,13 @@ export default function StaffBillingPage() {
       setCustomerInfo(data);
     } catch (err: any) {
       setCustomerInfo(null);
-      setCustomerSearchError(err.message || "KhĂ´ng tĂ¬m tháº¥y khĂ¡ch hĂ ng");
+      setCustomerSearchError(err.message || "Không tìm thấy khách hàng");
     } finally {
       setIsSearchingCustomer(false);
     }
   };
 
-  // 4. Kiá»ƒm tra mĂ£ voucher
+  // 4. Kiểm tra mã voucher
   const handleValidateVoucher = async () => {
     if (!voucherCode.trim() || !activeSession) return;
     setIsValidatingVoucher(true);
@@ -108,13 +108,13 @@ export default function StaffBillingPage() {
       setAppliedVoucher(res);
     } catch (err: any) {
       setAppliedVoucher(null);
-      setVoucherError(err.message || "MĂ£ voucher khĂ´ng há»£p lá»‡");
+      setVoucherError(err.message || "Mã voucher không hợp lệ");
     } finally {
       setIsValidatingVoucher(false);
     }
   };
 
-  // Mutation táº¡o hĂ³a Ä‘Æ¡n káº¿t thĂºc phiĂªn chÆ¡i
+  // Mutation tạo hóa đơn kết thúc phiên chơi
   const createInvoiceMutation = useMutation({
     mutationFn: async ({ sessionId }: { sessionId: string }) => {
       return apiClient("/invoices/create-from-session", {
@@ -138,10 +138,10 @@ export default function StaffBillingPage() {
       setVoucherCode("");
       setAppliedVoucher(null);
     },
-    onError: (err: any) => alert(err.message || "Lá»—i khi chá»‘t giá»"),
+    onError: (err: any) => alert(err.message || "Lỗi khi chốt giờ"),
   });
 
-  // Mutation thĂªm dá»‹ch vá»¥ vĂ o hĂ³a Ä‘Æ¡n
+  // Mutation thêm dịch vụ vào hóa đơn
   const addServiceMutation = useMutation({
     mutationFn: async ({ invoiceId, serviceId, quantity }: any) => {
       return apiClient(`/invoices/${invoiceId}/add-service`, {
@@ -156,11 +156,11 @@ export default function StaffBillingPage() {
     },
   });
 
-  // Mutation gá»i mĂ³n trá»±c tiáº¿p vĂ o phiĂªn chÆ¡i trÆ°á»›c khi chá»‘t hĂ³a Ä‘Æ¡n
+  // Mutation gọi món trực tiếp vào phiên chơi trước khi chốt hóa đơn
   const addSessionOrderMutation = useMutation({
     mutationFn: async () => {
       if (!activeSession?.id) {
-        throw new Error("Vui lĂ²ng chá»n bĂ n Ä‘ang chÆ¡i trÆ°á»›c khi gá»i mĂ³n");
+        throw new Error("Vui lòng chọn bàn đang chơi trước khi gọi món");
       }
       return apiClient(`/invoices/session/${activeSession.id}/order`, {
         method: "POST",
@@ -174,16 +174,16 @@ export default function StaffBillingPage() {
       queryClient.invalidateQueries({ queryKey: ["staff-billing-tables"] });
       setSelectedServiceId("");
       setServiceQuantity(1);
-      alert("âœ… ÄĂ£ gá»i mĂ³n vĂ o bĂ n thĂ nh cĂ´ng!");
+      alert("✅ Đã gọi món vào bàn thành công!");
     },
-    onError: (err: any) => alert(err.message || "Lá»—i khi gá»i mĂ³n"),
+    onError: (err: any) => alert(err.message || "Lỗi khi gọi món"),
   });
 
-  // Mutation chuyá»ƒn bĂ n
+  // Mutation chuyển bàn
   const switchTableMutation = useMutation({
     mutationFn: async () => {
       if (!activeSession?.billiardTableId || !targetSwitchTableId) {
-        throw new Error("Vui lĂ²ng chá»n bĂ n Ä‘Ă­ch");
+        throw new Error("Vui lòng chọn bàn đích");
       }
       return apiClient("/tables/switch", {
         method: "POST",
@@ -199,16 +199,16 @@ export default function StaffBillingPage() {
       setIsSwitchModalOpen(false);
       setActiveSession(null);
       setTargetSwitchTableId("");
-      alert(res?.message || "âœ… Chuyá»ƒn bĂ n thĂ nh cĂ´ng!");
+      alert(res?.message || "✅ Chuyển bàn thành công!");
     },
-    onError: (err: any) => alert(err.message || "Lá»—i khi chuyá»ƒn bĂ n"),
+    onError: (err: any) => alert(err.message || "Lỗi khi chuyển bàn"),
   });
 
-  // Mutation gá»™p bĂ n
+  // Mutation gộp bàn
   const mergeTableMutation = useMutation({
     mutationFn: async () => {
       if (!activeSession?.billiardTableId || !targetMergeTableId) {
-        throw new Error("Vui lĂ²ng chá»n bĂ n Ä‘Ă­ch Ä‘á»ƒ gá»™p vĂ o");
+        throw new Error("Vui lòng chọn bàn đích để gộp vào");
       }
       return apiClient("/tables/merge", {
         method: "POST",
@@ -223,26 +223,26 @@ export default function StaffBillingPage() {
       setIsMergeModalOpen(false);
       setActiveSession(null);
       setTargetMergeTableId("");
-      alert(res?.message || "âœ… Gá»™p bĂ n thĂ nh cĂ´ng!");
+      alert(res?.message || "✅ Gộp bàn thành công!");
     },
-    onError: (err: any) => alert(err.message || "Lá»—i khi gá»™p bĂ n"),
+    onError: (err: any) => alert(err.message || "Lỗi khi gộp bàn"),
   });
 
-  // Mutation xĂ¡c nháº­n thanh toĂ¡n
+  // Mutation xác nhận thanh toán
   const payMutation = useMutation({
     mutationFn: async ({ invoiceId, method }: { invoiceId: string; method: string }) => {
       return apiClient(`/invoices/${invoiceId}/pay`, {
         method: "POST",
         body: JSON.stringify({
           method,
-          note: "Thanh toĂ¡n thĂ nh cĂ´ng táº¡i quáº§y thu ngĂ¢n",
+          note: "Thanh toán thành công tại quầy thu ngân",
         }),
       });
     },
     onSuccess: (updatedInv: any) => {
       queryClient.invalidateQueries({ queryKey: ["staff-billing-tables"] });
       const pts = updatedInv?.pointsEarned || 0;
-      alert(`âœ… Thanh toĂ¡n thĂ nh cĂ´ng! ${pts > 0 ? `KhĂ¡ch Ä‘Æ°á»£c cá»™ng +${pts} Ä‘iá»ƒm thÆ°á»Ÿng.` : ""}`);
+      alert(`✅ Thanh toán thành công! ${pts > 0 ? `Khách được cộng +${pts} điểm thưởng.` : ""}`);
       setSelectedInvoice(null);
     },
   });
@@ -264,13 +264,13 @@ export default function StaffBillingPage() {
   const getTierBadge = (tier: string) => {
     switch (tier) {
       case "VIP":
-        return <Badge className="bg-purple-500/20 text-purple-300 border-purple-500 font-bold">Háº NG VIP</Badge>;
+        return <Badge className="bg-purple-500/20 text-purple-300 border-purple-500 font-bold">HẠNG VIP</Badge>;
       case "GOLD":
-        return <Badge className="bg-amber-500/20 text-amber-300 border-amber-500 font-bold">Háº NG GOLD</Badge>;
+        return <Badge className="bg-amber-500/20 text-amber-300 border-amber-500 font-bold">HẠNG GOLD</Badge>;
       case "SILVER":
-        return <Badge className="bg-slate-400/20 text-slate-200 border-slate-400 font-bold">Háº NG SILVER</Badge>;
+        return <Badge className="bg-slate-400/20 text-slate-200 border-slate-400 font-bold">HẠNG SILVER</Badge>;
       default:
-        return <Badge className="bg-zinc-800 text-zinc-300 font-bold">Háº NG STANDARD</Badge>;
+        return <Badge className="bg-zinc-800 text-zinc-300 font-bold">HẠNG STANDARD</Badge>;
     }
   };
 
@@ -282,18 +282,18 @@ export default function StaffBillingPage() {
         <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
           <div className="mb-4 sm:mb-8">
-            <h1 className="text-xl sm:text-2xl font-black text-white">THU NGĂ‚N & THANH TOĂN (POS)</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-white">THU NGÂN & THANH TOÁN (POS)</h1>
             <p className="text-zinc-400 text-xs mt-1">
-              TĂ­nh tiá»n giá» theo block (5p, 15p, phĂºt thá»±c táº¿), chuyá»ƒn bĂ n, gá»™p bĂ n, Ă¡p dá»¥ng chiáº¿t kháº¥u háº¡ng thĂ nh viĂªn & mĂ£ voucher.
+              Tính tiền giờ theo block (5p, 15p, phút thực tế), chuyển bàn, gộp bàn, áp dụng chiết khấu hạng thành viên & mã voucher.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cá»™t 1: Danh sĂ¡ch bĂ n Ä‘ang chÆ¡i */}
+            {/* Cột 1: Danh sách bàn đang chơi */}
             <div className="lg:col-span-1 space-y-4">
               <h2 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
                 <Clock className="h-4 w-4 text-rose-400" />
-                BĂ n Äang ChÆ¡i ({occupiedTables.length})
+                Bàn Đang Chơi ({occupiedTables.length})
               </h2>
 
               {isLoadingTables ? (
@@ -304,7 +304,7 @@ export default function StaffBillingPage() {
                 </div>
               ) : occupiedTables.length === 0 ? (
                 <Card className="text-center py-10 border-zinc-800 bg-zinc-900/30 text-xs text-zinc-500">
-                  Hiá»‡n khĂ´ng cĂ³ bĂ n nĂ o Ä‘ang trong phiĂªn chÆ¡i.
+                  Hiện không có bàn nào đang trong phiên chơi.
                 </Card>
               ) : (
                 <div className="space-y-3">
@@ -314,8 +314,8 @@ export default function StaffBillingPage() {
                     return (
                       <Card
                         key={t.id}
-                        className={`p-4 border-zinc-800 bg-zinc-900/60 hover:border-red-500 cursor-pointer transition-all ${
-                          isSelected ? "ring-2 ring-red-500 bg-red-950/20" : ""
+                        className={`p-4 border-zinc-800 bg-zinc-900/60 hover:border-emerald-500 cursor-pointer transition-all ${
+                          isSelected ? "ring-2 ring-emerald-500 bg-emerald-950/20" : ""
                         }`}
                         onClick={() => {
                           setActiveSession(session);
@@ -323,16 +323,16 @@ export default function StaffBillingPage() {
                         }}
                       >
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-black text-base text-white">BĂ n {t.tableNumber}</span>
-                          <Badge variant="danger">Äang chÆ¡i</Badge>
+                          <span className="font-black text-base text-white">Bàn {t.tableNumber}</span>
+                          <Badge variant="danger">Đang chơi</Badge>
                         </div>
                         <div className="text-xs text-zinc-400">
-                          {t.tableType?.name} â€¢ Báº¯t Ä‘áº§u: {formatDateTimeVN(session.startTime)}
+                          {t.tableType?.name} • Bắt đầu: {formatDateTimeVN(session.startTime)}
                         </div>
                         {session.invoice?.invoiceItems?.length > 0 && (
-                          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-red-400 font-semibold">
+                          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold">
                             <UtensilsCrossed className="h-3 w-3" />
-                            <span>{session.invoice.invoiceItems.length} dá»‹ch vá»¥/mĂ³n ({formatVND(session.invoice.serviceAmount)})</span>
+                            <span>{session.invoice.invoiceItems.length} dịch vụ/món ({formatVND(session.invoice.serviceAmount)})</span>
                           </div>
                         )}
                         <div className="mt-3 flex items-center justify-between">
@@ -342,14 +342,14 @@ export default function StaffBillingPage() {
                             className="text-[11px] h-7 gap-1 border-zinc-700"
                             onClick={(e) => {
                               e.stopPropagation();
-                              openQrModal(`table=${t.tableNumber}`, `BĂ n ${t.tableNumber}`);
+                              openQrModal(`table=${t.tableNumber}`, `Bàn ${t.tableNumber}`);
                             }}
                           >
-                            <QrCode className="h-3.5 w-3.5 text-red-400" />
-                            MĂ£ QR BĂ n
+                            <QrCode className="h-3.5 w-3.5 text-emerald-400" />
+                            Mã QR Bàn
                           </Button>
                           <Button size="sm" className="text-xs h-7">
-                            TĂ­nh Tiá»n BĂ n
+                            Tính Tiền Bàn
                           </Button>
                         </div>
                       </Card>
@@ -359,7 +359,7 @@ export default function StaffBillingPage() {
               )}
             </div>
 
-            {/* Cá»™t 2 & 3: Chi tiáº¿t tĂ­nh tiá»n, Há»™i viĂªn, Voucher & Thanh toĂ¡n */}
+            {/* Cột 2 & 3: Chi tiết tính tiền, Hội viên, Voucher & Thanh toán */}
             <div className="lg:col-span-2">
               {activeSession ? (
                 <Card className="border-zinc-800 bg-zinc-900/80 p-6 space-y-5">
@@ -367,13 +367,13 @@ export default function StaffBillingPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
                     <div>
                       <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <span>Chá»‘t Giá» & TĂ­nh Tiá»n</span>
-                        <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
-                          PhiĂªn {activeSession.sessionCode}
+                        <span>Chốt Giờ & Tính Tiền</span>
+                        <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                          Phiên {activeSession.sessionCode}
                         </Badge>
                       </h3>
                       <div className="text-xs text-zinc-400 mt-0.5">
-                        BĂ n: <strong className="text-white">{activeSession.billiardTable?.tableNumber}</strong> â€¢{" "}
+                        Bàn: <strong className="text-white">{activeSession.billiardTable?.tableNumber}</strong> •{" "}
                         {formatVND(activeSession.hourlyRateSnapshot)}/h
                       </div>
                     </div>
@@ -392,7 +392,7 @@ export default function StaffBillingPage() {
                         }}
                       >
                         <ArrowRightLeft className="h-3.5 w-3.5" />
-                        Chuyá»ƒn BĂ n
+                        Chuyển Bàn
                       </Button>
 
                       <Button
@@ -408,21 +408,21 @@ export default function StaffBillingPage() {
                         }}
                       >
                         <Layers className="h-3.5 w-3.5" />
-                        Gá»™p BĂ n
+                        Gộp Bàn
                       </Button>
                     </div>
                   </div>
 
-                  {/* 1. Chá»n cháº¿ Ä‘á»™ lĂ m trĂ²n tĂ­nh tiá»n giá» (Block rounding) */}
+                  {/* 1. Chọn chế độ làm tròn tính tiền giờ (Block rounding) */}
                   <div className="p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
                     <label className="block text-xs font-bold text-zinc-300">
-                      Cháº¿ Ä‘á»™ lĂ m trĂ²n tiá»n giá» (Block Rounding):
+                      Chế độ làm tròn tiền giờ (Block Rounding):
                     </label>
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       {[
-                        { id: "BLOCK_5", label: "Block 5 phĂºt (Chuáº©n)", desc: "LĂ m trĂ²n lĂªn bá»™i sá»‘ 5p" },
-                        { id: "BLOCK_15", label: "Block 15 phĂºt", desc: "LĂ m trĂ²n lĂªn bá»™i sá»‘ 15p" },
-                        { id: "EXACT", label: "PhĂºt thá»±c táº¿", desc: "TĂ­nh chĂ­nh xĂ¡c tá»«ng phĂºt" },
+                        { id: "BLOCK_5", label: "Block 5 phút (Chuẩn)", desc: "Làm tròn lên bội số 5p" },
+                        { id: "BLOCK_15", label: "Block 15 phút", desc: "Làm tròn lên bội số 15p" },
+                        { id: "EXACT", label: "Phút thực tế", desc: "Tính chính xác từng phút" },
                       ].map((item) => (
                         <button
                           key={item.id}
@@ -430,7 +430,7 @@ export default function StaffBillingPage() {
                           onClick={() => setRoundingMode(item.id as any)}
                           className={`p-2 rounded-lg border text-left transition-all ${
                             roundingMode === item.id
-                              ? "border-red-500 bg-red-950/30 text-white"
+                              ? "border-emerald-500 bg-emerald-950/30 text-white"
                               : "border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:border-zinc-700"
                           }`}
                         >
@@ -441,19 +441,19 @@ export default function StaffBillingPage() {
                     </div>
                   </div>
 
-                  {/* 2. Tra cá»©u khĂ¡ch hĂ ng & Ăp dá»¥ng Æ°u Ä‘Ă£i háº¡ng thĂ nh viĂªn (Silver, Gold, VIP) */}
+                  {/* 2. Tra cứu khách hàng & Áp dụng ưu đãi hạng thành viên (Silver, Gold, VIP) */}
                   <div className="p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-3">
                     <div className="text-xs font-bold text-zinc-300 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <Award className="h-4 w-4 text-amber-400" />
-                        KhĂ¡ch HĂ ng ThĂ nh ViĂªn (TĂ­ch Äiá»ƒm & Chiáº¿t Kháº¥u Háº¡ng):
+                        Khách Hàng Thành Viên (Tích Điểm & Chiết Khấu Hạng):
                       </span>
                       {customerInfo && getTierBadge(customerInfo.membershipTier)}
                     </div>
 
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Nháº­p SÄT khĂ¡ch hĂ ng (VD: 0901234567)..."
+                        placeholder="Nhập SĐT khách hàng (VD: 0901234567)..."
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         className="h-9 text-xs"
@@ -465,7 +465,7 @@ export default function StaffBillingPage() {
                         isLoading={isSearchingCustomer}
                       >
                         <Search className="h-3.5 w-3.5" />
-                        Tra Cá»©u
+                        Tra Cứu
                       </Button>
                     </div>
 
@@ -474,26 +474,26 @@ export default function StaffBillingPage() {
                     )}
 
                     {customerInfo && (
-                      <div className="p-3 rounded-lg bg-zinc-900 border border-red-900/60 text-xs space-y-1.5">
+                      <div className="p-3 rounded-lg bg-zinc-900 border border-emerald-900/60 text-xs space-y-1.5">
                         <div className="flex justify-between items-center">
                           <strong className="text-white text-sm">{customerInfo.fullName}</strong>
                           <span className="text-amber-300 font-bold">{customerInfo.points || 0} PTS</span>
                         </div>
                         <div className="text-zinc-400 text-[11px] flex items-center justify-between">
-                          <span>Tá»•ng chi tiĂªu: {formatVND(Number(customerInfo.totalSpending || 0))}</span>
-                          <span className="text-red-400 font-semibold">
-                            Tá»± Ä‘á»™ng Ă¡p dá»¥ng chiáº¿t kháº¥u háº¡ng {customerInfo.membershipTier}
+                          <span>Tổng chi tiêu: {formatVND(Number(customerInfo.totalSpending || 0))}</span>
+                          <span className="text-emerald-400 font-semibold">
+                            Tự động áp dụng chiết khấu hạng {customerInfo.membershipTier}
                           </span>
                         </div>
                       </div>
                     )}
                   </div>
 
-                  {/* 3. Nháº­p Voucher khuyáº¿n mĂ£i */}
+                  {/* 3. Nhập Voucher khuyến mãi */}
                   <div className="p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-3">
                     <div className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-                      <Ticket className="h-4 w-4 text-red-400" />
-                      MĂ£ Voucher Khuyáº¿n MĂ£i (Náº¿u cĂ³):
+                      <Ticket className="h-4 w-4 text-emerald-400" />
+                      Mã Voucher Khuyến Mãi (Nếu có):
                     </div>
                     <div className="flex gap-2">
                       <Input
@@ -509,14 +509,14 @@ export default function StaffBillingPage() {
                         onClick={handleValidateVoucher}
                         isLoading={isValidatingVoucher}
                       >
-                        Ăp Dá»¥ng
+                        Áp Dụng
                       </Button>
                     </div>
 
                     {voucherError && <p className="text-[11px] text-rose-400">{voucherError}</p>}
 
                     {appliedVoucher && (
-                      <div className="p-2.5 rounded-lg bg-red-950/30 border border-red-800 text-xs text-red-300 flex items-center justify-between">
+                      <div className="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800 text-xs text-emerald-300 flex items-center justify-between">
                         <span>{appliedVoucher.message}</span>
                         <button
                           onClick={() => {
@@ -525,17 +525,17 @@ export default function StaffBillingPage() {
                           }}
                           className="text-xs font-bold text-rose-400 hover:text-rose-300 ml-2"
                         >
-                          Gá»¡ bá»
+                          Gỡ bỏ
                         </button>
                       </div>
                     )}
                   </div>
 
-                  {/* 4. Gá»i thĂªm mĂ³n vĂ o bĂ n trÆ°á»›c khi chá»‘t */}
+                  {/* 4. Gọi thêm món vào bàn trước khi chốt */}
                   <div className="p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-3">
                     <div className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-                      <UtensilsCrossed className="h-4 w-4 text-red-400" />
-                      Gá»i ThĂªm MĂ³n VĂ o BĂ n NĂ y (TrÆ°á»›c Khi Chá»‘t):
+                      <UtensilsCrossed className="h-4 w-4 text-emerald-400" />
+                      Gọi Thêm Món Vào Bàn Này (Trước Khi Chốt):
                     </div>
                     <div className="flex gap-2">
                       <select
@@ -543,7 +543,7 @@ export default function StaffBillingPage() {
                         onChange={(e) => setSelectedServiceId(e.target.value)}
                         className="flex-1 h-9 rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-xs text-zinc-100"
                       >
-                        <option value="">-- Chá»n mĂ³n trong menu --</option>
+                        <option value="">-- Chọn món trong menu --</option>
                         {services.map((s: any) => (
                           <option key={s.id} value={s.id}>
                             {s.name} ({formatVND(s.unitPrice)} / {s.unit})
@@ -567,20 +567,20 @@ export default function StaffBillingPage() {
                         className="h-9 text-xs gap-1"
                       >
                         <Plus className="h-3.5 w-3.5" />
-                        ThĂªm
+                        Thêm
                       </Button>
                     </div>
                   </div>
 
-                  {/* 5. Danh sĂ¡ch cĂ¡c mĂ³n / dá»‹ch vá»¥ Ä‘Ă£ cĂ³ trong bĂ n nĂ y */}
+                  {/* 5. Danh sách các món / dịch vụ đã có trong bàn này */}
                   {activeSession.invoice?.invoiceItems?.length > 0 && (
                     <div className="p-3.5 rounded-xl bg-zinc-950/70 border border-zinc-800 space-y-2">
                       <div className="text-xs font-bold text-zinc-300 flex items-center justify-between">
-                        <span className="flex items-center gap-1.5 text-red-400">
+                        <span className="flex items-center gap-1.5 text-emerald-400">
                           <Receipt className="h-4 w-4" />
-                          Dá»‹ch Vá»¥ & MĂ³n ÄĂ£ Gá»i ({activeSession.invoice.invoiceItems.length} mĂ³n):
+                          Dịch Vụ & Món Đã Gọi ({activeSession.invoice.invoiceItems.length} món):
                         </span>
-                        <span className="text-red-400 font-extrabold text-xs">
+                        <span className="text-emerald-400 font-extrabold text-xs">
                           {formatVND(Number(activeSession.invoice.serviceAmount) || 0)}
                         </span>
                       </div>
@@ -588,10 +588,10 @@ export default function StaffBillingPage() {
                         <table className="w-full text-left">
                           <thead className="bg-zinc-900 text-zinc-400 border-b border-zinc-800">
                             <tr>
-                              <th className="p-2">TĂªn MĂ³n / Dá»‹ch Vá»¥</th>
+                              <th className="p-2">Tên Món / Dịch Vụ</th>
                               <th className="p-2 text-center">SL</th>
-                              <th className="p-2 text-right">ÄÆ¡n GiĂ¡</th>
-                              <th className="p-2 text-right">ThĂ nh Tiá»n</th>
+                              <th className="p-2 text-right">Đơn Giá</th>
+                              <th className="p-2 text-right">Thành Tiền</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
@@ -600,7 +600,7 @@ export default function StaffBillingPage() {
                                 <td className="p-2 font-medium text-white">{item.itemName}</td>
                                 <td className="p-2 text-center">{item.quantity}</td>
                                 <td className="p-2 text-right">{formatVND(Number(item.unitPriceSnapshot))}</td>
-                                <td className="p-2 text-right font-bold text-red-400">
+                                <td className="p-2 text-right font-bold text-emerald-400">
                                   {formatVND(Number(item.subtotal))}
                                 </td>
                               </tr>
@@ -611,9 +611,9 @@ export default function StaffBillingPage() {
                     </div>
                   )}
 
-                  {/* NĂºt hĂ nh Ä‘á»™ng Chá»‘t giá» */}
+                  {/* Nút hành động Chốt giờ */}
                   <Button
-                    className="w-full bg-red-600 hover:bg-red-500 font-bold h-11 text-sm shadow-lg shadow-red-950/50"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 font-bold h-11 text-sm shadow-lg shadow-emerald-950/50"
                     isLoading={createInvoiceMutation.isPending}
                     onClick={() =>
                       createInvoiceMutation.mutate({
@@ -621,16 +621,16 @@ export default function StaffBillingPage() {
                       })
                     }
                   >
-                    Chá»‘t Giá» ChÆ¡i & TĂ­nh HĂ³a ÄÆ¡n (Ăp Dá»¥ng Block & Chiáº¿t Kháº¥u)
+                    Chốt Giờ Chơi & Tính Hóa Đơn (Áp Dụng Block & Chiết Khấu)
                   </Button>
                 </Card>
               ) : selectedInvoice ? (
-                /* HĂ³a Ä‘Æ¡n Ä‘Ă£ chá»‘t: Chi tiáº¿t & XĂ¡c nháº­n thanh toĂ¡n */
+                /* Hóa đơn đã chốt: Chi tiết & Xác nhận thanh toán */
                 <Card className="border-zinc-800 bg-zinc-900/80 p-6 space-y-6">
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                     <div>
-                      <h3 className="text-lg font-bold text-white">HĂ“A ÄÆ N THANH TOĂN</h3>
-                      <div className="text-xs text-red-400 font-mono font-bold mt-0.5">
+                      <h3 className="text-lg font-bold text-white">HÓA ĐƠN THANH TOÁN</h3>
+                      <div className="text-xs text-emerald-400 font-mono font-bold mt-0.5">
                         {selectedInvoice.invoiceCode}
                       </div>
                     </div>
@@ -642,30 +642,30 @@ export default function StaffBillingPage() {
                         onClick={() =>
                           openQrModal(
                             `invoice=${selectedInvoice.invoiceCode}`,
-                            `HĂ³a Ä‘Æ¡n ${selectedInvoice.invoiceCode}`,
+                            `Hóa đơn ${selectedInvoice.invoiceCode}`,
                           )
                         }
                       >
-                        <QrCode className="h-3.5 w-3.5 text-red-400" />
-                        QR KhĂ¡ch
+                        <QrCode className="h-3.5 w-3.5 text-emerald-400" />
+                        QR Khách
                       </Button>
                       <Badge variant={selectedInvoice.status === "PAID" ? "success" : "warning"}>
-                        {selectedInvoice.status === "PAID" ? "ÄĂ£ Thanh ToĂ¡n" : "Chá» Thanh ToĂ¡n"}
+                        {selectedInvoice.status === "PAID" ? "Đã Thanh Toán" : "Chờ Thanh Toán"}
                       </Badge>
                     </div>
                   </div>
 
-                  {/* Chi tiáº¿t cĂ¡c dĂ²ng tĂ­nh phĂ­ */}
+                  {/* Chi tiết các dòng tính phí */}
                   <div className="space-y-2">
-                    <div className="text-xs font-bold text-zinc-300">Chi tiáº¿t dá»‹ch vá»¥ & tiá»n bĂ n:</div>
+                    <div className="text-xs font-bold text-zinc-300">Chi tiết dịch vụ & tiền bàn:</div>
                     <div className="border border-zinc-800 rounded-lg overflow-hidden text-xs">
                       <table className="w-full text-left">
                         <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
                           <tr>
-                            <th className="p-2.5">Khoáº£n Má»¥c</th>
+                            <th className="p-2.5">Khoản Mục</th>
                             <th className="p-2.5 text-center">SL</th>
-                            <th className="p-2.5 text-right">ÄÆ¡n GiĂ¡</th>
-                            <th className="p-2.5 text-right">ThĂ nh Tiá»n</th>
+                            <th className="p-2.5 text-right">Đơn Giá</th>
+                            <th className="p-2.5 text-right">Thành Tiền</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-800 text-zinc-300">
@@ -684,34 +684,34 @@ export default function StaffBillingPage() {
                     </div>
                   </div>
 
-                  {/* Tá»•ng tiá»n & Chiáº¿t kháº¥u */}
+                  {/* Tổng tiền & Chiết khấu */}
                   <div className="border-t border-zinc-800 pt-4 space-y-2 text-xs">
                     <div className="flex justify-between text-zinc-400">
-                      <span>Tiá»n giá» chÆ¡i:</span>
+                      <span>Tiền giờ chơi:</span>
                       <strong className="text-white">{formatVND(Number(selectedInvoice.tableAmount))}</strong>
                     </div>
                     <div className="flex justify-between text-zinc-400">
-                      <span>Tiá»n Ä‘á»“ Äƒn & dá»‹ch vá»¥ (F&B):</span>
+                      <span>Tiền đồ ăn & dịch vụ (F&B):</span>
                       <strong className="text-white">{formatVND(Number(selectedInvoice.serviceAmount))}</strong>
                     </div>
 
                     {Number(selectedInvoice.tierDiscount || 0) > 0 && (
                       <div className="flex justify-between text-amber-300 font-semibold">
-                        <span>Chiáº¿t kháº¥u háº¡ng thĂ nh viĂªn:</span>
+                        <span>Chiết khấu hạng thành viên:</span>
                         <span>-{formatVND(Number(selectedInvoice.tierDiscount))}</span>
                       </div>
                     )}
 
                     {Number(selectedInvoice.voucherDiscount || 0) > 0 && (
-                      <div className="flex justify-between text-red-400 font-semibold">
-                        <span>Chiáº¿t kháº¥u Voucher ({selectedInvoice.voucherCode}):</span>
+                      <div className="flex justify-between text-emerald-400 font-semibold">
+                        <span>Chiết khấu Voucher ({selectedInvoice.voucherCode}):</span>
                         <span>-{formatVND(Number(selectedInvoice.voucherDiscount))}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between items-baseline pt-3 border-t border-zinc-800">
-                      <span className="text-sm font-bold text-zinc-200">Tá»”NG THANH TOĂN:</span>
-                      <span className="text-2xl font-black text-red-400">
+                      <span className="text-sm font-bold text-zinc-200">TỔNG THANH TOÁN:</span>
+                      <span className="text-2xl font-black text-emerald-400">
                         {formatVND(selectedInvoice.finalAmount)}
                       </span>
                     </div>
@@ -719,7 +719,7 @@ export default function StaffBillingPage() {
                     {selectedInvoice.status !== "PAID" && (
                       <div className="grid grid-cols-2 gap-3 pt-3">
                         <Button
-                          className="gap-2 bg-red-600 hover:bg-red-500 font-semibold text-xs h-10"
+                          className="gap-2 bg-emerald-600 hover:bg-emerald-500 font-semibold text-xs h-10"
                           isLoading={payMutation.isPending}
                           onClick={() =>
                             payMutation.mutate({
@@ -729,7 +729,7 @@ export default function StaffBillingPage() {
                           }
                         >
                           <Banknote className="h-4 w-4" />
-                          Tiá»n Máº·t
+                          Tiền Mặt
                         </Button>
 
                         <Button
@@ -743,7 +743,7 @@ export default function StaffBillingPage() {
                           }
                         >
                           <QrCode className="h-4 w-4" />
-                          Chuyá»ƒn Khoáº£n VietQR
+                          Chuyển Khoản VietQR
                         </Button>
                       </div>
                     )}
@@ -752,9 +752,9 @@ export default function StaffBillingPage() {
               ) : (
                 <Card className="text-center py-24 border-zinc-800 bg-zinc-900/40 text-xs text-zinc-400">
                   <Receipt className="h-12 w-12 text-zinc-600 mx-auto mb-3" />
-                  <div className="font-bold text-zinc-200">Chá»n má»™t bĂ n Ä‘ang chÆ¡i bĂªn trĂ¡i Ä‘á»ƒ láº­p hĂ³a Ä‘Æ¡n</div>
+                  <div className="font-bold text-zinc-200">Chọn một bàn đang chơi bên trái để lập hóa đơn</div>
                   <div className="mt-1 text-zinc-500">
-                    Há»‡ thá»‘ng sáº½ tá»± Ä‘á»™ng tĂ­nh sá»‘ phĂºt chÆ¡i theo block, Ă¡p dá»¥ng chiáº¿t kháº¥u háº¡ng tháº» & voucher.
+                    Hệ thống sẽ tự động tính số phút chơi theo block, áp dụng chiết khấu hạng thẻ & voucher.
                   </div>
                 </Card>
               )}
@@ -768,40 +768,40 @@ export default function StaffBillingPage() {
         <Modal
           isOpen={isSwitchModalOpen}
           onClose={() => setIsSwitchModalOpen(false)}
-          title={`Chuyá»ƒn Vá»‹ TrĂ­ BĂ n - Nguá»“n: ${activeSession?.billiardTable?.tableNumber}`}
-          description="Chuyá»ƒn thá»i gian chÆ¡i vĂ  toĂ n bá»™ dá»‹ch vá»¥ Ä‘Ă£ gá»i sang bĂ n má»›i"
+          title={`Chuyển Vị Trí Bàn - Nguồn: ${activeSession?.billiardTable?.tableNumber}`}
+          description="Chuyển thời gian chơi và toàn bộ dịch vụ đã gọi sang bàn mới"
         >
           <div className="space-y-4 text-xs">
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">Chá»n bĂ n trá»‘ng muá»‘n chuyá»ƒn sang:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Chọn bàn trống muốn chuyển sang:</label>
               <select
                 value={targetSwitchTableId}
                 onChange={(e) => setTargetSwitchTableId(e.target.value)}
                 className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
               >
-                <option value="">-- Chá»n bĂ n Ä‘Ă­ch kháº£ dá»¥ng --</option>
+                <option value="">-- Chọn bàn đích khả dụng --</option>
                 {tables
                   .filter((t: any) => t.id !== activeSession?.billiardTableId && t.status === "AVAILABLE")
                   .map((t: any) => (
                     <option key={t.id} value={t.id}>
-                      BĂ n {t.tableNumber} - {t.tableType?.name} ({t.area}) â€¢ {formatVND(t.hourlyRate || t.tableType?.hourlyRate)}/h
+                      Bàn {t.tableNumber} - {t.tableType?.name} ({t.area}) • {formatVND(t.hourlyRate || t.tableType?.hourlyRate)}/h
                     </option>
                   ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">LĂ½ do Ä‘á»•i vá»‹ trĂ­ (tĂ¹y chá»n):</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Lý do đổi vị trí (tùy chọn):</label>
               <Input
                 value={switchReason}
                 onChange={(e) => setSwitchReason(e.target.value)}
-                placeholder="VD: KhĂ¡ch muá»‘n Ä‘á»•i bĂ n gáº§n Ä‘iá»u hĂ²a..."
+                placeholder="VD: Khách muốn đổi bàn gần điều hòa..."
               />
             </div>
 
             <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
               <Button variant="outline" size="sm" onClick={() => setIsSwitchModalOpen(false)}>
-                Há»§y
+                Hủy
               </Button>
               <Button
                 size="sm"
@@ -810,7 +810,7 @@ export default function StaffBillingPage() {
                 isLoading={switchTableMutation.isPending}
                 onClick={() => switchTableMutation.mutate()}
               >
-                XĂ¡c Nháº­n Chuyá»ƒn BĂ n
+                Xác Nhận Chuyển Bàn
               </Button>
             </div>
           </div>
@@ -822,23 +822,23 @@ export default function StaffBillingPage() {
         <Modal
           isOpen={isMergeModalOpen}
           onClose={() => setIsMergeModalOpen(false)}
-          title={`Gá»™p BĂ n - Nguá»“n: ${activeSession?.billiardTable?.tableNumber}`}
-          description="TĂ­nh tiá»n giá» bĂ n nĂ y tĂ­nh Ä‘áº¿n hiá»‡n táº¡i vĂ  dá»“n hĂ³a Ä‘Æ¡n sang bĂ n Ä‘Ă­ch"
+          title={`Gộp Bàn - Nguồn: ${activeSession?.billiardTable?.tableNumber}`}
+          description="Tính tiền giờ bàn này tính đến hiện tại và dồn hóa đơn sang bàn đích"
         >
           <div className="space-y-4 text-xs">
             <div>
-              <label className="block text-zinc-300 font-semibold mb-1">Chá»n bĂ n Ä‘Ă­ch Ä‘á»ƒ gá»™p vĂ o:</label>
+              <label className="block text-zinc-300 font-semibold mb-1">Chọn bàn đích để gộp vào:</label>
               <select
                 value={targetMergeTableId}
                 onChange={(e) => setTargetMergeTableId(e.target.value)}
                 className="w-full h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-100"
               >
-                <option value="">-- Chá»n bĂ n Ä‘Ă­ch Ä‘ang chÆ¡i --</option>
+                <option value="">-- Chọn bàn đích đang chơi --</option>
                 {tables
                   .filter((t: any) => t.id !== activeSession?.billiardTableId && t.playSessions?.length > 0)
                   .map((t: any) => (
                     <option key={t.id} value={t.id}>
-                      BĂ n {t.tableNumber} - {t.tableType?.name} (Äang chÆ¡i)
+                      Bàn {t.tableNumber} - {t.tableType?.name} (Đang chơi)
                     </option>
                   ))}
               </select>
@@ -846,7 +846,7 @@ export default function StaffBillingPage() {
 
             <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
               <Button variant="outline" size="sm" onClick={() => setIsMergeModalOpen(false)}>
-                Há»§y
+                Hủy
               </Button>
               <Button
                 size="sm"
@@ -855,7 +855,7 @@ export default function StaffBillingPage() {
                 isLoading={mergeTableMutation.isPending}
                 onClick={() => mergeTableMutation.mutate()}
               >
-                XĂ¡c Nháº­n Gá»™p BĂ n
+                Xác Nhận Gộp Bàn
               </Button>
             </div>
           </div>
@@ -866,8 +866,8 @@ export default function StaffBillingPage() {
       <Modal
         isOpen={isQrModalOpen}
         onClose={() => setIsQrModalOpen(false)}
-        title={`MĂ£ QR ${qrCodeData?.title || "HĂ³a ÄÆ¡n"}`}
-        description="KhĂ¡ch quĂ©t mĂ£ báº±ng camera Ä‘iá»‡n thoáº¡i Ä‘á»ƒ xem trá»±c tiáº¿p tiĂªu dĂ¹ng vĂ  chuyá»ƒn khoáº£n"
+        title={`Mã QR ${qrCodeData?.title || "Hóa Đơn"}`}
+        description="Khách quét mã bằng camera điện thoại để xem trực tiếp tiêu dùng và chuyển khoản"
       >
         {qrCodeData && (
           <div className="space-y-4 text-center text-xs">
@@ -883,8 +883,8 @@ export default function StaffBillingPage() {
             </div>
 
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400 text-left space-y-1">
-              <div>Link trá»±c tiáº¿p: <strong className="text-red-400 break-all">{qrCodeData.url}</strong></div>
-              <div className="text-zinc-500">KhĂ¡ch khĂ´ng cáº§n tĂ i khoáº£n hay Ä‘Äƒng nháº­p váº«n xem Ä‘Æ°á»£c hĂ³a Ä‘Æ¡n.</div>
+              <div>Link trực tiếp: <strong className="text-emerald-400 break-all">{qrCodeData.url}</strong></div>
+              <div className="text-zinc-500">Khách không cần tài khoản hay đăng nhập vẫn xem được hóa đơn.</div>
             </div>
 
             <div className="flex justify-center gap-3 pt-2 border-t border-zinc-800">
@@ -893,10 +893,10 @@ export default function StaffBillingPage() {
                 size="sm"
                 onClick={() => window.open(qrCodeData.url, "_blank")}
               >
-                Xem Trang KhĂ¡ch
+                Xem Trang Khách
               </Button>
               <Button size="sm" onClick={() => setIsQrModalOpen(false)}>
-                ÄĂ³ng
+                Đóng
               </Button>
             </div>
           </div>

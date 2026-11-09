@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -75,7 +75,7 @@ export default function StaffBookingsPage() {
       }),
   });
 
-  // Chuyá»ƒn tráº¡ng thĂ¡i
+  // Chuyển trạng thái
   const confirmMutation = useMutation({
     mutationFn: (id: string) => apiClient(`/bookings/${id}/confirm`, { method: "PUT" }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-bookings"] }),
@@ -107,17 +107,17 @@ export default function StaffBookingsPage() {
   const statusBadge = (status: string) => {
     switch (status) {
       case "PENDING":
-        return <Badge variant="warning">Chá» Duyá»‡t</Badge>;
+        return <Badge variant="warning">Chờ Duyệt</Badge>;
       case "CONFIRMED":
-        return <Badge variant="success">ÄĂ£ Giá»¯ Chá»—</Badge>;
+        return <Badge variant="success">Đã Giữ Chỗ</Badge>;
       case "CHECKED_IN":
-        return <Badge variant="info">ÄĂ£ Check-in</Badge>;
+        return <Badge variant="info">Đã Check-in</Badge>;
       case "IN_USE":
-        return <Badge variant="danger">Äang ChÆ¡i</Badge>;
+        return <Badge variant="danger">Đang Chơi</Badge>;
       case "COMPLETED":
-        return <Badge variant="default">HoĂ n Táº¥t</Badge>;
+        return <Badge variant="default">Hoàn Tất</Badge>;
       case "CANCELLED":
-        return <Badge variant="outline">ÄĂ£ Há»§y</Badge>;
+        return <Badge variant="outline">Đã Hủy</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -131,9 +131,9 @@ export default function StaffBookingsPage() {
         <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
           {/* Header */}
           <div className="mb-4 sm:mb-8">
-            <h1 className="text-xl sm:text-2xl font-black text-white">Lá»CH Äáº¶T BĂ€N TRONG CA</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-white">LỊCH ĐẶT BÀN TRONG CA</h1>
             <p className="text-zinc-400 text-xs mt-1">
-              Tiáº¿p nháº­n khĂ¡ch Ä‘áº·t trÆ°á»›c, check-in vĂ  báº­t bĂ n theo chu trĂ¬nh nghiá»‡p vá»¥ chuáº©n.
+              Tiếp nhận khách đặt trước, check-in và bật bàn theo chu trình nghiệp vụ chuẩn.
             </p>
           </div>
 
@@ -141,7 +141,7 @@ export default function StaffBookingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800 mb-6">
             <div>
               <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
-                Lá»c theo ngĂ y:
+                Lọc theo ngày:
               </label>
               <Input
                 type="date"
@@ -152,28 +152,28 @@ export default function StaffBookingsPage() {
 
             <div>
               <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
-                Lá»c theo tráº¡ng thĂ¡i:
+                Lọc theo trạng thái:
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="flex h-10 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs text-zinc-100"
               >
-                <option value="">Táº¥t cáº£ tráº¡ng thĂ¡i</option>
-                <option value="CONFIRMED">ÄĂ£ Giá»¯ Chá»— (CONFIRMED)</option>
-                <option value="CHECKED_IN">ÄĂ£ Check-in (CHECKED_IN)</option>
-                <option value="IN_USE">Äang ChÆ¡i (IN_USE)</option>
-                <option value="COMPLETED">HoĂ n Táº¥t (COMPLETED)</option>
-                <option value="CANCELLED">ÄĂ£ Há»§y (CANCELLED)</option>
+                <option value="">Tất cả trạng thái</option>
+                <option value="CONFIRMED">Đã Giữ Chỗ (CONFIRMED)</option>
+                <option value="CHECKED_IN">Đã Check-in (CHECKED_IN)</option>
+                <option value="IN_USE">Đang Chơi (IN_USE)</option>
+                <option value="COMPLETED">Hoàn Tất (COMPLETED)</option>
+                <option value="CANCELLED">Đã Hủy (CANCELLED)</option>
               </select>
             </div>
 
             <div>
               <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
-                TĂ¬m kiáº¿m mĂ£ / tĂªn khĂ¡ch / SÄT:
+                Tìm kiếm mã / tên khách / SĐT:
               </label>
               <Input
-                placeholder="Nháº­p tá»« khĂ³a tĂ¬m kiáº¿m..."
+                placeholder="Nhập từ khóa tìm kiếm..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -190,8 +190,8 @@ export default function StaffBookingsPage() {
           ) : bookings.length === 0 ? (
             <Card className="text-center py-16 border-zinc-800 bg-zinc-900/40">
               <CalendarDays className="h-10 w-10 text-zinc-600 mx-auto mb-2" />
-              <div className="text-sm font-semibold text-zinc-300">KhĂ´ng cĂ³ Ä‘Æ¡n Ä‘áº·t bĂ n nĂ o</div>
-              <div className="text-xs text-zinc-500 mt-1">Thay Ä‘á»•i bá»™ lá»c hoáº·c ngĂ y Ä‘á»ƒ xem thĂªm</div>
+              <div className="text-sm font-semibold text-zinc-300">Không có đơn đặt bàn nào</div>
+              <div className="text-xs text-zinc-500 mt-1">Thay đổi bộ lọc hoặc ngày để xem thêm</div>
             </Card>
           ) : (
             <div className="space-y-3">
@@ -203,8 +203,8 @@ export default function StaffBookingsPage() {
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col items-center justify-center shrink-0">
-                        <span className="text-[10px] text-zinc-400 font-semibold">BĂ€N</span>
-                        <span className="text-base font-black text-red-400">
+                        <span className="text-[10px] text-zinc-400 font-semibold">BÀN</span>
+                        <span className="text-base font-black text-emerald-400">
                           {booking.billiardTable?.tableNumber}
                         </span>
                       </div>
@@ -218,11 +218,11 @@ export default function StaffBookingsPage() {
                         </div>
 
                         <div className="text-xs text-zinc-200 font-medium">
-                          KhĂ¡ch:{" "}
+                          Khách:{" "}
                           <strong className="text-white">
-                            {booking.customer?.fullName || "KhĂ¡ch Ä‘áº·t trÆ°á»›c"}
+                            {booking.customer?.fullName || "Khách đặt trước"}
                           </strong>{" "}
-                          ({booking.customer?.phone || "ChÆ°a cĂ³ SÄT"})
+                          ({booking.customer?.phone || "Chưa có SĐT"})
                         </div>
 
                         <div className="text-[11px] text-zinc-400 flex items-center gap-2">
@@ -233,14 +233,14 @@ export default function StaffBookingsPage() {
                           </span>
                         </div>
 
-                        {/* Chi tiáº¿t mĂ³n Äƒn & nhĂ¢n viĂªn Ä‘Ă£ order */}
+                        {/* Chi tiết món ăn & nhân viên đã order */}
                         {(() => {
                           const { customNote, items, staff } = parseBookingNotes(booking.notes);
                           return (
                             <div className="space-y-1 pt-1">
                               {items.length > 0 && (
                                 <div className="flex flex-wrap items-center gap-1.5">
-                                  <span className="text-[10px] bg-red-950/80 border border-red-800 text-red-300 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
+                                  <span className="text-[10px] bg-emerald-950/80 border border-emerald-800 text-emerald-300 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
                                     <UtensilsCrossed className="h-3 w-3" />
                                     {items.map((it: any) => `${it.quantity}x ${it.name}`).join(", ")}
                                   </span>
@@ -250,13 +250,13 @@ export default function StaffBookingsPage() {
                                 <div className="flex items-center gap-1 text-[10px] text-sky-400 font-medium">
                                   <UserCheck className="h-3 w-3" />
                                   <span>
-                                    {staff.roleName}: <strong>{staff.staffName || "QuĂ¡n tá»± sáº¯p xáº¿p"}</strong>
+                                    {staff.roleName}: <strong>{staff.staffName || "Quán tự sắp xếp"}</strong>
                                   </span>
                                 </div>
                               )}
                               {customNote && (
                                 <div className="text-[10px] text-zinc-400 italic">
-                                  Ghi chĂº: {customNote}
+                                  Ghi chú: {customNote}
                                 </div>
                               )}
                             </div>
@@ -270,12 +270,12 @@ export default function StaffBookingsPage() {
                       {booking.status === "PENDING" && (
                         <Button
                           size="sm"
-                          className="text-xs bg-red-600"
+                          className="text-xs bg-emerald-600"
                           onClick={() => confirmMutation.mutate(booking.id)}
                           isLoading={confirmMutation.isPending}
                         >
                           <CheckCircle className="h-3.5 w-3.5 mr-1" />
-                          Duyá»‡t Äáº·t BĂ n
+                          Duyệt Đặt Bàn
                         </Button>
                       )}
 
@@ -287,7 +287,7 @@ export default function StaffBookingsPage() {
                           isLoading={checkInMutation.isPending}
                         >
                           <CheckCircle className="h-3.5 w-3.5 mr-1" />
-                          Check-in KhĂ¡ch Äáº¿n
+                          Check-in Khách Đến
                         </Button>
                       )}
 
@@ -299,7 +299,7 @@ export default function StaffBookingsPage() {
                           isLoading={startSessionMutation.isPending}
                         >
                           <Play className="h-3.5 w-3.5 mr-1" />
-                          Báº­t BĂ n Báº¥m Giá»
+                          Bật Bàn Bấm Giờ
                         </Button>
                       )}
 
@@ -311,7 +311,7 @@ export default function StaffBookingsPage() {
                           onClick={() => setCancelModalBooking(booking)}
                         >
                           <XCircle className="h-3.5 w-3.5 mr-1" />
-                          Há»§y
+                          Hủy
                         </Button>
                       )}
                     </div>
@@ -327,15 +327,15 @@ export default function StaffBookingsPage() {
       <Modal
         isOpen={Boolean(cancelModalBooking)}
         onClose={() => setCancelModalBooking(null)}
-        title="NhĂ¢n ViĂªn Há»§y Äáº·t BĂ n"
+        title="Nhân Viên Hủy Đặt Bàn"
       >
         <div className="space-y-4 text-xs">
           <div>
             <label className="block text-zinc-300 font-semibold mb-1">
-              Nháº­p lĂ½ do há»§y Ä‘áº·t bĂ n (Báº¯t buá»™c):
+              Nhập lý do hủy đặt bàn (Bắt buộc):
             </label>
             <Input
-              placeholder="VD: KhĂ¡ch gá»i Ä‘iá»‡n bĂ¡o há»§y báº­n viá»‡c Ä‘á»™t xuáº¥t..."
+              placeholder="VD: Khách gọi điện báo hủy bận việc đột xuất..."
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
             />
@@ -347,7 +347,7 @@ export default function StaffBookingsPage() {
               size="sm"
               onClick={() => setCancelModalBooking(null)}
             >
-              Quay láº¡i
+              Quay lại
             </Button>
             <Button
               variant="danger"
@@ -361,7 +361,7 @@ export default function StaffBookingsPage() {
                 })
               }
             >
-              XĂ¡c Nháº­n Há»§y
+              Xác Nhận Hủy
             </Button>
           </div>
         </div>
