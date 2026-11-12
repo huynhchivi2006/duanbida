@@ -122,7 +122,7 @@ DATABASE_URL="postgresql://user:password@ep-sample-pooler.ap-southeast-1.aws.neo
 DIRECT_URL="postgresql://user:password@ep-sample.ap-southeast-1.aws.neon.tech/billiards_db?sslmode=require"
 PORT=4000
 API_PREFIX=api/v1
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:8080
 JWT_ACCESS_SECRET="billiards-super-secret-access-token-key-2026"
 JWT_ACCESS_EXPIRES_IN="15m"
 JWT_REFRESH_SECRET="billiards-super-secret-refresh-token-key-2026"
@@ -151,11 +151,11 @@ npm run dev:api
 - RESTful API URL: `http://localhost:4000/api/v1`
 - Swagger API Docs: `http://localhost:4000/api/docs`
 
-Khởi động Frontend (cổng 3000):
+Khởi động Frontend (cổng 8080):
 ```bash
 npm run dev:web
 ```
-- Web Application: `http://localhost:3000`
+- Web Application: `http://localhost:8080`
 
 ---
 

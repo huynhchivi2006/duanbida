@@ -23,5 +23,5 @@ services:
       - key: JWT_REFRESH_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        value: https://it24m.dak.edu.vn,http://localhost:3000
+        value: https://it24m.dak.edu.vn,http://localhost:3000,http://localhost:8080
 

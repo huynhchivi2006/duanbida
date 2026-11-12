@@ -5,7 +5,7 @@
 ## 1. DÀNH CHO KHÁCH HÀNG (CUSTOMER)
 
 ### 1.1. Đăng ký & Đăng nhập
-- Truy cập trang chủ: [http://localhost:3000](http://localhost:3000)
+- Truy cập trang chủ: [http://localhost:8080](http://localhost:8080)
 - Chọn nút **Đăng Nhập** ở góc phải thanh điều hướng.
 - Nhập Email và Mật khẩu. Bạn cũng có thể bấm nút **1-Click Demo** (Khách Hàng) để tự động điền tài khoản thử nghiệm `khach1@gmail.com` / `Khach@123456`.
 - Nếu chưa có tài khoản, nhấn liên kết **Đăng ký ngay** để tạo mới.

@@ -16,7 +16,7 @@ Minh họa trực quan và thuyết phục toàn bộ chu trình nghiệp vụ t
 ## CÁC BƯỚC THỰC HIỆN CHI TIẾT (TỪNG PHÚT)
 
 ### ⏱️ Phút 01: Giới thiệu giao diện & Đăng nhập
-1. Mở trình duyệt tại [http://localhost:3000](http://localhost:3000).
+1. Mở trình duyệt tại [http://localhost:8080](http://localhost:8080).
 2. Giới thiệu nhanh giao diện công khai phong cách Dark sang trọng mang âm hưởng câu lạc bộ bi-da hoàng gia.
 3. Nhấp vào **Đăng Nhập** ➔ Nhấn nút **1-Click Demo** (Khách Hàng) để đăng nhập tài khoản `khach1@gmail.com`.
 4. Hệ thống chuyển vào Cổng Khách Hàng (`/customer/dashboard`), hiển thị lời chào và lịch đặt hiện có.
